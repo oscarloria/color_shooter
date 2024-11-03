@@ -40,20 +40,6 @@ S: Selecciona el color Verde.
 D: Selecciona el color Rojo.
 Disparo: Clic izquierdo del ratón (solo si se está manteniendo presionada una tecla de color).
 
-🛠️ Instalación y Ejecución
-Clona el repositorio:
-bash
-Copiar código
-git clone https://github.com/tu-usuario/tu-repositorio.git
-Abre el proyecto en Unity:
-
-Utiliza Unity Hub para abrir el proyecto.
-Asegúrate de tener instalada la versión de Unity compatible (por ejemplo, Unity 2021.3 LTS).
-Ejecuta el juego:
-
-En el editor de Unity, abre la escena principal (por ejemplo, MainScene.unity).
-Haz clic en el botón Play para iniciar el juego.
-
 🖥️ Requisitos del Sistema
 Unity: Versión 2021.3 LTS o superior.
 Plataformas Soportadas: Windows, macOS, Linux.
