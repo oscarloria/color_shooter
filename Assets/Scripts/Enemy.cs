@@ -78,6 +78,13 @@ public class Enemy : MonoBehaviour
             // Destruir al enemigo
             DestroyEnemy();
 
+
+// Llamar al efecto de cámara shake si lo deseas
+      if (CameraShake.Instance != null)
+       {
+          CameraShake.Instance.ShakeCamera();
+        }
+        
             // Aquí puedes añadir lógica para reducir la salud del jugador
         }
         else
@@ -111,10 +118,6 @@ public class Enemy : MonoBehaviour
         // Destruir al enemigo
         Destroy(gameObject);
 
-        // Llamar al efecto de cámara shake si lo deseas
-      //  if (CameraShake.Instance != null)
-       // {
-      //      CameraShake.Instance.ShakeCamera();
-      //  }
+        
     }
 }
