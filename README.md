@@ -1,4 +1,4 @@
-📡 Título del Juego
+📡 Color Shooter
 Un juego desarrollado en Unity donde controlas una nave espacial y debes defenderte de enemigos de diferentes colores.
 
 📖 Descripción
