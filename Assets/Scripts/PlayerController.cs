@@ -1,12 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed = 5f;
     public GameObject projectilePrefab;
-    public float projectileSpeed = 10f;
-    public float fireRate = 0.5f; // Tiempo entre disparos
+    public float projectileSpeed = 20f;
+    public float fireRate = 0.01f; // Tiempo entre disparos
     private float nextFireTime = 0f; // Próximo momento en que se puede disparar
 
     // Variables para el efecto de escala
@@ -15,16 +16,53 @@ public class PlayerController : MonoBehaviour
 
     public Color currentColor = Color.white; // Color inicial de la nave
 
+    // Variables para el cargador
+    public int magazineSize = 6;        // Capacidad del cargador
+    private int currentAmmo;            // Cantidad actual de proyectiles en el cargador
+    public float reloadTime = 1f;       // Tiempo que tarda en recargar (en segundos)
+    private bool isReloading = false;   // Indica si el jugador está recargando
+
+
+    // TextMeshPro para el texto del cargador
+    public TextMeshProUGUI ammoText;
+
+    void Start()
+    {
+        currentAmmo = magazineSize; // Inicializar el cargador lleno
+        UpdateAmmoText(); // Actualizar el texto de munición
+    }
+
     void Update()
     {
         RotatePlayer();
         ChangeColor();
 
-        // Disparar al hacer clic con el botón izquierdo del ratón
-        if (Input.GetMouseButtonDown(0) && Time.time >= nextFireTime)
+        // Si estamos recargando, no podemos disparar ni recargar de nuevo
+        if (isReloading)
         {
-            Shoot();
-            nextFireTime = Time.time + fireRate;
+            return;
+        }
+
+        // Recarga manual al presionar 'R'
+        if (Input.GetKeyDown(KeyCode.R) && currentAmmo < magazineSize)
+        {
+            StartCoroutine(Reload());
+            return;
+        }
+
+        // Disparar al hacer clic con el botón izquierdo del ratón
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (currentAmmo > 0)
+            {
+                Shoot();
+            }
+            else
+            {
+                // Iniciar recarga automática si no hay munición
+                Debug.Log("Proyectiles agotados. Recargando automáticamente...");
+                StartCoroutine(Reload());
+            }
         }
     }
 
@@ -76,6 +114,13 @@ public class PlayerController : MonoBehaviour
             return; // Salir del método sin disparar
         }
 
+        // Restar munición
+        currentAmmo--;
+        Debug.Log("Munición restante: " + currentAmmo);
+        
+        // Actualizar el texto de munición
+        UpdateAmmoText();
+
         // Instancia el proyectil en la posición de la nave con su rotación actual
         GameObject projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
 
@@ -93,6 +138,41 @@ public class PlayerController : MonoBehaviour
         // Iniciar el efecto de escala
         StartCoroutine(ScaleEffect());
     }
+
+    IEnumerator Reload()
+    {
+        isReloading = true;
+        Debug.Log("Recargando proyectiles...");
+
+        // Actualizar el texto de munición
+        UpdateAmmoText();
+
+        // Esperar el tiempo de recarga
+        yield return new WaitForSeconds(reloadTime);
+
+        // Reponer la munición
+        currentAmmo = magazineSize;
+        isReloading = false;
+
+        Debug.Log("Recarga completa.");
+
+        // Actualizar el texto de munición
+        UpdateAmmoText();
+    }
+
+
+    void UpdateAmmoText()
+    {
+         if (isReloading)
+            {
+                ammoText.text = "RELOADING";
+            }
+            else
+            {
+                ammoText.text = currentAmmo.ToString();
+            }
+        }
+
 
     IEnumerator ScaleEffect()
     {
