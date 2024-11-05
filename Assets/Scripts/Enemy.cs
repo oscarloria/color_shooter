@@ -109,6 +109,14 @@ public class Enemy : MonoBehaviour
             }
         }
 
+// Obtener referencia al PlayerController para llamar a AddSlowMotionCharge
+    PlayerController playerController = FindObjectOfType<PlayerController>();
+    if (playerController != null)
+    {
+        playerController.AddSlowMotionCharge();
+    }
+
+
         // Añadir puntuación si corresponde
         //if (GameManager.Instance != null)
        // {
