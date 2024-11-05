@@ -225,7 +225,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1818658614839804871, guid: 02698d23907035a48a97d28b053bf751, type: 3}
   projectileSpeed: 20
   fireRate: 0.1
-  scaleMultiplier: 1.1
+  scaleMultiplier: 1.2
   scaleDuration: 0.1
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   magazineSize: 8
