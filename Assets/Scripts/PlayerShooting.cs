@@ -9,6 +9,13 @@ public class PlayerShooting : MonoBehaviour
     public float projectileSpeed = 20f;
     public float fireRate = 0.01f;
 
+    // Variables de dispersión
+    public float normalDispersionAngle = 5f; // Ángulo de dispersión en modo normal
+    public float zoomedDispersionAngle = 0f; // Ángulo de dispersión en modo Zoom
+
+    // Referencia al estado de Zoom
+    private CameraZoom cameraZoom;
+
     // Variables de munición
     public int magazineSize = 6;
     public float reloadTime = 1f;
@@ -25,14 +32,11 @@ public class PlayerShooting : MonoBehaviour
     // UI
     public TextMeshProUGUI ammoText;
 
-    // Nueva variable para la dispersión
-    [Header("Configuración de Dispersión")]
-    public float dispersionAngle = 5f; // Ángulo máximo de dispersión en grados
-
     void Start()
     {
         currentAmmo = magazineSize;
         UpdateAmmoText();
+        cameraZoom = FindObjectOfType<CameraZoom>(); // Obtener referencia al script de Zoom
     }
 
     public void ChangeColor()
@@ -66,31 +70,38 @@ public class PlayerShooting : MonoBehaviour
     }
 
     public void Shoot()
+{
+    if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
+
+    // Reducir la munición y actualizar la UI
+    currentAmmo--;
+    UpdateAmmoText();
+
+    // Calcular el ángulo de dispersión según el estado de Zoom
+    float dispersionAngle = normalDispersionAngle;
+    if (cameraZoom != null && cameraZoom.IsZoomedIn)
     {
-        if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
-
-        // Reducir la munición y actualizar la UI
-        currentAmmo--;
-        UpdateAmmoText();
-
-        // Calcular una rotación aleatoria dentro del rango de dispersión
-        float randomAngle = Random.Range(-dispersionAngle / 2f, dispersionAngle / 2f);
-        Quaternion dispersionRotation = Quaternion.Euler(0f, 0f, randomAngle);
-
-        // Crear el proyectil con la rotación ajustada
-        GameObject projectile = Instantiate(projectilePrefab, transform.position, transform.rotation * dispersionRotation);
-        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-        rb.linearVelocity = projectile.transform.up * projectileSpeed;
-
-        // Asignar el color al proyectil
-        SpriteRenderer projSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
-        if (projSpriteRenderer != null)
-        {
-            projSpriteRenderer.color = currentColor;
-        }
-
-        StartCoroutine(ScaleEffect());
+        dispersionAngle = zoomedDispersionAngle;
     }
+
+    // Calcular un ángulo aleatorio dentro del rango de dispersión
+    float randomAngle = Random.Range(-dispersionAngle / 2f, dispersionAngle / 2f);
+
+    // Crear el proyectil con dispersión
+    Quaternion projectileRotation = transform.rotation * Quaternion.Euler(0, 0, randomAngle);
+    GameObject projectile = Instantiate(projectilePrefab, transform.position, projectileRotation);
+    Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+    rb.linearVelocity = projectile.transform.up * projectileSpeed;
+
+    // Asignar el color al proyectil
+    SpriteRenderer projSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
+    if (projSpriteRenderer != null)
+    {
+        projSpriteRenderer.color = currentColor;
+    }
+
+    StartCoroutine(ScaleEffect());
+}
 
     public IEnumerator Reload()
     {
