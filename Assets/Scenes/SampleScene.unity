@@ -132,6 +132,9 @@ GameObject:
   - component: {fileID: 190124699}
   - component: {fileID: 190124701}
   - component: {fileID: 190124700}
+  - component: {fileID: 190124704}
+  - component: {fileID: 190124703}
+  - component: {fileID: 190124702}
   m_Layer: 8
   m_Name: Ship
   m_TagString: Player
@@ -221,19 +224,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af797ac20e91944a9840b1845bd7247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  projectilePrefab: {fileID: 1818658614839804871, guid: 02698d23907035a48a97d28b053bf751, type: 3}
-  projectileSpeed: 20
-  fireRate: 0.1
-  scaleMultiplier: 1.2
-  scaleDuration: 0.1
-  currentColor: {r: 1, g: 1, b: 1, a: 1}
-  magazineSize: 8
-  reloadTime: 1
-  ammoText: {fileID: 721255408}
-  slowMotionDuration: 20
-  chargePerEnemy: 0.01
-  slowMotionBar: {fileID: 1967838134}
 --- !u!50 &190124700
 Rigidbody2D:
   serializedVersion: 5
@@ -311,6 +301,60 @@ PolygonCollider2D:
       - {x: -0.5, y: -0.28866667}
       - {x: 0.5, y: -0.28866667}
   m_UseDelaunayMesh: 0
+--- !u!114 &190124702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190124696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef5255f30c04cc4ea5c4c8f86fef628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowMotionDuration: 5
+  slowMotionScale: 0.4
+  chargePerEnemy: 0.05
+  slowMotionBar: {fileID: 1967838134}
+  remainingSlowMotionTime: 0
+  isSlowMotionActive: 0
+--- !u!114 &190124703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190124696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f8f03c6f2bd90742b2b06487fbb5e7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 1818658614839804871, guid: 02698d23907035a48a97d28b053bf751, type: 3}
+  projectileSpeed: 25
+  fireRate: 0.01
+  magazineSize: 6
+  reloadTime: 1
+  currentAmmo: 0
+  isReloading: 0
+  scaleMultiplier: 1.1
+  scaleDuration: 0.1
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
+  ammoText: {fileID: 721255408}
+  dispersionAngle: 10
+--- !u!114 &190124704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190124696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e427809990bb2746ba22cdfae49676c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,7 +836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 8251635640791360112, guid: 72d14dc18699ea2499592599a67a1948, type: 3}
-  spawnRate: 1
+  spawnRate: 0.5
   spawnDistance: 10
   enemyColors: []
 --- !u!4 &1941573991
