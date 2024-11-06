@@ -3,7 +3,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public Color enemyColor; // Color del enemigo
-    public float speed = 2f; // Velocidad de movimiento hacia el jugador
+    public float speed = 3f; // Velocidad de movimiento hacia el jugador
     public GameObject explosionPrefab; // Prefab de la explosión
     public float minRotationSpeed = -180f; // Velocidad mínima de rotación
     public float maxRotationSpeed = 180f;  // Velocidad máxima de rotación
