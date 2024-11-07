@@ -509,6 +509,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.2
   shakeMagnitude: 0.3
+  recoilDistance: 0.2
+  recoilSpeed: 10
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -69,7 +69,7 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
-    public void Shoot()
+public void Shoot()
 {
     if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
 
@@ -101,7 +101,15 @@ public class PlayerShooting : MonoBehaviour
     }
 
     StartCoroutine(ScaleEffect());
+
+    // Llamar al efecto de retroceso de cámara
+    if (CameraShake.Instance != null)
+    {
+        Vector3 recoilDirection = transform.up; // Dirección hacia donde mira el jugador
+        CameraShake.Instance.RecoilCamera(recoilDirection);
+    }
 }
+
 
     public IEnumerator Reload()
     {

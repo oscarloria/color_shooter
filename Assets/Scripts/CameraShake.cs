@@ -3,17 +3,22 @@ using System.Collections;
 
 public class CameraShake : MonoBehaviour
 {
-    public static CameraShake Instance;
+    public static CameraShake Instance { get; private set; }
 
-    public float shakeDuration = 0.2f; // Duración del efecto
-    public float shakeMagnitude = 0.3f; // Intensidad del efecto
+    // Variables para el efecto de shake
+    public float shakeDuration = 0.2f; // Duración del efecto de shake
+    public float shakeMagnitude = 0.3f; // Magnitud del efecto de shake
 
-    private Transform camTransform;
-    private Vector3 originalPos;
+    // Variables para el efecto de retroceso
+    public float recoilDistance = 0.1f; // Distancia del retroceso
+    public float recoilSpeed = 10f;     // Velocidad del retroceso
+
+    private Vector3 originalPosition;
+    private Coroutine recoilCoroutine;
 
     void Awake()
     {
-        // Singleton para acceder desde otros scripts
+        // Implementación del Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -22,9 +27,11 @@ public class CameraShake : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
-        camTransform = GetComponent<Transform>();
-        originalPos = camTransform.localPosition;
+    void OnEnable()
+    {
+        originalPosition = transform.localPosition;
     }
 
     public void ShakeCamera()
@@ -41,13 +48,53 @@ public class CameraShake : MonoBehaviour
             float x = Random.Range(-1f, 1f) * shakeMagnitude;
             float y = Random.Range(-1f, 1f) * shakeMagnitude;
 
-            camTransform.localPosition = new Vector3(x, y, originalPos.z);
+            transform.localPosition = originalPosition + new Vector3(x, y, 0f);
 
             elapsed += Time.deltaTime;
 
             yield return null;
         }
 
-        camTransform.localPosition = originalPos;
+        transform.localPosition = originalPosition;
+    }
+
+    // Método corregido para el retroceso de cámara
+    public void RecoilCamera(Vector3 recoilDirection)
+    {
+        // Si ya hay una corrutina de retroceso en ejecución, la detenemos
+        if (recoilCoroutine != null)
+        {
+            StopCoroutine(recoilCoroutine);
+        }
+        recoilCoroutine = StartCoroutine(Recoil(recoilDirection));
+    }
+
+    IEnumerator Recoil(Vector3 recoilDirection)
+    {
+        Vector3 targetPosition = originalPosition + recoilDirection.normalized * recoilDistance;
+        float elapsedTime = 0f;
+        float recoilDuration = recoilDistance / recoilSpeed;
+
+        // Movimiento hacia atrás (retroceso)
+        while (elapsedTime < recoilDuration)
+        {
+            transform.localPosition = Vector3.Lerp(originalPosition, targetPosition, elapsedTime / recoilDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localPosition = targetPosition;
+
+        // Retorno a la posición original
+        elapsedTime = 0f;
+        while (elapsedTime < recoilDuration)
+        {
+            transform.localPosition = Vector3.Lerp(targetPosition, originalPosition, elapsedTime / recoilDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localPosition = originalPosition;
+        recoilCoroutine = null;
     }
 }
