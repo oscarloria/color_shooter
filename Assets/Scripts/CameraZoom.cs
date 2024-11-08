@@ -20,9 +20,6 @@ public class CameraZoom : MonoBehaviour
     public float minY = -10f;
     public float maxY = 10f;
 
-    // **Eliminado**: Duplicado de isZoomedIn
-    // private bool isZoomedIn = false;     // Estado de toggle para saber si el Zoom está activo o no
-
     void Update()
     {
         // Toggle de Zoom con clic derecho del mouse
@@ -31,26 +28,26 @@ public class CameraZoom : MonoBehaviour
             isZoomedIn = !isZoomedIn;
         }
 
-        // Cambiar el tamaño de la cámara entre el modo normal y el Zoom
+        // Cambiar el tamaño de la cámara entre el modo normal y el Zoom usando Lerp
         float targetSize = isZoomedIn ? zoomedInSize : normalZoom;
         mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, targetSize, Time.deltaTime * zoomSpeed);
 
         // Ajustar la posición de la cámara hacia adelante en el modo de Zoom
-        Vector3 zoomOffset = isZoomedIn 
+        Vector3 zoomOffset = isZoomedIn
             ? playerTransform.up * zoomForwardOffset // Mayor desplazamiento hacia adelante
             : Vector3.zero;
 
-        // Nueva posición de la cámara considerando el desplazamiento
-        Vector3 desiredPosition = playerTransform.position + zoomOffset + new Vector3(0, 0, -10); // Mantener la cámara detrás en Z
+        // Nueva posición objetivo de la cámara considerando el desplazamiento
+        Vector3 targetPosition = playerTransform.position + zoomOffset + new Vector3(0, 0, -10); // Mantener la cámara detrás en Z
 
         // Aplicar límites a la posición de la cámara
         float cameraHalfHeight = mainCamera.orthographicSize;
         float cameraHalfWidth = cameraHalfHeight * mainCamera.aspect;
-        desiredPosition.x = Mathf.Clamp(desiredPosition.x, minX + cameraHalfWidth, maxX - cameraHalfWidth);
-        desiredPosition.y = Mathf.Clamp(desiredPosition.y, minY + cameraHalfHeight, maxY - cameraHalfHeight);
+        targetPosition.x = Mathf.Clamp(targetPosition.x, minX + cameraHalfWidth, maxX - cameraHalfWidth);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, minY + cameraHalfHeight, maxY - cameraHalfHeight);
 
-        // Actualizar la posición de la cámara
-        mainCamera.transform.position = desiredPosition;
+        // Interpolar la posición de la cámara hacia la posición objetivo usando Lerp
+        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, Time.deltaTime * zoomSpeed);
     }
 
     void ToggleZoom()

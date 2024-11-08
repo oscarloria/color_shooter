@@ -131,6 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileColor: {r: 0, g: 0, b: 0, a: 0}
   lifetime: 5
+  minSpeed: 15
 --- !u!61 &1885529939590705447
 BoxCollider2D:
   m_ObjectHideFlags: 0

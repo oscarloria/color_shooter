@@ -13,7 +13,6 @@ public class CameraShake : MonoBehaviour
     public float recoilDistance = 0.1f; // Distancia del retroceso
     public float recoilSpeed = 10f;     // Velocidad del retroceso
 
-    private Vector3 originalPosition;
     private Coroutine recoilCoroutine;
 
     void Awake()
@@ -29,11 +28,6 @@ public class CameraShake : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        originalPosition = transform.localPosition;
-    }
-
     public void ShakeCamera()
     {
         StartCoroutine(Shake());
@@ -41,6 +35,7 @@ public class CameraShake : MonoBehaviour
 
     IEnumerator Shake()
     {
+        Vector3 originalPosition = transform.localPosition;
         float elapsed = 0.0f;
 
         while (elapsed < shakeDuration)
@@ -71,14 +66,16 @@ public class CameraShake : MonoBehaviour
 
     IEnumerator Recoil(Vector3 recoilDirection)
     {
-        Vector3 targetPosition = originalPosition + recoilDirection.normalized * recoilDistance;
+        // Usar la posición actual de la cámara al iniciar el retroceso
+        Vector3 startPosition = transform.localPosition;
+        Vector3 targetPosition = startPosition - recoilDirection.normalized * recoilDistance;
         float elapsedTime = 0f;
         float recoilDuration = recoilDistance / recoilSpeed;
 
         // Movimiento hacia atrás (retroceso)
         while (elapsedTime < recoilDuration)
         {
-            transform.localPosition = Vector3.Lerp(originalPosition, targetPosition, elapsedTime / recoilDuration);
+            transform.localPosition = Vector3.Lerp(startPosition, targetPosition, elapsedTime / recoilDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -89,12 +86,12 @@ public class CameraShake : MonoBehaviour
         elapsedTime = 0f;
         while (elapsedTime < recoilDuration)
         {
-            transform.localPosition = Vector3.Lerp(targetPosition, originalPosition, elapsedTime / recoilDuration);
+            transform.localPosition = Vector3.Lerp(targetPosition, startPosition, elapsedTime / recoilDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        transform.localPosition = originalPosition;
+        transform.localPosition = startPosition;
         recoilCoroutine = null;
     }
 }
