@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
         playerMovement.RotatePlayer();
 
         // Actualizar el color del jugador basado en la tecla presionada
-        playerShooting.ChangeColor();
+        playerShooting.UpdateCurrentColor();
 
         // Si el jugador está recargando, no se permiten otras acciones
         if (playerShooting.isReloading) return;

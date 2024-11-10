@@ -32,6 +32,9 @@ public class PlayerShooting : MonoBehaviour
     // UI
     public TextMeshProUGUI ammoText;
 
+    // Pilas para gestionar el orden de las teclas presionadas
+    private KeyCode lastPressedKey = KeyCode.None;
+
     void Start()
     {
         currentAmmo = magazineSize;
@@ -39,29 +42,80 @@ public class PlayerShooting : MonoBehaviour
         cameraZoom = FindObjectOfType<CameraZoom>(); // Obtener referencia al script de Zoom
     }
 
-    public void ChangeColor()
+    void Update()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            currentColor = Color.yellow;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            currentColor = Color.blue;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            currentColor = Color.green;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            currentColor = Color.red;
-        }
-        else
-        {
-            currentColor = Color.white;
-        }
+        // Actualiza el color en función de la última tecla presionada o soltada
+        UpdateCurrentColor();
+    }
 
+    public void UpdateCurrentColor()
+    {
+        // Detecta la última tecla activa (similar a lo que hace la UI en ColorSelectorUI)
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            SetCurrentColor(Color.yellow);
+            lastPressedKey = KeyCode.W;
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            SetCurrentColor(Color.blue);
+            lastPressedKey = KeyCode.A;
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            SetCurrentColor(Color.green);
+            lastPressedKey = KeyCode.S;
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            SetCurrentColor(Color.red);
+            lastPressedKey = KeyCode.D;
+        }
+        
+        // Si se suelta la última tecla, retrocede al color previo según el estado de la tecla
+        if (Input.GetKeyUp(lastPressedKey))
+        {
+            KeyCode newKey = GetLastKeyPressed();
+            SetCurrentColorByKey(newKey);
+        }
+    }
+
+    KeyCode GetLastKeyPressed()
+    {
+        if (Input.GetKey(KeyCode.D)) return KeyCode.D;
+        if (Input.GetKey(KeyCode.S)) return KeyCode.S;
+        if (Input.GetKey(KeyCode.A)) return KeyCode.A;
+        if (Input.GetKey(KeyCode.W)) return KeyCode.W;
+        return KeyCode.None;
+    }
+
+    void SetCurrentColorByKey(KeyCode key)
+    {
+        switch (key)
+        {
+            case KeyCode.W:
+                SetCurrentColor(Color.yellow);
+                break;
+            case KeyCode.A:
+                SetCurrentColor(Color.blue);
+                break;
+            case KeyCode.S:
+                SetCurrentColor(Color.green);
+                break;
+            case KeyCode.D:
+                SetCurrentColor(Color.red);
+                break;
+            default:
+                SetCurrentColor(Color.white);
+                break;
+        }
+    }
+
+    void SetCurrentColor(Color color)
+    {
+        currentColor = color;
+
+        // Actualizar el color del sprite del jugador
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
@@ -69,47 +123,39 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
-public void Shoot()
-{
-    if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
-
-    // Reducir la munición y actualizar la UI
-    currentAmmo--;
-    UpdateAmmoText();
-
-    // Calcular el ángulo de dispersión según el estado de Zoom
-    float dispersionAngle = normalDispersionAngle;
-    if (cameraZoom != null && cameraZoom.IsZoomedIn)
+    public void Shoot()
     {
-        dispersionAngle = zoomedDispersionAngle;
+        if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
+
+        // Reducir la munición y actualizar la UI
+        currentAmmo--;
+        UpdateAmmoText();
+
+        // Calcular el ángulo de dispersión según el estado de Zoom
+        float dispersionAngle = normalDispersionAngle;
+        if (cameraZoom != null && cameraZoom.IsZoomedIn)
+        {
+            dispersionAngle = zoomedDispersionAngle;
+        }
+
+        // Calcular un ángulo aleatorio dentro del rango de dispersión
+        float randomAngle = Random.Range(-dispersionAngle / 2f, dispersionAngle / 2f);
+
+        // Crear el proyectil con dispersión
+        Quaternion projectileRotation = transform.rotation * Quaternion.Euler(0, 0, randomAngle);
+        GameObject projectile = Instantiate(projectilePrefab, transform.position, projectileRotation);
+        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+        rb.linearVelocity = projectile.transform.up * projectileSpeed;
+
+        // Asignar el color al proyectil
+        SpriteRenderer projSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
+        if (projSpriteRenderer != null)
+        {
+            projSpriteRenderer.color = currentColor;
+        }
+
+        StartCoroutine(ScaleEffect());
     }
-
-    // Calcular un ángulo aleatorio dentro del rango de dispersión
-    float randomAngle = Random.Range(-dispersionAngle / 2f, dispersionAngle / 2f);
-
-    // Crear el proyectil con dispersión
-    Quaternion projectileRotation = transform.rotation * Quaternion.Euler(0, 0, randomAngle);
-    GameObject projectile = Instantiate(projectilePrefab, transform.position, projectileRotation);
-    Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-    rb.linearVelocity = projectile.transform.up * projectileSpeed;
-
-    // Asignar el color al proyectil
-    SpriteRenderer projSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
-    if (projSpriteRenderer != null)
-    {
-        projSpriteRenderer.color = currentColor;
-    }
-
-    StartCoroutine(ScaleEffect());
-
-    // Llamar al efecto de retroceso de cámara
-    if (CameraShake.Instance != null)
-    {
-        Vector3 recoilDirection = transform.up; // Dirección hacia donde mira el jugador
-        CameraShake.Instance.RecoilCamera(recoilDirection);
-    }
-}
-
 
     public IEnumerator Reload()
     {
