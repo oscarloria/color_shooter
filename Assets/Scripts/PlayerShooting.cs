@@ -71,7 +71,7 @@ public class PlayerShooting : MonoBehaviour
             SetCurrentColor(Color.red);
             lastPressedKey = KeyCode.D;
         }
-        
+
         // Si se suelta la última tecla, retrocede al color previo según el estado de la tecla
         if (Input.GetKeyUp(lastPressedKey))
         {
@@ -155,6 +155,13 @@ public class PlayerShooting : MonoBehaviour
         }
 
         StartCoroutine(ScaleEffect());
+
+        // Llamar al efecto de retroceso de cámara
+        if (CameraShake.Instance != null)
+        {
+            Vector3 recoilDirection = -transform.up; // Dirección opuesta a la dirección de disparo
+            CameraShake.Instance.RecoilCamera(recoilDirection);
+        }
     }
 
     public IEnumerator Reload()
@@ -185,12 +192,14 @@ public class PlayerShooting : MonoBehaviour
         Vector3 targetScale = originalScale * scaleMultiplier;
 
         float elapsedTime = 0f;
+        float halfDuration = scaleDuration / 2f;
 
         // Escalar hacia arriba
-        while (elapsedTime < scaleDuration / 2f)
+        while (elapsedTime < halfDuration)
         {
-            transform.localScale = Vector3.Lerp(originalScale, targetScale, (elapsedTime / (scaleDuration / 2f)));
-            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / halfDuration;
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
 
@@ -199,10 +208,11 @@ public class PlayerShooting : MonoBehaviour
         elapsedTime = 0f;
 
         // Escalar hacia abajo
-        while (elapsedTime < scaleDuration / 2f)
+        while (elapsedTime < halfDuration)
         {
-            transform.localScale = Vector3.Lerp(targetScale, originalScale, (elapsedTime / (scaleDuration / 2f)));
-            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / halfDuration;
+            transform.localScale = Vector3.Lerp(targetScale, originalScale, t);
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
 

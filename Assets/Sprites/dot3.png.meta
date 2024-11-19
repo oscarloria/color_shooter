@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5be3cc139f9e36b44acce57c1e4f0f3e
+guid: 58abfe9dd3acb9643b480a4ee1b809f5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -692881157333458658
-    second: DRed_0
+      213: 1667604623838148621
+    second: dot3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,12 +37,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DRed_0
+      name: dot3_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 227
-        height: 255
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e11e39922446266f0800000000000000
-      internalID: -692881157333458658
+      spriteID: d08fbade195842710800000000000000
+      internalID: 1667604623838148621
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      DRed_0: -692881157333458658
+      dot3_0: 1667604623838148621
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

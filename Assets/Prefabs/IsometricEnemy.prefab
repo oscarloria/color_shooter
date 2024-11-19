@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.8135431, w: -0.58150476}
   m_LocalPosition: {x: -0.4699766, y: 1.6466177, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyColor: {r: 0, g: 0, b: 0, a: 0}
-  speed: 0.1
+  speed: 0.2
   minRotationSpeed: 500
   maxRotationSpeed: 1000
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
