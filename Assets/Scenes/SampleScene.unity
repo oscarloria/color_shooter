@@ -587,8 +587,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.3
   shakeMagnitude: 0.4
-  recoilDistance: 0.2
-  recoilSpeed: 20
+  recoilDistance: 0.1
+  recoilSpeed: 15
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1343,8 +1343,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 8251635640791360112, guid: 72d14dc18699ea2499592599a67a1948, type: 3}
-  spawnRate: 2
-  spawnDistance: 10
+  tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
+  tankEnemySpawnChance: 0.3
+  spawnRate: 3
+  spawnDistance: 11
   enemyColors: []
 --- !u!4 &1941573991
 Transform:

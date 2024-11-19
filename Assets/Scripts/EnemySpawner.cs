@@ -4,6 +4,10 @@ using System.Collections.Generic;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
+
+    public GameObject tankEnemyPrefab; // Prefab del enemigo tipo tanque
+    public float tankEnemySpawnChance = 0.2f; // Probabilidad de generar un TankEnemy
+
     public float spawnRate = 2f; // Tiempo entre apariciones
     public float spawnDistance = 10f; // Distancia desde el centro para aparecer
 
@@ -36,15 +40,26 @@ public class EnemySpawner : MonoBehaviour
         Vector2 spawnDirection = Random.insideUnitCircle.normalized;
         Vector2 spawnPosition = (Vector2)transform.position + spawnDirection * spawnDistance;
 
-        // Crea el enemigo
-        GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-
-        // Asigna un color aleatorio al enemigo
-        Enemy enemyScript = enemy.GetComponent<Enemy>();
-        if (enemyScript != null)
+        // Determinar si se genera un TankEnemy o un enemigo normal
+        float randomValue = Random.Range(0f, 1f);
+        if (randomValue <= tankEnemySpawnChance)
         {
-            int randomIndex = Random.Range(0, enemyColors.Count);
-            enemyScript.enemyColor = enemyColors[randomIndex];
+            // Generar TankEnemy
+            GameObject enemy = Instantiate(tankEnemyPrefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            // Generar enemigo normal
+            GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+
+            // Asigna un color aleatorio al enemigo
+            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            if (enemyScript != null)
+            {
+                int randomIndex = Random.Range(0, enemyColors.Count);
+                enemyScript.enemyColor = enemyColors[randomIndex];
+            }
         }
     }
+
 }
