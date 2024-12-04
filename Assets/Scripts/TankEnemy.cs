@@ -79,6 +79,11 @@ public class TankEnemy : MonoBehaviour
 
     void Die()
     {
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.AddScore(1000);
+        }
+        
         // Instanciar partículas de explosión
         if (explosionPrefab != null)
         {
@@ -148,13 +153,20 @@ public class TankEnemy : MonoBehaviour
         weakPointSpriteRenderer.color = originalWeakPointColor;
     }
 
-    // *** Método agregado para manejar colisiones con el jugador ***
+    // Método modificado para manejar colisiones con el jugador
     void OnCollisionEnter2D(Collision2D collision)
     {
         // Verificar si colisiona con el jugador
         if (collision.collider.CompareTag("Player"))
         {
             Debug.Log("El TankEnemy ha tocado al jugador.");
+
+            // Obtener el componente PlayerHealth del jugador
+            PlayerHealth playerHealth = collision.collider.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage();
+            }
 
             // Llamar al efecto de cámara shake
             if (CameraShake.Instance != null)
@@ -165,7 +177,7 @@ public class TankEnemy : MonoBehaviour
             // Destruir al enemigo
             Die();
 
-            // Aquí puedes añadir lógica para afectar al jugador, como reducir su salud
+            // Aquí puedes añadir lógica adicional si lo deseas
         }
     }
 }

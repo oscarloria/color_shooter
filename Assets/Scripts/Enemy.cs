@@ -105,6 +105,13 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("El enemigo ha tocado al jugador.");
 
+            // Obtener el componente PlayerHealth del jugador
+            PlayerHealth playerHealth = collision.collider.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage();
+            }
+
             // Llamar al efecto de cámara shake
             if (CameraShake.Instance != null)
             {
@@ -114,7 +121,7 @@ public class Enemy : MonoBehaviour
             // Destruir al enemigo
             DestroyEnemy();
 
-            // Aquí puedes añadir lógica para afectar al jugador, como reducir su salud
+            // Aquí puedes añadir lógica adicional si lo deseas
         }
     }
 
@@ -123,6 +130,14 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void DestroyEnemy()
     {
+
+         // Añadir puntos al destruir al enemigo
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.AddScore(1000);
+        }
+
+
         // Instanciar el efecto de explosión en la posición del enemigo
         if (explosionPrefab != null)
         {
