@@ -1682,9 +1682,15 @@ MonoBehaviour:
   enemyPrefab: {fileID: 8251635640791360112, guid: 72d14dc18699ea2499592599a67a1948, type: 3}
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   tankEnemySpawnChance: 0.3
-  spawnRate: 3
   spawnDistance: 11
   enemyColors: []
+  initialEnemiesPerWave: 2
+  enemiesPerWaveIncrement: 1
+  initialSpawnRate: 2
+  spawnRateDecrement: 0.1
+  initialEnemySpeed: 0.5
+  enemySpeedIncrement: 0.01
+  wavePause: 4
 --- !u!4 &1941573991
 Transform:
   m_ObjectHideFlags: 0

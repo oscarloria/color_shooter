@@ -134,7 +134,7 @@ public class Enemy : MonoBehaviour
          // Añadir puntos al destruir al enemigo
         if (ScoreManager.Instance != null)
         {
-            ScoreManager.Instance.AddScore(1000);
+            ScoreManager.Instance.AddScore(100);
         }
 
 

@@ -13,16 +13,11 @@ public class WeakPoint : MonoBehaviour
         tankEnemy = GetComponentInParent<TankEnemy>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Asignar un color aleatorio al punto débil
-        spriteRenderer.color = GetRandomColor();
-    }
+        // Antes: Elegíamos un color aleatorio en GetRandomColor().
+        // Ahora: Tomamos el color que el TankEnemy ya tiene asignado (tankEnemy.enemyColor),
+        // lo cual permite que el punto débil tenga el color de vulnerabilidad correcto.
 
-    Color GetRandomColor()
-    {
-        // Lista de colores posibles
-        Color[] colors = { Color.yellow, Color.blue, Color.green, Color.red };
-        int randomIndex = Random.Range(0, colors.Length);
-        return colors[randomIndex];
+        spriteRenderer.color = tankEnemy.enemyColor;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -32,16 +27,17 @@ public class WeakPoint : MonoBehaviour
             Projectile projectile = other.GetComponent<Projectile>();
             if (projectile != null)
             {
+                // Si el proyectil coincide en color con el punto débil (spriteRenderer.color),
+                // entonces el TankEnemy recibe daño.
                 if (projectile.projectileColor == spriteRenderer.color)
                 {
-                    // El proyectil es del mismo color, causa daño
                     tankEnemy.TakeDamage();
                     Destroy(other.gameObject);
                 }
                 else
                 {
-                    // El proyectil no es del mismo color, rebota
-                    // La lógica de rebote ya está implementada en el proyectil
+                    // Si no coincide el color, el proyectil rebota.
+                    // La lógica de rebote ya está manejada por el proyectil.
                 }
             }
         }

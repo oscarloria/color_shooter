@@ -15,7 +15,12 @@ public class TankEnemy : MonoBehaviour
     [HideInInspector]
     public int currentHealth;       // Vida actual del enemigo
 
-    private Transform player;       // Referencia al jugador
+    // Nuevo campo para el color del enemigo (vulnerable)
+    [HideInInspector]
+    public Color enemyColor = Color.white;
+
+    private Transform player;
+    private SpriteRenderer bodySpriteRenderer; // Sprite del cuerpo principal del tanque
 
     void Start()
     {
@@ -27,6 +32,16 @@ public class TankEnemy : MonoBehaviour
         {
             player = playerObject.transform;
         }
+
+        // Obtener el sprite renderer del cuerpo principal del tanque
+        bodySpriteRenderer = GetComponent<SpriteRenderer>();
+        if (bodySpriteRenderer == null)
+        {
+            Debug.LogWarning("TankEnemy: No se encontró SpriteRenderer en el cuerpo principal del tanque.");
+        }
+
+        // Aplicar el color del cuerpo (blanco) y dejar que el WeakPoint tenga su color
+        ApplyColor();
     }
 
     void Update()
@@ -81,9 +96,9 @@ public class TankEnemy : MonoBehaviour
     {
         if (ScoreManager.Instance != null)
         {
-            ScoreManager.Instance.AddScore(1000);
+            ScoreManager.Instance.AddScore(100);
         }
-        
+
         // Instanciar partículas de explosión
         if (explosionPrefab != null)
         {
@@ -103,10 +118,13 @@ public class TankEnemy : MonoBehaviour
         }
 
         // Recargar cámara lenta
-        SlowMotion slowMotion = player.GetComponent<SlowMotion>();
-        if (slowMotion != null)
+        if (player != null)
         {
-            slowMotion.AddSlowMotionCharge();
+            SlowMotion slowMotion = player.GetComponent<SlowMotion>();
+            if (slowMotion != null)
+            {
+                slowMotion.AddSlowMotionCharge();
+            }
         }
 
         // Destruir el enemigo
@@ -126,7 +144,7 @@ public class TankEnemy : MonoBehaviour
         // Obtener el color del WeakPoint
         Color flashColor = weakPointSpriteRenderer.color;
 
-        // Cambiar los colores al color del WeakPoint para el destello
+        // Cambiar los colores al color del WeakPoint para el destello solo durante el shake
         bodySpriteRenderer.color = flashColor;
         weakPointSpriteRenderer.color = flashColor;
 
@@ -153,7 +171,19 @@ public class TankEnemy : MonoBehaviour
         weakPointSpriteRenderer.color = originalWeakPointColor;
     }
 
-    // Método modificado para manejar colisiones con el jugador
+    // Este método se llama después de asignar el enemyColor desde EnemySpawner
+    // Se asegura de que el cuerpo principal del tanque permanezca blanco, mientras
+    // que el WeakPoint mantiene su propio color (asignado en WeakPoint.cs)
+    public void ApplyColor()
+    {
+        if (bodySpriteRenderer != null)
+        {
+            // El cuerpo del tanque siempre blanco
+            bodySpriteRenderer.color = Color.white;
+        }
+        // El WeakPoint se encarga de su propio color en WeakPoint.cs al inicio.
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         // Verificar si colisiona con el jugador
