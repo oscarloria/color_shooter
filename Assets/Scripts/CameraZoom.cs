@@ -22,10 +22,10 @@ public class CameraZoom : MonoBehaviour
 
     void Update()
     {
-        // Toggle de Zoom con clic derecho del mouse
+        // Toggle de Zoom con clic derecho del mouse (opcional)
         if (Input.GetMouseButtonDown(1))
         {
-            isZoomedIn = !isZoomedIn;
+            ToggleZoom();
         }
 
         // Cambiar el tamaño de la cámara entre el modo normal y el Zoom usando Lerp
@@ -47,11 +47,19 @@ public class CameraZoom : MonoBehaviour
         targetPosition.y = Mathf.Clamp(targetPosition.y, minY + cameraHalfHeight, maxY - cameraHalfHeight);
 
         // Interpolar la posición de la cámara hacia la posición objetivo usando Lerp
-        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, Time.deltaTime * zoomSpeed);
+        mainCamera.transform.position = Vector3.Lerp(
+            mainCamera.transform.position,
+            targetPosition,
+            Time.deltaTime * zoomSpeed
+        );
     }
 
-    void ToggleZoom()
+    /// <summary>
+    /// Alterna el estado de Zoom (usado tanto por el mouse como por el nuevo input system).
+    /// </summary>
+    public void ToggleZoom()
     {
-        isZoomedIn = !isZoomedIn; // Alterna entre Zoom activado y desactivado
+        isZoomedIn = !isZoomedIn;
+        Debug.Log($"ToggleZoom() => isZoomedIn ahora es {isZoomedIn}");
     }
 }

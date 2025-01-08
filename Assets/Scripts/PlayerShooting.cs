@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.InputSystem; // Para usar Gamepad.current
 
 public class PlayerShooting : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class PlayerShooting : MonoBehaviour
 
     public void UpdateCurrentColor()
     {
-        // Detecta la última tecla activa (similar a lo que hace la UI en ColorSelectorUI)
+        // -------------------- TECLADO (WASD) --------------------
         if (Input.GetKeyDown(KeyCode.W))
         {
             SetCurrentColor(Color.yellow);
@@ -78,6 +79,59 @@ public class PlayerShooting : MonoBehaviour
             KeyCode newKey = GetLastKeyPressed();
             SetCurrentColorByKey(newKey);
         }
+
+        // -------------------- GAMEPAD (STICK IZQUIERDO) --------------------
+        Gamepad gp = Gamepad.current;
+        if (gp != null)
+        {
+            Vector2 leftStick = gp.leftStick.ReadValue();
+            float threshold = 0.5f;
+
+            // Comprobamos primero si el stick está prácticamente en neutro:
+            if (Mathf.Abs(leftStick.x) < threshold && Mathf.Abs(leftStick.y) < threshold)
+            {
+                // => color blanco (no se puede disparar un color)
+                // Solo si NO se está pulsando ninguna WASD
+                // (Para que el teclado no se sobreescriba si el usuario está usando W,A,S,D)
+                if (!AnyWASDPressed())
+                {
+                    SetCurrentColor(Color.white);
+                }
+            }
+            else
+            {
+                // Si no está en neutro, asignamos color según dirección
+                if (leftStick.y > threshold)
+                {
+                    // Arriba => Amarillo
+                    SetCurrentColor(Color.yellow);
+                }
+                else if (leftStick.y < -threshold)
+                {
+                    // Abajo => Verde
+                    SetCurrentColor(Color.green);
+                }
+                else if (leftStick.x > threshold)
+                {
+                    // Derecha => Rojo
+                    SetCurrentColor(Color.red);
+                }
+                else if (leftStick.x < -threshold)
+                {
+                    // Izquierda => Azul
+                    SetCurrentColor(Color.blue);
+                }
+            }
+        }
+    }
+
+    // Comprueba si se mantiene pulsada alguna de las teclas W, A, S, D
+    bool AnyWASDPressed()
+    {
+        return (Input.GetKey(KeyCode.W) ||
+                Input.GetKey(KeyCode.A) ||
+                Input.GetKey(KeyCode.S) ||
+                Input.GetKey(KeyCode.D));
     }
 
     KeyCode GetLastKeyPressed()

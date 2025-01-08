@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using UnityEngine.InputSystem; // Necesario para el Nuevo Input System
 
 /// <summary>
 /// El PlayerController actúa como coordinador entre los diferentes componentes del jugador,
@@ -11,68 +13,125 @@ public class PlayerController : MonoBehaviour
     private PlayerShooting playerShooting;   // Gestiona el disparo y la recarga
     private SlowMotion slowMotion;           // Controla la mecánica de cámara lenta
 
-    /// <summary>
-    /// Método llamado al iniciar el script. Obtiene las referencias a los componentes necesarios.
-    /// </summary>
+    // Referencia al input actions principal
+    private LuminityControls inputActions;
+
     void Awake()
     {
         // Obtener referencias a los componentes adjuntos al jugador
         playerMovement = GetComponent<PlayerMovement>();
         playerShooting = GetComponent<PlayerShooting>();
         slowMotion = GetComponent<SlowMotion>();
+
+        // Instanciar el nuevo input actions
+        inputActions = new LuminityControls();
     }
 
-    /// <summary>
-    /// Método llamado una vez por frame. Maneja las entradas del usuario y coordina las acciones.
-    /// </summary>
+    private void OnEnable()
+    {
+        // Habilitar el Action Map "Player"
+        inputActions.Player.Enable();
+
+        // Suscribirse a los eventos del nuevo input system
+        inputActions.Player.Shoot.performed += OnShoot;
+        inputActions.Player.Zoom.performed += OnZoom;
+        inputActions.Player.SlowMotion.performed += OnSlowMotion;
+        inputActions.Player.Reload.performed += OnReload;
+    }
+
+    private void OnDisable()
+    {
+        // Desuscribir los eventos
+        inputActions.Player.Shoot.performed -= OnShoot;
+        inputActions.Player.Zoom.performed -= OnZoom;
+        inputActions.Player.SlowMotion.performed -= OnSlowMotion;
+        inputActions.Player.Reload.performed -= OnReload;
+
+        // Deshabilitar el Action Map
+        inputActions.Player.Disable();
+    }
+
     void Update()
     {
-        // Actualizar la rotación del jugador según la posición del mouse
+        // Rotación (Teclado/Mouse) - Queda para compatibilidad
         playerMovement.RotatePlayer();
 
-        // Actualizar el color del jugador basado en la tecla presionada
+        // Selección de color (Teclado WASD) - Sigue en PlayerShooting
         playerShooting.UpdateCurrentColor();
 
-        // Si el jugador está recargando, no se permiten otras acciones
+        // Comprobaciones de recarga y munición (Teclado/Mouse)
         if (playerShooting.isReloading) return;
 
-        // Verificar si la munición se ha agotado y necesita recargar automáticamente
         if (playerShooting.currentAmmo <= 0 && !playerShooting.isReloading)
         {
-            // Iniciar la corrutina de recarga automática
             StartCoroutine(playerShooting.Reload());
             return;
         }
 
-        // Manejar el disparo al hacer clic con el botón izquierdo del mouse
+        // Disparar con Mouse Izquierdo
         if (Input.GetMouseButtonDown(0))
         {
             playerShooting.Shoot();
         }
 
-        // Manejar la recarga manual al presionar la tecla 'R'
+        // Recargar con tecla 'R'
         if (Input.GetKeyDown(KeyCode.R))
         {
-            // Solo recargar si no se tiene el cargador lleno
             if (playerShooting.currentAmmo < playerShooting.magazineSize)
             {
                 StartCoroutine(playerShooting.Reload());
             }
         }
 
-        // Manejar la activación y desactivación de la cámara lenta al presionar la barra espaciadora
+        // Cámara Lenta con Barra Espaciadora
         if (Input.GetKeyDown(KeyCode.Space) && slowMotion.remainingSlowMotionTime > 0f)
         {
             if (slowMotion.isSlowMotionActive)
-            {
-                // Pausar la cámara lenta si ya está activa
                 slowMotion.PauseSlowMotion();
-            }
             else
-            {
-                // Activar la cámara lenta si no está activa
                 slowMotion.ActivateSlowMotion();
-            }
+        }
+    }
+
+    // ---------------- NUEVO INPUT SYSTEM EVENT HANDLERS ----------------
+
+    private void OnShoot(InputAction.CallbackContext ctx)
+    {
+        if (!playerShooting.isReloading && playerShooting.currentAmmo > 0)
+        {
+            playerShooting.Shoot();
+        }
+    }
+
+    private void OnZoom(InputAction.CallbackContext ctx)
+    {
+        // Agregamos mensaje para verificar la entrada de LT
+        Debug.Log("Botón LT presionado (Zoom) - Nuevo Input System");
+
+        // En lugar de deshabilitar la cámara, llamamos al método ToggleZoom()
+        CameraZoom cameraZoom = FindObjectOfType<CameraZoom>();
+        if (cameraZoom != null)
+        {
+            cameraZoom.ToggleZoom(); 
+        }
+    }
+
+    private void OnSlowMotion(InputAction.CallbackContext ctx)
+    {
+        if (slowMotion.remainingSlowMotionTime > 0f)
+        {
+            if (slowMotion.isSlowMotionActive)
+                slowMotion.PauseSlowMotion();
+            else
+                slowMotion.ActivateSlowMotion();
+        }
+    }
+
+    private void OnReload(InputAction.CallbackContext ctx)
+    {
+        if (!playerShooting.isReloading && playerShooting.currentAmmo < playerShooting.magazineSize)
+        {
+            StartCoroutine(playerShooting.Reload());
         }
     }
 }

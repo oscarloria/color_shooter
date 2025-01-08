@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6032822784827993704}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.23, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -180,6 +180,7 @@ MonoBehaviour:
   maxHealth: 3
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
   currentHealth: 0
+  enemyColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &7538881754469370178
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,7 +209,7 @@ Transform:
   m_GameObject: {fileID: 7538881754469370178}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.51, y: -0.018, z: -1}
+  m_LocalPosition: {x: 0.53, y: -0.018, z: -1}
   m_LocalScale: {x: 1.4987253, y: 0.22480881, z: 0.44961762}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -304,7 +305,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0.00000047683716, y: 0}
-  m_Radius: 0.59
+  m_Radius: 0.7
 --- !u!114 &491650544517876340
 MonoBehaviour:
   m_ObjectHideFlags: 0
