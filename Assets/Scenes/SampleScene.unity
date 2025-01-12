@@ -211,6 +211,7 @@ GameObject:
   - component: {fileID: 190124703}
   - component: {fileID: 190124702}
   - component: {fileID: 190124705}
+  - component: {fileID: 190124706}
   m_Layer: 8
   m_Name: Ship
   m_TagString: Player
@@ -450,6 +451,32 @@ MonoBehaviour:
   maxHealth: 3
   invulnerabilityDuration: 2
   explosionPrefab: {fileID: 0}
+--- !u!114 &190124706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190124696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f77e891e711f11e46955115882ad2203, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+  projectileSpeed: 20
+  fireRate: 0.5
+  normalSpreadAngle: 50
+  zoomedSpreadAngle: 30
+  pelletsPerShot: 8
+  magazineSize: 80
+  reloadTime: 60
+  isReloading: 0
+  scaleMultiplier: 1.2
+  scaleDuration: 0.15
+  ammoText: {fileID: 0}
+  currentAmmo: 0
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &424741341
 GameObject:
   m_ObjectHideFlags: 0

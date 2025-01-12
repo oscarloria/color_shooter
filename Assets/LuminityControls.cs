@@ -80,6 +80,15 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""WeaponCycle"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0547e19-569a-45a8-aa64-6ff0287c9d79"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -148,6 +157,17 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8310ade-ee31-4f1c-a0e2-d34b27599895"",
+                    ""path"": ""<XInputController>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponCycle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -162,6 +182,7 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
         m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
         m_Player_SlowMotion = m_Player.FindAction("SlowMotion", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
+        m_Player_WeaponCycle = m_Player.FindAction("WeaponCycle", throwIfNotFound: true);
     }
 
     ~@LuminityControls()
@@ -234,6 +255,7 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Zoom;
     private readonly InputAction m_Player_SlowMotion;
     private readonly InputAction m_Player_Reload;
+    private readonly InputAction m_Player_WeaponCycle;
     public struct PlayerActions
     {
         private @LuminityControls m_Wrapper;
@@ -244,6 +266,7 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
         public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
         public InputAction @SlowMotion => m_Wrapper.m_Player_SlowMotion;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
+        public InputAction @WeaponCycle => m_Wrapper.m_Player_WeaponCycle;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -271,6 +294,9 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
+            @WeaponCycle.started += instance.OnWeaponCycle;
+            @WeaponCycle.performed += instance.OnWeaponCycle;
+            @WeaponCycle.canceled += instance.OnWeaponCycle;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -293,6 +319,9 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
+            @WeaponCycle.started -= instance.OnWeaponCycle;
+            @WeaponCycle.performed -= instance.OnWeaponCycle;
+            @WeaponCycle.canceled -= instance.OnWeaponCycle;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -318,5 +347,6 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
         void OnZoom(InputAction.CallbackContext context);
         void OnSlowMotion(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+        void OnWeaponCycle(InputAction.CallbackContext context);
     }
 }
