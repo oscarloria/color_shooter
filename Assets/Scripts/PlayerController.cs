@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
     private ShotgunShooting shotgunShooting;   // Script de disparo para la Escopeta
     private SlowMotion slowMotion;             // Controla la mecánica de cámara lenta
 
+    // --- OBJETOS DE LA UI PARA INDICAR ARMA SELECCIONADA ---
+    [Header("UI de selección de arma")]
+    public GameObject selectPistolImage;       // Arrastra aquí el objeto "SelectPistol" (tipo Image) en el Inspector
+    public GameObject selectShotgunImage;      // Arrastra aquí el objeto "SelectShotgun" (tipo Image) en el Inspector
+
     // Referencia al input actions principal
     private LuminityControls inputActions;
 
@@ -46,7 +51,6 @@ public class PlayerController : MonoBehaviour
         inputActions.Player.Reload.performed += OnReload;
 
         // Suscribirse para cambiar de arma con la tecla "Y" del gamepad
-        // Asumiendo que definiste una acción "WeaponCycle" en tu input actions
         inputActions.Player.WeaponCycle.performed += OnWeaponCycle;
     }
 
@@ -64,22 +68,34 @@ public class PlayerController : MonoBehaviour
         inputActions.Player.Disable();
     }
 
+    void Start()
+    {
+        // Asegurarnos de que la UI se actualice al inicio,
+        // por si la escena inicia con el arma 1
+        UpdateWeaponUI();
+    }
+
     void Update()
     {
         // Rotación (Teclado/Mouse) - Queda para compatibilidad
         playerMovement.RotatePlayer();
 
+        // (Cambio) Manejar el cambio de arma con la rueda del mouse
+        HandleMouseScrollWeaponCycle();
+
         // Lógica para cambio de arma con Teclado (1 y 2)
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             currentWeapon = 1;
+            UpdateWeaponUI();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             currentWeapon = 2;
+            UpdateWeaponUI();
         }
 
-        // Actualizar color (WASD / Stick Izquierdo) siempre, 
+        // Actualizar color (WASD / Stick Izquierdo) siempre,
         // la pistola y la escopeta comparten el sistema de color:
         if (currentWeapon == 1)
         {
@@ -93,13 +109,10 @@ public class PlayerController : MonoBehaviour
         }
 
         // Comprobaciones de recarga y munición (Teclado/Mouse)
-        // Revisamos si el arma actual está recargando
         bool isReloading = (currentWeapon == 1) ? playerShooting.isReloading
                                                : shotgunShooting.isReloading;
-
         int currentAmmo = (currentWeapon == 1) ? playerShooting.currentAmmo
                                               : shotgunShooting.currentAmmo;
-
         int magazineSize = (currentWeapon == 1) ? playerShooting.magazineSize
                                                : shotgunShooting.magazineSize;
 
@@ -145,7 +158,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnShoot(InputAction.CallbackContext ctx)
     {
-        // Depende del arma actual
         bool isReloading = (currentWeapon == 1) ? playerShooting.isReloading
                                                : shotgunShooting.isReloading;
         int currentAmmo = (currentWeapon == 1) ? playerShooting.currentAmmo
@@ -166,7 +178,7 @@ public class PlayerController : MonoBehaviour
         CameraZoom cameraZoom = FindObjectOfType<CameraZoom>();
         if (cameraZoom != null)
         {
-            cameraZoom.ToggleZoom(); 
+            cameraZoom.ToggleZoom();
         }
     }
 
@@ -206,5 +218,46 @@ public class PlayerController : MonoBehaviour
         else currentWeapon = 1;
 
         Debug.Log("Cambio de arma vía gamepad Y (WeaponCycle). Arma activa: " + currentWeapon);
+        UpdateWeaponUI();
+    }
+
+    // ---------------- LÓGICA PARA MOUSE SCROLL ----------------
+    // (Cambio) método para manejar el scroll del mouse como ciclo
+    private void HandleMouseScrollWeaponCycle()
+    {
+        float scrollDelta = Input.GetAxis("Mouse ScrollWheel");
+        if (Mathf.Abs(scrollDelta) > 0f)
+        {
+            Debug.Log("Mouse Scroll detectado. Valor: " + scrollDelta);
+
+            if (currentWeapon == 1) currentWeapon = 2;
+            else currentWeapon = 1;
+
+            Debug.Log("Cambio de arma vía scroll del mouse. Arma activa: " + currentWeapon);
+            UpdateWeaponUI();
+        }
+    }
+
+    // ---------------- MÉTODO PARA ACTUALIZAR LA UI DE ARMA ACTIVA ----------------
+    private void UpdateWeaponUI()
+    {
+        // Verificamos que existan las referencias
+        if (selectPistolImage == null || selectShotgunImage == null)
+        {
+            return; // Si no existen, salimos
+        }
+
+        // Activa la imagen de la pistola si el arma actual es 1, desactiva la de escopeta
+        // y viceversa
+        if (currentWeapon == 1)
+        {
+            selectPistolImage.SetActive(true);
+            selectShotgunImage.SetActive(false);
+        }
+        else
+        {
+            selectPistolImage.SetActive(false);
+            selectShotgunImage.SetActive(true);
+        }
     }
 }

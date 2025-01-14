@@ -61,12 +61,21 @@
                 },
                 {
                     "name": "WeaponCycle",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "c0547e19-569a-45a8-aa64-6ff0287c9d79",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ScrollWeapon",
+                    "type": "Value",
+                    "id": "d14ddcf5-d339-42db-97ce-defc192dd564",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -144,6 +153,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "WeaponCycle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6aa904cf-bb20-464c-91f8-378b7fd2dc29",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScrollWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -83,12 +83,21 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""WeaponCycle"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""c0547e19-569a-45a8-aa64-6ff0287c9d79"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ScrollWeapon"",
+                    ""type"": ""Value"",
+                    ""id"": ""d14ddcf5-d339-42db-97ce-defc192dd564"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -168,6 +177,17 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
                     ""action"": ""WeaponCycle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6aa904cf-bb20-464c-91f8-378b7fd2dc29"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -183,6 +203,7 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
         m_Player_SlowMotion = m_Player.FindAction("SlowMotion", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_WeaponCycle = m_Player.FindAction("WeaponCycle", throwIfNotFound: true);
+        m_Player_ScrollWeapon = m_Player.FindAction("ScrollWeapon", throwIfNotFound: true);
     }
 
     ~@LuminityControls()
@@ -256,6 +277,7 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SlowMotion;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_WeaponCycle;
+    private readonly InputAction m_Player_ScrollWeapon;
     public struct PlayerActions
     {
         private @LuminityControls m_Wrapper;
@@ -267,6 +289,7 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
         public InputAction @SlowMotion => m_Wrapper.m_Player_SlowMotion;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @WeaponCycle => m_Wrapper.m_Player_WeaponCycle;
+        public InputAction @ScrollWeapon => m_Wrapper.m_Player_ScrollWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -297,6 +320,9 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
             @WeaponCycle.started += instance.OnWeaponCycle;
             @WeaponCycle.performed += instance.OnWeaponCycle;
             @WeaponCycle.canceled += instance.OnWeaponCycle;
+            @ScrollWeapon.started += instance.OnScrollWeapon;
+            @ScrollWeapon.performed += instance.OnScrollWeapon;
+            @ScrollWeapon.canceled += instance.OnScrollWeapon;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -322,6 +348,9 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
             @WeaponCycle.started -= instance.OnWeaponCycle;
             @WeaponCycle.performed -= instance.OnWeaponCycle;
             @WeaponCycle.canceled -= instance.OnWeaponCycle;
+            @ScrollWeapon.started -= instance.OnScrollWeapon;
+            @ScrollWeapon.performed -= instance.OnScrollWeapon;
+            @ScrollWeapon.canceled -= instance.OnScrollWeapon;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -348,5 +377,6 @@ public partial class @LuminityControls: IInputActionCollection2, IDisposable
         void OnSlowMotion(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnWeaponCycle(InputAction.CallbackContext context);
+        void OnScrollWeapon(InputAction.CallbackContext context);
     }
 }

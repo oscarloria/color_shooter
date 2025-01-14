@@ -228,15 +228,17 @@ public class PlayerShooting : MonoBehaviour
         UpdateAmmoText();
     }
 
-    void UpdateAmmoText()
+      void UpdateAmmoText()
     {
+        if (ammoText == null) return;
+
         if (isReloading)
         {
-            ammoText.text = "RELOADING";
+            ammoText.text = "Pistola: RELOADING";
         }
         else
         {
-            ammoText.text = currentAmmo.ToString();
+            ammoText.text = $"Pistola: {currentAmmo}/{magazineSize}";
         }
     }
 
