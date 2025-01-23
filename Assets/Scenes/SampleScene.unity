@@ -416,7 +416,7 @@ MonoBehaviour:
   fireRate: 0.01
   normalDispersionAngle: 5
   zoomedDispersionAngle: 0
-  magazineSize: 80
+  magazineSize: 24
   reloadTime: 2
   currentAmmo: 0
   isReloading: 0
@@ -471,7 +471,7 @@ MonoBehaviour:
   normalSpreadAngle: 50
   zoomedSpreadAngle: 30
   pelletsPerShot: 8
-  magazineSize: 8
+  magazineSize: 12
   reloadTime: 60
   isReloading: 0
   scaleMultiplier: 1.2
