@@ -299,6 +299,7 @@ GameObject:
   - component: {fileID: 190124702}
   - component: {fileID: 190124705}
   - component: {fileID: 190124706}
+  - component: {fileID: 190124707}
   m_Layer: 8
   m_Name: Ship
   m_TagString: Player
@@ -391,6 +392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectPistolImage: {fileID: 1319628716}
   selectShotgunImage: {fileID: 983923952}
+  selectRifleImage: {fileID: 0}
 --- !u!50 &190124700
 Rigidbody2D:
   serializedVersion: 5
@@ -566,6 +568,31 @@ MonoBehaviour:
   scaleDuration: 0.15
   ammoText: {fileID: 1044942143}
   currentAmmo: 0
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &190124707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190124696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bb242f65975a3c438c655ec4fc4a651, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+  projectileSpeed: 30
+  fireRate: 0.1
+  reloadTime: 0.5
+  magazineSize: 30
+  normalDispersionAngle: 20
+  zoomedDispersionAngle: 3
+  currentAmmo: 0
+  isReloading: 0
+  scaleMultiplier: 1.05
+  scaleDuration: 0.05
+  ammoText: {fileID: 0}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &357621890
 GameObject:
@@ -1237,7 +1264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amplitude: 0.1
   frequency: 4
-  moveInX: 0
+  moveInX: 1
   moveInY: 1
   tilt: 0
 --- !u!4 &759611611
@@ -2486,16 +2513,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 8251635640791360112, guid: 72d14dc18699ea2499592599a67a1948, type: 3}
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
-  tankEnemySpawnChance: 0.1
+  tankEnemySpawnChance: 0.05
   spawnDistance: 7
   enemyColors: []
   initialEnemiesPerWave: 1
   enemiesPerWaveIncrement: 1
-  initialSpawnRate: 2
-  spawnRateDecrement: 0.1
-  initialEnemySpeed: 0.5
-  enemySpeedIncrement: 0.05
-  wavePause: 2
+  initialSpawnRate: 1
+  spawnRateDecrement: 0.01
+  initialEnemySpeed: 0.01
+  enemySpeedIncrement: 0.1
+  wavePause: 10
 --- !u!4 &1941573991
 Transform:
   m_ObjectHideFlags: 0

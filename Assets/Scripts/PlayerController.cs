@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.InputSystem; // Necesario para el Nuevo Input System
 
 /// <summary>
 /// El PlayerController actúa como coordinador entre los diferentes componentes del jugador,
@@ -10,8 +9,12 @@ public class PlayerController : MonoBehaviour
 {
     // Referencias a los componentes especializados adjuntos al jugador
     private PlayerMovement playerMovement;     // Controla la rotación del jugador
-    private PlayerShooting playerShooting;     // Gestiona el disparo y la recarga (Pistola)
+    private PlayerShooting playerShooting;     // Gestiona el disparo (Pistola)
     private ShotgunShooting shotgunShooting;   // Script de disparo para la Escopeta
+
+    // Referencia al Rifle Automático
+    private RifleShooting rifleShooting;       // Script de disparo para el Rifle Automático
+
     private SlowMotion slowMotion;             // Controla la mecánica de cámara lenta
 
     // --- OBJETOS DE LA UI PARA INDICAR ARMA SELECCIONADA ---
@@ -19,12 +22,13 @@ public class PlayerController : MonoBehaviour
     public GameObject selectPistolImage;       // Arrastra aquí el objeto "SelectPistol" (tipo Image) en el Inspector
     public GameObject selectShotgunImage;      // Arrastra aquí el objeto "SelectShotgun" (tipo Image) en el Inspector
 
-    // Referencia al input actions principal
-    private LuminityControls inputActions;
+    // (Opcional) UI para Rifle
+    public GameObject selectRifleImage;        // Arrástralo si tienes un ícono de Rifle en la UI
 
     // Lógica de armas:
-    // 1 => Pistola (playerShooting)
-    // 2 => Escopeta (shotgunShooting)
+    // 1 => Pistola
+    // 2 => Escopeta
+    // 3 => Rifle Automático
     private int currentWeapon = 1;
 
     void Awake()
@@ -33,64 +37,29 @@ public class PlayerController : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         playerShooting = GetComponent<PlayerShooting>();
         shotgunShooting = GetComponent<ShotgunShooting>();
+        rifleShooting = GetComponent<RifleShooting>();
         slowMotion = GetComponent<SlowMotion>();
-
-        // Instanciar el nuevo input actions
-        inputActions = new LuminityControls();
-    }
-
-    private void OnEnable()
-    {
-        // Habilitar el Action Map "Player"
-        inputActions.Player.Enable();
-
-        // Suscribirse a los eventos del nuevo input system
-        inputActions.Player.Shoot.performed += OnShoot;
-        inputActions.Player.Zoom.performed += OnZoom;
-        inputActions.Player.SlowMotion.performed += OnSlowMotion;
-        inputActions.Player.Reload.performed += OnReload;
-
-        // Suscribirse para cambiar de arma con la tecla "Y" del gamepad
-        inputActions.Player.WeaponCycle.performed += OnWeaponCycle;
-    }
-
-    private void OnDisable()
-    {
-        // Desuscribir los eventos
-        inputActions.Player.Shoot.performed -= OnShoot;
-        inputActions.Player.Zoom.performed -= OnZoom;
-        inputActions.Player.SlowMotion.performed -= OnSlowMotion;
-        inputActions.Player.Reload.performed -= OnReload;
-
-        inputActions.Player.WeaponCycle.performed -= OnWeaponCycle;
-
-        // Deshabilitar el Action Map
-        inputActions.Player.Disable();
     }
 
     void Start()
     {
-        // Asegurarnos de que la UI se actualice al inicio,
-        // por si la escena inicia con el arma 1
+        // Actualizamos la UI al inicio (arma = 1 => pistola)
         UpdateWeaponUI();
 
-        // Ocultar el cursor
-    Cursor.visible = false;
-
-    // Bloquear el cursor en el centro de la pantalla
-    Cursor.lockState = CursorLockMode.Locked;
-    
+        // Ocultar y bloquear el cursor en pantalla
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
-        // Rotación (Teclado/Mouse) - Queda para compatibilidad
+        // Rotación (Teclado/Mouse)
         playerMovement.RotatePlayer();
 
-        // (Cambio) Manejar el cambio de arma con la rueda del mouse
+        // Manejar el cambio de arma con la rueda del mouse
         HandleMouseScrollWeaponCycle();
 
-        // Lógica para cambio de arma con Teclado (1 y 2)
+        // Lógica para cambio de arma con Teclado (1, 2 y 3)
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             currentWeapon = 1;
@@ -101,57 +70,110 @@ public class PlayerController : MonoBehaviour
             currentWeapon = 2;
             UpdateWeaponUI();
         }
-
-        // Actualizar color (WASD / Stick Izquierdo) siempre,
-        // la pistola y la escopeta comparten el sistema de color:
-        if (currentWeapon == 1)
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            // Pistola
-            playerShooting.UpdateCurrentColor();
-        }
-        else if (currentWeapon == 2)
-        {
-            // Escopeta
-            shotgunShooting.UpdateCurrentColor();
+            currentWeapon = 3;
+            UpdateWeaponUI();
         }
 
-        // Comprobaciones de recarga y munición (Teclado/Mouse)
-        bool isReloading = (currentWeapon == 1) ? playerShooting.isReloading
-                                               : shotgunShooting.isReloading;
-        int currentAmmo = (currentWeapon == 1) ? playerShooting.currentAmmo
-                                              : shotgunShooting.currentAmmo;
-        int magazineSize = (currentWeapon == 1) ? playerShooting.magazineSize
-                                               : shotgunShooting.magazineSize;
+        // Actualizar color según el arma activa
+        switch (currentWeapon)
+        {
+            case 1:
+                playerShooting.UpdateCurrentColor();
+                break;
+            case 2:
+                shotgunShooting.UpdateCurrentColor();
+                break;
+            case 3:
+                rifleShooting.UpdateCurrentColor();
+                break;
+        }
+
+        // Comprobaciones de recarga / munición
+        bool isReloading = false;
+        int currentAmmo = 0;
+        int magazineSize = 0;
+
+        switch (currentWeapon)
+        {
+            case 1:
+                isReloading = playerShooting.isReloading;
+                currentAmmo = playerShooting.currentAmmo;
+                magazineSize = playerShooting.magazineSize;
+                break;
+            case 2:
+                isReloading = shotgunShooting.isReloading;
+                currentAmmo = shotgunShooting.currentAmmo;
+                magazineSize = shotgunShooting.magazineSize;
+                break;
+            case 3:
+                isReloading = rifleShooting.isReloading;
+                currentAmmo = rifleShooting.currentAmmo;
+                magazineSize = rifleShooting.magazineSize;
+                break;
+        }
 
         if (isReloading) return;
 
         if (currentAmmo <= 0 && !isReloading)
         {
-            StartCoroutine((currentWeapon == 1)
-                ? playerShooting.Reload()
-                : shotgunShooting.Reload());
+            switch (currentWeapon)
+            {
+                case 1:
+                    StartCoroutine(playerShooting.Reload());
+                    break;
+                case 2:
+                    StartCoroutine(shotgunShooting.Reload());
+                    break;
+                case 3:
+                    StartCoroutine(rifleShooting.Reload());
+                    break;
+            }
             return;
         }
 
         // Disparar con Mouse Izquierdo (teclado/ratón)
+        // (Pistola/Escopeta = un disparo; Rifle = disparo continuo si lo maneja el propio script)
         if (Input.GetMouseButtonDown(0))
         {
-            if (currentWeapon == 1) playerShooting.Shoot();
-            else shotgunShooting.Shoot();
+            if (currentWeapon == 1)
+                playerShooting.Shoot();
+            else if (currentWeapon == 2)
+                shotgunShooting.Shoot();
+            else if (currentWeapon == 3)
+                rifleShooting.StartFiring(); // Iniciar ráfaga
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (currentWeapon == 3)
+            {
+                // Parar la ráfaga
+                rifleShooting.StopFiring();
+            }
         }
 
-        // Recargar con tecla 'R' (teclado/ratón)
+        // Recargar con tecla 'R'
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (currentAmmo < magazineSize)
             {
-                StartCoroutine((currentWeapon == 1)
-                    ? playerShooting.Reload()
-                    : shotgunShooting.Reload());
+                switch (currentWeapon)
+                {
+                    case 1:
+                        StartCoroutine(playerShooting.Reload());
+                        break;
+                    case 2:
+                        StartCoroutine(shotgunShooting.Reload());
+                        break;
+                    case 3:
+                        StartCoroutine(rifleShooting.Reload());
+                        break;
+                }
             }
         }
 
-        // Cámara Lenta con Barra Espaciadora (teclado)
+        // Cámara Lenta con Barra Espaciadora
         if (Input.GetKeyDown(KeyCode.Space) && slowMotion.remainingSlowMotionTime > 0f)
         {
             if (slowMotion.isSlowMotionActive)
@@ -161,75 +183,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // ---------------- NUEVO INPUT SYSTEM EVENT HANDLERS ----------------
-
-    private void OnShoot(InputAction.CallbackContext ctx)
-    {
-        bool isReloading = (currentWeapon == 1) ? playerShooting.isReloading
-                                               : shotgunShooting.isReloading;
-        int currentAmmo = (currentWeapon == 1) ? playerShooting.currentAmmo
-                                              : shotgunShooting.currentAmmo;
-
-        if (!isReloading && currentAmmo > 0)
-        {
-            if (currentWeapon == 1) playerShooting.Shoot();
-            else shotgunShooting.Shoot();
-        }
-    }
-
-    private void OnZoom(InputAction.CallbackContext ctx)
-    {
-        Debug.Log("Botón LT presionado (Zoom) - Nuevo Input System");
-
-        // Toggle Zoom en CameraZoom (ejemplo)
-        CameraZoom cameraZoom = FindObjectOfType<CameraZoom>();
-        if (cameraZoom != null)
-        {
-            cameraZoom.ToggleZoom();
-        }
-    }
-
-    private void OnSlowMotion(InputAction.CallbackContext ctx)
-    {
-        if (slowMotion.remainingSlowMotionTime > 0f)
-        {
-            if (slowMotion.isSlowMotionActive)
-                slowMotion.PauseSlowMotion();
-            else
-                slowMotion.ActivateSlowMotion();
-        }
-    }
-
-    private void OnReload(InputAction.CallbackContext ctx)
-    {
-        bool isReloading = (currentWeapon == 1) ? playerShooting.isReloading
-                                               : shotgunShooting.isReloading;
-        int currentAmmo = (currentWeapon == 1) ? playerShooting.currentAmmo
-                                              : shotgunShooting.currentAmmo;
-        int magSize = (currentWeapon == 1) ? playerShooting.magazineSize
-                                          : shotgunShooting.magazineSize;
-
-        if (!isReloading && currentAmmo < magSize)
-        {
-            StartCoroutine((currentWeapon == 1)
-                ? playerShooting.Reload()
-                : shotgunShooting.Reload());
-        }
-    }
-
-    // Maneja la pulsación del botón "WeaponCycle" (Y en Gamepad)
-    private void OnWeaponCycle(InputAction.CallbackContext ctx)
-    {
-        // Ejemplo sencillo de cycle con 2 armas
-        if (currentWeapon == 1) currentWeapon = 2;
-        else currentWeapon = 1;
-
-        Debug.Log("Cambio de arma vía gamepad Y (WeaponCycle). Arma activa: " + currentWeapon);
-        UpdateWeaponUI();
-    }
-
-    // ---------------- LÓGICA PARA MOUSE SCROLL ----------------
-    // (Cambio) método para manejar el scroll del mouse como ciclo
+    // -------------------------------------------
+    // LÓGICA PARA MOUSE SCROLL - CAMBIO DE ARMA
+    // -------------------------------------------
     private void HandleMouseScrollWeaponCycle()
     {
         float scrollDelta = Input.GetAxis("Mouse ScrollWheel");
@@ -237,34 +193,37 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Mouse Scroll detectado. Valor: " + scrollDelta);
 
-            if (currentWeapon == 1) currentWeapon = 2;
-            else currentWeapon = 1;
+            currentWeapon++;
+            if (currentWeapon > 3) currentWeapon = 1;
 
             Debug.Log("Cambio de arma vía scroll del mouse. Arma activa: " + currentWeapon);
             UpdateWeaponUI();
         }
     }
 
-    // ---------------- MÉTODO PARA ACTUALIZAR LA UI DE ARMA ACTIVA ----------------
+    // -------------------------------------------
+    // MÉTODO PARA ACTUALIZAR LA UI DE ARMA ACTIVA
+    // -------------------------------------------
     private void UpdateWeaponUI()
     {
-        // Verificamos que existan las referencias
-        if (selectPistolImage == null || selectShotgunImage == null)
-        {
-            return; // Si no existen, salimos
-        }
+        if (selectPistolImage == null || selectShotgunImage == null) return;
 
-        // Activa la imagen de la pistola si el arma actual es 1, desactiva la de escopeta
-        // y viceversa
-        if (currentWeapon == 1)
+        // Apagamos todo
+        selectPistolImage.SetActive(false);
+        selectShotgunImage.SetActive(false);
+        if (selectRifleImage != null) selectRifleImage.SetActive(false);
+
+        switch (currentWeapon)
         {
-            selectPistolImage.SetActive(true);
-            selectShotgunImage.SetActive(false);
-        }
-        else
-        {
-            selectPistolImage.SetActive(false);
-            selectShotgunImage.SetActive(true);
+            case 1:
+                selectPistolImage.SetActive(true);
+                break;
+            case 2:
+                selectShotgunImage.SetActive(true);
+                break;
+            case 3:
+                if (selectRifleImage != null) selectRifleImage.SetActive(true);
+                break;
         }
     }
 }
