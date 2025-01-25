@@ -20,6 +20,15 @@ public class CameraZoom : MonoBehaviour
     public float minY = -10f;
     public float maxY = 10f;
 
+    // Guardaremos aquí la posición inicial de la cámara al comenzar.
+    private Vector3 initialCameraPosition;
+
+    void Start()
+    {
+        // Guardamos la posición actual como la posición "de inicio"
+        initialCameraPosition = mainCamera.transform.position;
+    }
+
     void Update()
     {
         // Toggle de Zoom con clic derecho del mouse (opcional)
@@ -32,26 +41,36 @@ public class CameraZoom : MonoBehaviour
         float targetSize = isZoomedIn ? zoomedInSize : normalZoom;
         mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, targetSize, Time.deltaTime * zoomSpeed);
 
-        // Ajustar la posición de la cámara hacia adelante en el modo de Zoom
-        Vector3 zoomOffset = isZoomedIn
-            ? playerTransform.up * zoomForwardOffset // Mayor desplazamiento hacia adelante
-            : Vector3.zero;
+        // Solo seguir al jugador cuando estamos en Zoom
+        if (isZoomedIn)
+        {
+            // Ajustar la posición de la cámara hacia adelante en el modo de Zoom
+            Vector3 zoomOffset = playerTransform.up * zoomForwardOffset;
+            // Nueva posición objetivo de la cámara considerando el desplazamiento
+            Vector3 targetPosition = playerTransform.position + zoomOffset + new Vector3(0, 0, -10);
 
-        // Nueva posición objetivo de la cámara considerando el desplazamiento
-        Vector3 targetPosition = playerTransform.position + zoomOffset + new Vector3(0, 0, -10); // Mantener la cámara detrás en Z
+            // Aplicar límites a la posición de la cámara
+            float cameraHalfHeight = mainCamera.orthographicSize;
+            float cameraHalfWidth = cameraHalfHeight * mainCamera.aspect;
+            targetPosition.x = Mathf.Clamp(targetPosition.x, minX + cameraHalfWidth, maxX - cameraHalfWidth);
+            targetPosition.y = Mathf.Clamp(targetPosition.y, minY + cameraHalfHeight, maxY - cameraHalfHeight);
 
-        // Aplicar límites a la posición de la cámara
-        float cameraHalfHeight = mainCamera.orthographicSize;
-        float cameraHalfWidth = cameraHalfHeight * mainCamera.aspect;
-        targetPosition.x = Mathf.Clamp(targetPosition.x, minX + cameraHalfWidth, maxX - cameraHalfWidth);
-        targetPosition.y = Mathf.Clamp(targetPosition.y, minY + cameraHalfHeight, maxY - cameraHalfHeight);
-
-        // Interpolar la posición de la cámara hacia la posición objetivo usando Lerp
-        mainCamera.transform.position = Vector3.Lerp(
-            mainCamera.transform.position,
-            targetPosition,
-            Time.deltaTime * zoomSpeed
-        );
+            // Interpolar la posición de la cámara hacia la posición objetivo usando Lerp
+            mainCamera.transform.position = Vector3.Lerp(
+                mainCamera.transform.position,
+                targetPosition,
+                Time.deltaTime * zoomSpeed
+            );
+        }
+        else
+        {
+            // Si NO está en Zoom, volvemos (interpolamos) a la posición inicial
+            mainCamera.transform.position = Vector3.Lerp(
+                mainCamera.transform.position,
+                initialCameraPosition,
+                Time.deltaTime * zoomSpeed
+            );
+        }
     }
 
     /// <summary>

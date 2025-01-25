@@ -50,6 +50,25 @@ public class TankEnemy : MonoBehaviour
         MoveTowardsPlayer();
     }
 
+    void OnEnable()
+    {
+        // Registrar este TankEnemy en el EnemyManager
+        if (EnemyManager.Instance != null)
+        {
+            // Suponiendo que tienes un método específico para tank-enemies:
+            EnemyManager.Instance.RegisterTankEnemy(this);
+        }
+    }
+
+    void OnDisable()
+    {
+        // Desregistrar este TankEnemy del EnemyManager
+        if (EnemyManager.Instance != null)
+        {
+            EnemyManager.Instance.UnregisterTankEnemy(this);
+        }
+    }
+
     void MoveTowardsPlayer()
     {
         if (player != null)
@@ -73,7 +92,7 @@ public class TankEnemy : MonoBehaviour
             // Crear la rotación objetivo
             Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
 
-            // Rotar suavemente hacia el jugador (opcional)
+            // Rotar suavemente hacia el jugador
             float rotationSpeed = 200f; // Velocidad de rotación en grados por segundo
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }

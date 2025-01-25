@@ -52,6 +52,28 @@ public class Enemy : MonoBehaviour
     }
 
     /// <summary>
+    /// Se llama cuando el objeto se habilita. Registra este enemigo en el EnemyManager.
+    /// </summary>
+    void OnEnable()
+    {
+        if (EnemyManager.Instance != null)
+        {
+            EnemyManager.Instance.RegisterEnemy(this);
+        }
+    }
+
+    /// <summary>
+    /// Se llama cuando el objeto se deshabilita. Desregistra este enemigo del EnemyManager.
+    /// </summary>
+    void OnDisable()
+    {
+        if (EnemyManager.Instance != null)
+        {
+            EnemyManager.Instance.UnregisterEnemy(this);
+        }
+    }
+
+    /// <summary>
     /// Rota al enemigo sobre su eje Z a una velocidad constante.
     /// </summary>
     void Rotate()
@@ -131,12 +153,11 @@ public class Enemy : MonoBehaviour
     void DestroyEnemy()
     {
 
-         // Añadir puntos al destruir al enemigo
+        // Añadir puntos al destruir al enemigo
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.AddScore(100);
         }
-
 
         // Instanciar el efecto de explosión en la posición del enemigo
         if (explosionPrefab != null)

@@ -73,6 +73,13 @@ public class PlayerController : MonoBehaviour
         // Asegurarnos de que la UI se actualice al inicio,
         // por si la escena inicia con el arma 1
         UpdateWeaponUI();
+
+        // Ocultar el cursor
+    Cursor.visible = false;
+
+    // Bloquear el cursor en el centro de la pantalla
+    Cursor.lockState = CursorLockMode.Locked;
+    
     }
 
     void Update()
