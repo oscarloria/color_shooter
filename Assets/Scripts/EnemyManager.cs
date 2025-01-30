@@ -88,7 +88,7 @@ public class EnemyManager : MonoBehaviour
     }
 
     // -------------------------
-    // Método unificado (nuevo)
+    // Método unificado existente
     // -------------------------
     /// <summary>
     /// Retorna el enemigo más cercano (sea Enemy o TankEnemy)
@@ -108,7 +108,7 @@ public class EnemyManager : MonoBehaviour
             if (dist < closestDistance)
             {
                 closestDistance = dist;
-                nearest = enemy;  // Guardamos la referencia
+                nearest = enemy;
             }
         }
 
@@ -125,6 +125,68 @@ public class EnemyManager : MonoBehaviour
         }
 
         return nearest;
+    }
+
+    // -------------------------
+    // NUEVO MÉTODO:
+    // Obtener el enemigo más cercano SOLO si está en pantalla
+    // -------------------------
+    public MonoBehaviour GetNearestAnyEnemyOnScreen(Vector3 fromPosition, Camera cam)
+    {
+        MonoBehaviour nearestOnScreen = null;
+        float closestDistance = Mathf.Infinity;
+
+        // 1) Recorrer Enemy normales y verificar que estén en el campo de visión de la cámara
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy == null) continue;
+            if (IsInCameraView(enemy.transform.position, cam))
+            {
+                float dist = Vector2.Distance(fromPosition, enemy.transform.position);
+                if (dist < closestDistance)
+                {
+                    closestDistance = dist;
+                    nearestOnScreen = enemy;
+                }
+            }
+        }
+
+        // 2) Recorrer TankEnemy y verificar que estén en el campo de visión de la cámara
+        foreach (var tank in activeTankEnemies)
+        {
+            if (tank == null) continue;
+            if (IsInCameraView(tank.transform.position, cam))
+            {
+                float dist = Vector2.Distance(fromPosition, tank.transform.position);
+                if (dist < closestDistance)
+                {
+                    closestDistance = dist;
+                    nearestOnScreen = tank;
+                }
+            }
+        }
+
+        return nearestOnScreen;
+    }
+
+    /// <summary>
+    /// Determina si un objeto (posición en mundo) está dentro de la vista de la cámara.
+    /// </summary>
+    private bool IsInCameraView(Vector3 worldPosition, Camera cam)
+    {
+        // Convertir posición en espacio Viewport (0..1 en x e y significa que está en pantalla)
+        Vector3 viewportPos = cam.WorldToViewportPoint(worldPosition);
+
+        // Checamos:
+        // - z > 0 => está delante de la cámara
+        // - x e y entre 0 y 1 => dentro de los límites horizontales y verticales
+        if (viewportPos.z > 0f &&
+            viewportPos.x >= 0f && viewportPos.x <= 1f &&
+            viewportPos.y >= 0f && viewportPos.y <= 1f)
+        {
+            return true;
+        }
+        return false;
     }
 
     // (Opcional) Retornar la lista de enemigos normales, si necesitas algo más

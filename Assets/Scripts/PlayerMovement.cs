@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 
     private CameraZoom cameraZoom;          // Referencia al script CameraZoom
 
-    // Variable para activar/desactivar apuntado automático
+    // Variable para activar/desactivar apuntado automático (desde el Inspector)
     public bool autoAim = true;
 
     void Start()
@@ -16,16 +16,37 @@ public class PlayerMovement : MonoBehaviour
         cameraZoom = FindObjectOfType<CameraZoom>();
     }
 
-    // Rotación de la nave hacia la posición del mouse
-    // o, si autoAim está activo, hacia el enemigo más cercano
+    void Update()
+    {
+        // Bloquear/ocultar el cursor si autoAim está activo; de lo contrario, visible/desbloqueado.
+        if (autoAim)
+        {
+            Cursor.lockState = CursorLockMode.Locked; 
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None; 
+            Cursor.visible = true;
+        }
+
+        // Llamamos a nuestro método de rotación cada frame
+        RotatePlayer();
+    }
+
+    // Rotación de la nave hacia el enemigo más cercano (si autoAim está activo)
+    // o usando la posición del mouse (si autoAim está desactivado)
     public void RotatePlayer()
     {
         if (autoAim)
         {
-            // 1. Obtener el enemigo (Enemy o TankEnemy) más cercano usando EnemyManager
-            MonoBehaviour nearestAny = EnemyManager.Instance.GetNearestAnyEnemy(transform.position);
+            // Usamos el nuevo método: GetNearestAnyEnemyOnScreen
+            MonoBehaviour nearestAny = EnemyManager.Instance.GetNearestAnyEnemyOnScreen(
+                transform.position,
+                Camera.main
+            );
 
-            // 2. Si existe un enemigo cercano, apuntar a él
+            // 2. Si existe un enemigo cercano (y en pantalla), apuntar a él
             if (nearestAny != null)
             {
                 Vector3 directionToEnemy = nearestAny.transform.position - transform.position;
@@ -40,12 +61,11 @@ public class PlayerMovement : MonoBehaviour
                 float angle = Mathf.LerpAngle(currentAngle, targetAngle, Time.deltaTime * currentRotationSpeed);
                 transform.rotation = Quaternion.Euler(0f, 0f, angle);
             }
-            // Si no hay ningún enemigo, no rotamos o conservamos el ángulo actual
+            // Si no hay ningún enemigo visible en pantalla, no rotamos o mantenemos el ángulo actual
         }
         else
         {
-            // Rotación manual con el mouse (legacy input)
-            // 1) Tomar posición del mouse
+            // Rotación manual con el mouse
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - transform.position).normalized;
             float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
