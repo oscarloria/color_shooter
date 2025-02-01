@@ -12,6 +12,16 @@ public class EnemyManager : MonoBehaviour
     // Lista con todos los "TankEnemy"
     private List<TankEnemy> activeTankEnemies = new List<TankEnemy>();
 
+    // -------------------------
+    // NUEVO: Lista con ShooterEnemy
+    // -------------------------
+    private List<ShooterEnemy> activeShooterEnemies = new List<ShooterEnemy>();
+
+    // -------------------------
+    // NUEVO: Lista con EnemyZZ
+    // -------------------------
+    private List<EnemyZZ> activeZZEnemies = new List<EnemyZZ>();
+
     void Awake()
     {
         // Asegurar que sólo exista un EnemyManager
@@ -88,10 +98,48 @@ public class EnemyManager : MonoBehaviour
     }
 
     // -------------------------
+    // Sección: ShooterEnemy
+    // -------------------------
+    public void RegisterShooterEnemy(ShooterEnemy shooterEnemy)
+    {
+        if (!activeShooterEnemies.Contains(shooterEnemy))
+        {
+            activeShooterEnemies.Add(shooterEnemy);
+        }
+    }
+
+    public void UnregisterShooterEnemy(ShooterEnemy shooterEnemy)
+    {
+        if (activeShooterEnemies.Contains(shooterEnemy))
+        {
+            activeShooterEnemies.Remove(shooterEnemy);
+        }
+    }
+
+    // -------------------------
+    // Sección: EnemyZZ
+    // -------------------------
+    public void RegisterEnemyZZ(EnemyZZ enemyZZ)
+    {
+        if (!activeZZEnemies.Contains(enemyZZ))
+        {
+            activeZZEnemies.Add(enemyZZ);
+        }
+    }
+
+    public void UnregisterEnemyZZ(EnemyZZ enemyZZ)
+    {
+        if (activeZZEnemies.Contains(enemyZZ))
+        {
+            activeZZEnemies.Remove(enemyZZ);
+        }
+    }
+
+    // -------------------------
     // Método unificado existente
     // -------------------------
     /// <summary>
-    /// Retorna el enemigo más cercano (sea Enemy o TankEnemy)
+    /// Retorna el enemigo más cercano (sea Enemy, TankEnemy, ShooterEnemy o EnemyZZ)
     /// como un MonoBehaviour para que puedas obtener transform.position.
     /// Retorna null si no hay ninguno.
     /// </summary>
@@ -124,6 +172,30 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
+        // 3) Recorrer ShooterEnemy
+        foreach (var shooter in activeShooterEnemies)
+        {
+            if (shooter == null) continue;
+            float dist = Vector2.Distance(fromPosition, shooter.transform.position);
+            if (dist < closestDistance)
+            {
+                closestDistance = dist;
+                nearest = shooter;
+            }
+        }
+
+        // 4) Recorrer EnemyZZ
+        foreach (var enemyZZ in activeZZEnemies)
+        {
+            if (enemyZZ == null) continue;
+            float dist = Vector2.Distance(fromPosition, enemyZZ.transform.position);
+            if (dist < closestDistance)
+            {
+                closestDistance = dist;
+                nearest = enemyZZ;
+            }
+        }
+
         return nearest;
     }
 
@@ -136,7 +208,7 @@ public class EnemyManager : MonoBehaviour
         MonoBehaviour nearestOnScreen = null;
         float closestDistance = Mathf.Infinity;
 
-        // 1) Recorrer Enemy normales y verificar que estén en el campo de visión de la cámara
+        // 1) Recorrer Enemy normales
         foreach (var enemy in activeEnemies)
         {
             if (enemy == null) continue;
@@ -151,7 +223,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
-        // 2) Recorrer TankEnemy y verificar que estén en el campo de visión de la cámara
+        // 2) Recorrer TankEnemy
         foreach (var tank in activeTankEnemies)
         {
             if (tank == null) continue;
@@ -162,6 +234,36 @@ public class EnemyManager : MonoBehaviour
                 {
                     closestDistance = dist;
                     nearestOnScreen = tank;
+                }
+            }
+        }
+
+        // 3) Recorrer ShooterEnemy
+        foreach (var shooter in activeShooterEnemies)
+        {
+            if (shooter == null) continue;
+            if (IsInCameraView(shooter.transform.position, cam))
+            {
+                float dist = Vector2.Distance(fromPosition, shooter.transform.position);
+                if (dist < closestDistance)
+                {
+                    closestDistance = dist;
+                    nearestOnScreen = shooter;
+                }
+            }
+        }
+
+        // 4) Recorrer EnemyZZ
+        foreach (var enemyZZ in activeZZEnemies)
+        {
+            if (enemyZZ == null) continue;
+            if (IsInCameraView(enemyZZ.transform.position, cam))
+            {
+                float dist = Vector2.Distance(fromPosition, enemyZZ.transform.position);
+                if (dist < closestDistance)
+                {
+                    closestDistance = dist;
+                    nearestOnScreen = enemyZZ;
                 }
             }
         }
@@ -177,9 +279,8 @@ public class EnemyManager : MonoBehaviour
         // Convertir posición en espacio Viewport (0..1 en x e y significa que está en pantalla)
         Vector3 viewportPos = cam.WorldToViewportPoint(worldPosition);
 
-        // Checamos:
-        // - z > 0 => está delante de la cámara
-        // - x e y entre 0 y 1 => dentro de los límites horizontales y verticales
+        // z > 0 => está delante de la cámara
+        // x e y entre 0 y 1 => dentro de los límites horizontales y verticales
         if (viewportPos.z > 0f &&
             viewportPos.x >= 0f && viewportPos.x <= 1f &&
             viewportPos.y >= 0f && viewportPos.y <= 1f)
@@ -199,5 +300,17 @@ public class EnemyManager : MonoBehaviour
     public List<TankEnemy> GetAllTankEnemies()
     {
         return activeTankEnemies;
+    }
+
+    // (Opcional) Retornar la lista de ShooterEnemy, si necesitas algo más
+    public List<ShooterEnemy> GetAllShooterEnemies()
+    {
+        return activeShooterEnemies;
+    }
+    
+    // (Opcional) Retornar la lista de EnemyZZ, si necesitas algo más
+    public List<EnemyZZ> GetAllEnemyZZEnemies()
+    {
+        return activeZZEnemies;
     }
 }

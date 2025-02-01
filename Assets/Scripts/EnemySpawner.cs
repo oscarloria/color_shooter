@@ -4,11 +4,21 @@ using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab;
-    public GameObject tankEnemyPrefab; // Prefab del enemigo tipo tanque
-    public float tankEnemySpawnChance = 0.2f; // Probabilidad de generar un TankEnemy
+    public GameObject enemyPrefab;        // Prefab del enemigo normal (Enemy)
+    public GameObject tankEnemyPrefab;      // Prefab del enemigo tipo tanque
+    [Tooltip("Prefab del nuevo ShooterEnemy.")]
+    public GameObject shooterEnemyPrefab;   // NUEVO: ShooterEnemy
+    [Tooltip("Prefab del nuevo EnemyZZ.")]
+    public GameObject enemyZZPrefab;        // NUEVO: EnemyZZ
 
-    public float spawnDistance = 10f; // Distancia desde el centro para aparecer
+    [Header("Probabilidades de spawn")]
+    public float tankEnemySpawnChance = 0.2f; // Probabilidad de generar un TankEnemy
+    [Tooltip("Probabilidad de generar un ShooterEnemy (0..1).")]
+    public float shooterSpawnChance = 0.1f;   // Probabilidad de generar un ShooterEnemy
+    [Tooltip("Probabilidad de generar un EnemyZZ (0..1).")]
+    public float enemyZZSpawnChance = 0.1f;   // Probabilidad de generar un EnemyZZ
+
+    public float spawnDistance = 10f;         // Distancia desde el centro para aparecer
 
     // Lista completa de colores posibles para los enemigos
     public List<Color> enemyColors = new List<Color>();
@@ -29,11 +39,14 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        // Define los colores de los enemigos (lista completa)
-        enemyColors.Add(Color.yellow);
-        enemyColors.Add(Color.blue);
-        enemyColors.Add(Color.green);
-        enemyColors.Add(Color.red);
+        // Define los colores de los enemigos (si no se establecieron en el inspector)
+        if (enemyColors.Count == 0)
+        {
+            enemyColors.Add(Color.yellow);
+            enemyColors.Add(Color.blue);
+            enemyColors.Add(Color.green);
+            enemyColors.Add(Color.red);
+        }
 
         // Inicializar variables para la primera oleada
         enemiesPerWave = initialEnemiesPerWave;
@@ -75,26 +88,27 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        // Genera una posición aleatoria alrededor del jugador
+        // Genera una posición aleatoria alrededor del spawner
         Vector2 spawnDirection = Random.insideUnitCircle.normalized;
         Vector2 spawnPosition = (Vector2)transform.position + spawnDirection * spawnDistance;
 
-        // Determinar si se genera un TankEnemy o un enemigo normal
+        // Sumar probabilidades para los diferentes tipos de enemigos
+        float combinedChanceTank = tankEnemySpawnChance;
+        float combinedChanceShooter = combinedChanceTank + shooterSpawnChance;
+        float combinedChanceZZ = combinedChanceShooter + enemyZZSpawnChance;
         float randomValue = Random.Range(0f, 1f);
-        GameObject enemyObject;
 
-        if (randomValue <= tankEnemySpawnChance)
+        GameObject enemyObject = null;
+
+        // 1) Spawn TankEnemy
+        if (randomValue <= combinedChanceTank)
         {
-            // Generar TankEnemy
             enemyObject = Instantiate(tankEnemyPrefab, spawnPosition, Quaternion.identity);
 
-            // Obtener la lista de colores disponibles para la oleada actual
             List<Color> availableColors = GetAvailableColorsForWave(currentWave);
             if (availableColors.Count > 0)
             {
-                int randomIndex = Random.Range(0, availableColors.Count);
-                Color chosenColor = availableColors[randomIndex];
-
+                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
                 TankEnemy tankScript = enemyObject.GetComponent<TankEnemy>();
                 if (tankScript != null)
                 {
@@ -104,17 +118,65 @@ public class EnemySpawner : MonoBehaviour
                 }
             }
         }
+        // 2) Spawn ShooterEnemy
+        else if (randomValue <= combinedChanceShooter)
+        {
+            if (shooterEnemyPrefab == null)
+            {
+                Debug.LogWarning("ShooterEnemyPrefab no asignado en EnemySpawner!");
+                return;
+            }
+
+            enemyObject = Instantiate(shooterEnemyPrefab, spawnPosition, Quaternion.identity);
+
+            List<Color> availableColors = GetAvailableColorsForWave(currentWave);
+            if (availableColors.Count > 0)
+            {
+                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
+
+                // Configuramos el ShooterEnemy
+                ShooterEnemy shooterScript = enemyObject.GetComponent<ShooterEnemy>();
+                if (shooterScript != null)
+                {
+                    shooterScript.enemyColor = chosenColor;
+                    shooterScript.speed = currentEnemySpeed;
+                }
+            }
+        }
+        // 3) Spawn EnemyZZ
+        else if (randomValue <= combinedChanceZZ)
+        {
+            if (enemyZZPrefab == null)
+            {
+                Debug.LogWarning("EnemyZZPrefab no asignado en EnemySpawner!");
+                return;
+            }
+
+            enemyObject = Instantiate(enemyZZPrefab, spawnPosition, Quaternion.identity);
+
+            List<Color> availableColors = GetAvailableColorsForWave(currentWave);
+            if (availableColors.Count > 0)
+            {
+                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
+
+                // Configuramos el EnemyZZ
+                EnemyZZ enemyZZScript = enemyObject.GetComponent<EnemyZZ>();
+                if (enemyZZScript != null)
+                {
+                    enemyZZScript.enemyColor = chosenColor;
+                    enemyZZScript.speed = currentEnemySpeed;
+                }
+            }
+        }
+        // 4) Spawn enemigo normal
         else
         {
-            // Generar enemigo normal
             enemyObject = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
             List<Color> availableColors = GetAvailableColorsForWave(currentWave);
             if (availableColors.Count > 0)
             {
-                int randomIndex = Random.Range(0, availableColors.Count);
-                Color chosenColor = availableColors[randomIndex];
-
+                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
                 Enemy enemyScript = enemyObject.GetComponent<Enemy>();
                 if (enemyScript != null)
                 {
@@ -137,7 +199,6 @@ public class EnemySpawner : MonoBehaviour
         // 26-30: verde y amarillo
         // 31+: todos los colores (rojo, azul, verde, amarillo)
 
-        // Primero definimos colores unitarios
         Color rojo = Color.red;
         Color azul = Color.blue;
         Color verde = Color.green;

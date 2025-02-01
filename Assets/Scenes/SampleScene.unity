@@ -738,7 +738,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 25
   zoomedRotationSpeed: 2
-  autoAim: 1
+  autoAim: 0
 --- !u!114 &190124705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -771,7 +771,7 @@ MonoBehaviour:
   fireRate: 0.5
   normalSpreadAngle: 40
   zoomedSpreadAngle: 20
-  pelletsPerShot: 20
+  pelletsPerShot: 8
   magazineSize: 24
   reloadTime: 2
   isReloading: 0
@@ -1032,7 +1032,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 7
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1093,7 +1093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 519420031}
   playerTransform: {fileID: 190124698}
-  normalZoom: 7
+  normalZoom: 8
   zoomedInSize: 5
   zoomSpeed: 8
   zoomForwardOffset: 2
@@ -1426,7 +1426,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.05, y: -0.18, z: 27.16}
-  m_LocalScale: {x: 26.67746, y: 15.277764, z: 10.721239}
+  m_LocalScale: {x: 33.987083, y: 19.463873, z: 13.658859}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1491,7 +1491,7 @@ Transform:
   m_GameObject: {fileID: 759611609}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.00040006638, y: -0.006559849, z: -10}
+  m_LocalPosition: {x: 0.00040006638, y: -1.11, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1860,6 +1860,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1044942141}
   m_CullTransparentMesh: 1
+--- !u!1001 &1149851468
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13.686707
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 13.612336
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.58150476
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.8135431
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756112392131215385, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -2628.887
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+      propertyPath: m_Name
+      value: ShooterEnemyPrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
 --- !u!1 &1184483032
 GameObject:
   m_ObjectHideFlags: 0
@@ -2728,8 +2785,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 8251635640791360112, guid: 72d14dc18699ea2499592599a67a1948, type: 3}
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
-  tankEnemySpawnChance: 0.5
-  spawnDistance: 14
+  shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
+  enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
+  tankEnemySpawnChance: 0
+  shooterSpawnChance: 1
+  enemyZZSpawnChance: 0
+  spawnDistance: 8
   enemyColors: []
   initialEnemiesPerWave: 1
   enemiesPerWaveIncrement: 1
@@ -3251,3 +3312,4 @@ SceneRoots:
   - {fileID: 357621892}
   - {fileID: 743624859}
   - {fileID: 759611611}
+  - {fileID: 1149851468}
