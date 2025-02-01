@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 8251635640791360112}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.8135431, w: -0.58150476}
-  m_LocalPosition: {x: -0.4699766, y: 1.6466177, z: 0}
+  m_LocalPosition: {x: -4.4885, y: -1.4892387, z: 0}
   m_LocalScale: {x: 1.5733, y: 1.5733, z: 3.1466}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -136,10 +136,15 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0.25}
-      - {x: -0.5, y: 0}
-      - {x: 0, y: -0.25}
-      - {x: 0.5, y: 0}
+    - - {x: 0.37649766, y: 0.40063393}
+      - {x: 0.007683553, y: 1.4328673}
+      - {x: -0.28545892, y: 0.44950268}
+      - {x: -1.5337938, y: -0.012413174}
+      - {x: -0.36049935, y: -0.40862036}
+      - {x: -0.34810534, y: -0.36172077}
+      - {x: 0.018111486, y: -1.4667008}
+      - {x: 0.39096802, y: -0.35838383}
+      - {x: 1.4614351, y: 0.016096767}
   m_UseDelaunayMesh: 0
 --- !u!50 &5140612777342512156
 Rigidbody2D:
@@ -181,9 +186,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyColor: {r: 0, g: 0, b: 0, a: 0}
-  speed: 2
-  minRotationSpeed: -180
+  speed: 1
+  minRotationSpeed: 20
   maxRotationSpeed: 180
-  explosionPrefab: {fileID: 0}
-  zigzagAmplitude: 24.4
-  zigzagFrequency: 4.33
+  explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
+  zigzagAmplitude: 10
+  zigzagFrequency: 1

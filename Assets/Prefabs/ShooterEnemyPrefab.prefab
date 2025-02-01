@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 8251635640791360112}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.8135431, w: -0.58150476}
-  m_LocalPosition: {x: -7.682728, y: 2.936871, z: 0}
+  m_LocalPosition: {x: -7.6298823, y: -37.624596, z: 0}
   m_LocalScale: {x: 1.5733, y: 1.5733, z: 3.1466}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -136,10 +136,12 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0.25}
-      - {x: -0.5, y: 0}
-      - {x: 0, y: -0.25}
-      - {x: 0.5, y: 0}
+    - - {x: -0.06365874, y: 0.76857066}
+      - {x: -1.098308, y: 0.33565396}
+      - {x: -1.0041125, y: -0.3332803}
+      - {x: -0.08541426, y: -0.7484739}
+      - {x: 0.90496653, y: -0.27175254}
+      - {x: 0.94017524, y: 0.2927925}
   m_UseDelaunayMesh: 0
 --- !u!50 &5140612777342512156
 Rigidbody2D:
@@ -181,9 +183,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyColor: {r: 1, g: 1, b: 1, a: 1}
-  speed: 2
+  speed: 10
   maxHealth: 3
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
   shooterProjectilePrefab: {fileID: 3733679966772330407, guid: ebe9b3cd2a1f7f74c9b033b4abc5bf0f, type: 3}
-  projectileSpeed: 5
-  safeDistance: 6
+  projectileSpeed: 3
+  safeDistance: 3

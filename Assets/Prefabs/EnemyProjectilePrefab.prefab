@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 827888758491357418}
   - component: {fileID: 3863361944932000747}
   - component: {fileID: 3454424288194141298}
-  - component: {fileID: 4280954031492313745}
   - component: {fileID: 3925918664478639287}
   - component: {fileID: 4722532820956105296}
   m_Layer: 10
@@ -30,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3733679966772330407}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.7760906, y: -1.6190085, z: 0}
+  m_LocalPosition: {x: -4.3886614, y: -2.2827945, z: 0}
   m_LocalScale: {x: 1.371075, y: 1.371075, z: 6.8553753}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -118,52 +117,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!61 &4280954031492313745
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3733679966772330407}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1.3, y: 1.3}
-  m_EdgeRadius: 0
 --- !u!58 &3925918664478639287
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -194,7 +147,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -213,5 +166,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletColor: {r: 1, g: 1, b: 1, a: 1}
-  lifeTime: 3
+  lifeTime: 4
   impactEffect: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}

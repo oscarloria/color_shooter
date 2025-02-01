@@ -4,7 +4,7 @@ public class EnemyProjectile : MonoBehaviour
 {
     [Header("Configuración de Proyectil Enemigo")]
     public Color bulletColor = Color.white; // Asignado por ShooterEnemy
-    public float lifeTime = 3f;            // Se destruye tras X segundos
+    public float lifeTime = 3f;             // Se destruye tras X segundos
     [Tooltip("Si quieres un prefab de explosión o efecto de impacto, asignarlo aquí.")]
     public GameObject impactEffect;        
 
@@ -17,7 +17,7 @@ public class EnemyProjectile : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
-            sr.color = bulletColor; // visual
+            sr.color = bulletColor; // Visual
         }
 
         rb = GetComponent<Rigidbody2D>();
@@ -35,73 +35,100 @@ public class EnemyProjectile : MonoBehaviour
     }
 
     /// <summary>
-    /// Manejo de colisiones físicas (EnemyProjectile vs Player o vs PlayerProjectile).
+    /// Manejo de colisiones mediante trigger (EnemyProjectile vs Player o vs PlayerProjectile).
+    /// Asegúrate de que el Collider2D de este prefab esté marcado como Is Trigger.
     /// </summary>
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnTriggerEnter2D(Collider2D other)
     {
         // 1) Si colisiona con el jugador => dañarlo
-        if (collision.collider.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             // Dañar al jugador
-            PlayerHealth pHealth = collision.collider.GetComponent<PlayerHealth>();
+            PlayerHealth pHealth = other.GetComponent<PlayerHealth>();
             if (pHealth != null)
             {
-                pHealth.TakeDamage(); 
+                pHealth.TakeDamage();
             }
 
-            // (Opcional) crear efecto de impacto
+            // Llamar al shake de la cámara para generar el efecto de sacudida
+            if (CameraShake.Instance != null)
+            {
+                CameraShake.Instance.ShakeCamera();
+            }
+
+            // Crear efecto de impacto con el color del proyectil
             if (impactEffect != null)
             {
-                Instantiate(impactEffect, transform.position, Quaternion.identity);
+                GameObject explosion = Instantiate(impactEffect, transform.position, Quaternion.identity);
+                ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    var main = ps.main;
+                    main.startColor = bulletColor;
+                }
             }
 
-            // Destruir el proyectil
+            // Destruir el proyectil enemigo
             DestroyEnemyProjectile();
         }
-        // 2) Si choca con un proyectil del jugador => color matching
-        else if (collision.collider.CompareTag("Projectile"))
+        // 2) Si colisiona con un proyectil del jugador
+        else if (other.CompareTag("Projectile"))
         {
-            // Por ejemplo, el proyectil del jugador se llama "Projectile.cs"
-            Projectile playerBullet = collision.collider.GetComponent<Projectile>();
+            // Obtenemos el script del proyectil del jugador (suponiendo que se llama "Projectile")
+            Projectile playerBullet = other.GetComponent<Projectile>();
             if (playerBullet != null)
             {
-                // Comprobar color => si coincide => destruir ambos
+                // Si los colores coinciden, destruir ambos proyectiles y ejecutar el efecto de impacto.
                 if (playerBullet.projectileColor == bulletColor)
                 {
-                    // Efecto de impacto (opcional)
                     if (impactEffect != null)
                     {
-                        Instantiate(impactEffect, transform.position, Quaternion.identity);
+                        GameObject explosion = Instantiate(impactEffect, transform.position, Quaternion.identity);
+                        ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
+                        if (ps != null)
+                        {
+                            var main = ps.main;
+                            main.startColor = bulletColor;
+                        }
                     }
-
-                    // Destruir el proyectil del jugador
-                    Destroy(collision.gameObject);
-
-                    // Destruir esta bala
+                    Destroy(other.gameObject);
                     DestroyEnemyProjectile();
                 }
                 else
                 {
-                    // No coincide => la bala del jugador rebotará?
-                    // Depende de tu lógica: si "Projectile.cs" maneja rebotes, 
-                    // no destruyas nada aquí.
+                    // Si los colores no coinciden, en lugar de destruir el proyectil del jugador,
+                    // se le aplica un ricochet (reflejo de velocidad) para que rebote.
+                    Rigidbody2D rbPlayer = other.GetComponent<Rigidbody2D>();
+                    if (rbPlayer != null)
+                    {
+                        Vector2 collisionNormal = (other.transform.position - transform.position).normalized;
+                        Vector2 reflectedVelocity = Vector2.Reflect(rbPlayer.linearVelocity, collisionNormal);
+                        rbPlayer.linearVelocity = reflectedVelocity;
+                    }
+                    
+                    // (Opcional) instanciar efecto de impacto con el color del proyectil
+                    if (impactEffect != null)
+                    {
+                       /* GameObject explosion = Instantiate(impactEffect, transform.position, Quaternion.identity);
+                        ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
+                        if (ps != null)
+                        {
+                            var main = ps.main;
+                            main.startColor = bulletColor;
+                        }*/
+                    }
+                    // En este caso, no se destruye el proyectil enemigo; éste sigue su curso.
                 }
             }
         }
         else
         {
-            // (Opcional) destruye la bala si toca cualquier pared/objeto
-            // DestroyEnemyProjectile();
-            // O si quieres que rebote, ajusta bounciness en su PhysicsMaterial2D
+            // (Opcional) Aquí puedes agregar comportamiento para otras colisiones (paredes, etc.)
         }
     }
 
     private void DestroyEnemyProjectile()
     {
-        // (Opcional) instanciar efecto extra
-        // if (impactEffect != null) Instantiate(impactEffect, transform.position, Quaternion.identity);
-
-        // Finalmente, destruir
         Destroy(gameObject);
     }
 }
