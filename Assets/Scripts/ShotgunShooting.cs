@@ -12,23 +12,25 @@ public class ShotgunShooting : MonoBehaviour
     // -------------- Variables de Configuración --------------
     [Header("Configuración de la Escopeta (Spread Shot)")]
     public GameObject projectilePrefab;      // Prefab del proyectil
-    public float projectileSpeed = 20f;      // Velocidad de los proyectiles
-    public float fireRate = 0.5f;           // Tiempo mínimo entre disparos (si lo deseas)
+    public float projectileSpeed = 20f;        // Velocidad de los proyectiles
+    public float fireRate = 0.5f;              // Tiempo mínimo entre disparos (si lo deseas)
 
-    public float normalSpreadAngle = 80f;    // Ángulo de dispersión sin zoom
-    public float zoomedSpreadAngle = 50f;    // Ángulo de dispersión con zoom
-    public int pelletsPerShot = 5;           // Número de proyectiles disparados simultáneamente
+    public float normalSpreadAngle = 80f;      // Ángulo de dispersión sin zoom
+    public float zoomedSpreadAngle = 50f;      // Ángulo de dispersión con zoom
+    public int pelletsPerShot = 5;             // Número de proyectiles disparados simultáneamente
 
-    public int magazineSize = 8;             // Cantidad de cartuchos
-    public float reloadTime = 60f;           // Tiempo de recarga en segundos
+    public int magazineSize = 8;               // Cantidad de cartuchos
+    public float reloadTime = 60f;             // Tiempo de recarga en segundos
     [HideInInspector] public bool isReloading = false; // Estado de recarga
 
     [Header("Efectos")]
-    public float scaleMultiplier = 1.2f;     // Escala para feedback visual
+    public float scaleMultiplier = 1.2f;       // Escala para feedback visual
     public float scaleDuration = 0.15f;
 
     [Header("UI")]
-    public TextMeshProUGUI ammoText;         // Texto para mostrar la munición en la UI (escopeta)
+    public TextMeshProUGUI ammoText;           // Texto para mostrar la munición en la UI (escopeta)
+    // NUEVO: Indicador radial de recarga
+    public WeaponReloadIndicator reloadIndicator;
 
     // -------------- Variables Internas --------------
     [HideInInspector] public int currentAmmo;    // Cartuchos actuales
@@ -105,10 +107,10 @@ public class ShotgunShooting : MonoBehaviour
             CameraShake.Instance.RecoilCamera(recoilDirection);
         }
 
-        // Control de "fireRate" (si lo necesitas)
+        // Control de "fireRate"
         StartCoroutine(FireRateCooldown());
 
-        // Verificar si se quedó sin cartuchos
+        // Verificar si se quedó sin cartuchos y, de ser así, iniciar recarga
         if (currentAmmo <= 0 && !isReloading)
         {
             StartCoroutine(Reload());
@@ -126,7 +128,7 @@ public class ShotgunShooting : MonoBehaviour
     }
 
     /// <summary>
-    /// Corrutina para recargar la escopeta.
+    /// Corrutina para recargar la escopeta, actualizando el indicador radial.
     /// </summary>
     public IEnumerator Reload()
     {
@@ -135,11 +137,26 @@ public class ShotgunShooting : MonoBehaviour
         isReloading = true;
         UpdateAmmoText();
 
-        yield return new WaitForSeconds(reloadTime);
+        // Reiniciar el indicador de recarga
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
 
+        float reloadTimer = 0f;
+        while (reloadTimer < reloadTime)
+        {
+            reloadTimer += Time.deltaTime;
+            if (reloadIndicator != null)
+                reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
+            yield return null;
+        }
+        
         currentAmmo = magazineSize;
         isReloading = false;
         UpdateAmmoText();
+
+        // Reiniciar el indicador al finalizar
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
     }
 
     /// <summary>
@@ -309,7 +326,7 @@ public class ShotgunShooting : MonoBehaviour
     void SetCurrentColor(Color color)
     {
         currentColor = color;
-        // (Opcional) podrías cambiar color del sprite de la nave si lo deseas, similar a PlayerShooting
+        // (Opcional) podrías cambiar el color del sprite de la nave si lo deseas, similar a PlayerShooting
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null) sr.color = currentColor;
     }

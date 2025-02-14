@@ -12,7 +12,7 @@ public class PlayerShooting : MonoBehaviour
 
     // Variables de dispersión
     public float normalDispersionAngle = 5f; // Ángulo de dispersión en modo normal
-    public float zoomedDispersionAngle = 0f; // Ángulo de dispersión en modo Zoom
+    public float zoomedDispersionAngle = 0f;   // Ángulo de dispersión en modo Zoom
 
     // Referencia al estado de Zoom
     private CameraZoom cameraZoom;
@@ -32,6 +32,9 @@ public class PlayerShooting : MonoBehaviour
 
     // UI
     public TextMeshProUGUI ammoText;
+
+    // Indicador radial de recarga (nuevo)
+    public WeaponReloadIndicator reloadIndicator;
 
     // Pilas para gestionar el orden de las teclas presionadas
     private KeyCode lastPressedKey = KeyCode.None;
@@ -92,7 +95,6 @@ public class PlayerShooting : MonoBehaviour
             {
                 // => color blanco (no se puede disparar un color)
                 // Solo si NO se está pulsando ninguna WASD
-                // (Para que el teclado no se sobreescriba si el usuario está usando W,A,S,D)
                 if (!AnyWASDPressed())
                 {
                     SetCurrentColor(Color.white);
@@ -222,13 +224,31 @@ public class PlayerShooting : MonoBehaviour
     {
         isReloading = true;
         UpdateAmmoText();
-        yield return new WaitForSeconds(reloadTime);
+
+        // Reiniciar el indicador de recarga
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
+
+        float reloadTimer = 0f;
+        // Actualizar el indicador mientras se recarga
+        while (reloadTimer < reloadTime)
+        {
+            reloadTimer += Time.deltaTime;
+            if (reloadIndicator != null)
+                reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
+            yield return null;
+        }
+        
         currentAmmo = magazineSize;
         isReloading = false;
         UpdateAmmoText();
+
+        // Reiniciar el indicador al finalizar
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
     }
 
-      void UpdateAmmoText()
+    void UpdateAmmoText()
     {
         if (ammoText == null) return;
 

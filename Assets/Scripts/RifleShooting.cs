@@ -7,7 +7,7 @@ public class RifleShooting : MonoBehaviour
     [Header("Configuración del Rifle Automático")]
     public GameObject projectilePrefab;
     public float projectileSpeed = 20f;        // Velocidad de los proyectiles
-    public float fireRate = 0.1f;             // Disparos por segundo (0.1s = 10 disparos/seg)
+    public float fireRate = 0.1f;             // Tiempo entre disparos (0.1s = 10 disparos/seg)
     public float reloadTime = 2f;             // Tiempo de recarga
     public int magazineSize = 30;             // Balas por cargador
 
@@ -20,9 +20,9 @@ public class RifleShooting : MonoBehaviour
     [HideInInspector] public bool isReloading = false;
 
     private CameraZoom cameraZoom;
-    private bool isFiring = false;     // Si el jugador mantiene presionado "disparo"
+    private bool isFiring = false;     // Disparo continuo
     private bool canShoot = true;      // Control del fireRate
-    private float nextFireTime = 0f;   // Para controlar la cadencia de disparo
+    private float nextFireTime = 0f;   // Para cadencia de disparo
 
     [Header("Efectos")]
     public float scaleMultiplier = 1.05f;
@@ -30,26 +30,28 @@ public class RifleShooting : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI ammoText;   // Texto para munición
+    // NUEVO: Indicador radial de recarga
+    public WeaponReloadIndicator reloadIndicator;
 
     // ----------------- Sistema de color -----------------
     public Color currentColor = Color.white;
-    private KeyCode lastPressedKey = KeyCode.None; // Para la lógica WASD
+    private KeyCode lastPressedKey = KeyCode.None; // Para lógica WASD
 
     void Start()
     {
         currentAmmo = magazineSize;
         UpdateAmmoText();
 
-        // Obtener referencia al Zoom (opcional)
+        // Obtener referencia al Zoom
         cameraZoom = FindObjectOfType<CameraZoom>();
     }
 
     void Update()
     {
-        // 1) Actualizar color vía WASD (u otras teclas) si quieres
+        // Actualizar color vía WASD
         UpdateCurrentColor();
 
-        // 2) Verificar si estamos en modo “firing” (disparo continuo)
+        // Si estamos en disparo continuo, lo gestionamos
         if (isFiring)
         {
             DisparoContinuo();
@@ -59,7 +61,7 @@ public class RifleShooting : MonoBehaviour
     }
 
     /// <summary>
-    /// Dispara continuamente mientras 'isFiring' sea true y se cumpla el fireRate.
+    /// Dispara continuamente mientras isFiring sea true y se cumpla el fireRate.
     /// </summary>
     private void DisparoContinuo()
     {
@@ -92,7 +94,7 @@ public class RifleShooting : MonoBehaviour
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
         rb.linearVelocity = projectile.transform.up * projectileSpeed;
 
-        // Asignar color
+        // Asignar color al proyectil
         SpriteRenderer projSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
         if (projSpriteRenderer != null)
         {
@@ -109,7 +111,7 @@ public class RifleShooting : MonoBehaviour
             CameraShake.Instance.RecoilCamera(recoilDirection);
         }
 
-        // Si se acaba la munición, recargar
+        // Si se acaba la munición, iniciar recarga
         if (currentAmmo <= 0 && !isReloading)
         {
             StartCoroutine(Reload());
@@ -117,7 +119,7 @@ public class RifleShooting : MonoBehaviour
     }
 
     /// <summary>
-    /// Inicia la recarga.
+    /// Corrutina para recargar el rifle, actualizando el indicador radial.
     /// </summary>
     public IEnumerator Reload()
     {
@@ -125,30 +127,32 @@ public class RifleShooting : MonoBehaviour
 
         Debug.Log("RifleShooting - Iniciando recarga.");
 
-        // Forzar dejar de disparar
+        // Forzar detener el disparo continuo
         StopFiring();
 
         isReloading = true;
         UpdateAmmoText();
 
-        yield return new WaitForSeconds(reloadTime);
+        // Reiniciar el indicador de recarga
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
+
+        float reloadTimer = 0f;
+        while (reloadTimer < reloadTime)
+        {
+            reloadTimer += Time.deltaTime;
+            if (reloadIndicator != null)
+                reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
+            yield return null;
+        }
 
         currentAmmo = magazineSize;
         isReloading = false;
         UpdateAmmoText();
 
-        // Si deseas que retome el disparo continuo automáticamente
-        // si el jugador aún mantiene presionado el botón, 
-        // puedes revisar (por ejemplo) Input.GetMouseButton(0):
-        if (Input.GetMouseButton(0))
-        {
-            Debug.Log("¡¡El mouse sigue presionado!! -> StartFiring()");
-            StartFiring();
-        }
-        else
-        {
-            Debug.Log("No está presionado. Se queda sin disparar.");
-        }
+        // Reiniciar el indicador al finalizar
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
     }
 
     /// <summary>
@@ -179,7 +183,7 @@ public class RifleShooting : MonoBehaviour
         float elapsedTime = 0f;
         float halfDuration = scaleDuration / 2f;
 
-        // Subir escala
+        // Aumentar escala
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -192,7 +196,7 @@ public class RifleShooting : MonoBehaviour
 
         elapsedTime = 0f;
 
-        // Bajar escala
+        // Volver a escala original
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -288,9 +292,6 @@ public class RifleShooting : MonoBehaviour
     // -----------------------------------------------------------
     // MÉTODOS PÚBLICOS PARA DISPARO CONTINUO (mouse).
     // -----------------------------------------------------------
-    /// <summary>
-    /// Llamar cuando se presione el botón (MouseButtonDown).
-    /// </summary>
     public void StartFiring()
     {
         if (isReloading)
@@ -301,12 +302,9 @@ public class RifleShooting : MonoBehaviour
 
         Debug.Log("StartFiring() => Comenzamos disparo automático.");
         isFiring = true;
-        nextFireTime = Time.time; // El primer disparo puede ocurrir inmediatamente
+        nextFireTime = Time.time;
     }
 
-    /// <summary>
-    /// Llamar cuando se suelte el botón (MouseButtonUp).
-    /// </summary>
     public void StopFiring()
     {
         Debug.Log("StopFiring() => Se detiene el disparo automático.");
