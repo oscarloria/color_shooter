@@ -511,6 +511,7 @@ GameObject:
   - component: {fileID: 190124705}
   - component: {fileID: 190124706}
   - component: {fileID: 190124707}
+  - component: {fileID: 190124708}
   m_Layer: 8
   m_Name: Ship
   m_TagString: Player
@@ -604,6 +605,7 @@ MonoBehaviour:
   selectPistolImage: {fileID: 1319628716}
   selectShotgunImage: {fileID: 983923952}
   selectRifleImage: {fileID: 153490820}
+  selectDefenseOrbImage: {fileID: 0}
 --- !u!50 &190124700
 Rigidbody2D:
   serializedVersion: 5
@@ -739,7 +741,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 25
   zoomedRotationSpeed: 4
-  autoAim: 1
+  autoAim: 0
 --- !u!114 &190124705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -808,6 +810,28 @@ MonoBehaviour:
   ammoText: {fileID: 29512016}
   reloadIndicator: {fileID: 1756493388}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &190124708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190124696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a0a01ba65a2614fb20bca6a04d296f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
+  magazineSize: 4
+  reloadTime: 2
+  orbDurability: 3
+  orbitRadius: 2
+  orbitSpeed: 90
+  fireRate: 0.2
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
+  currentAmmo: 0
+  isReloading: 0
 --- !u!1 &357621890
 GameObject:
   m_ObjectHideFlags: 0
@@ -2998,7 +3022,7 @@ MonoBehaviour:
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
   tankEnemySpawnChance: 0
-  shooterSpawnChance: 1
+  shooterSpawnChance: 0
   enemyZZSpawnChance: 0
   spawnDistance: 14
   enemyColors: []
