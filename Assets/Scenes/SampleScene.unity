@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
-  magazineSize: 4
+  magazineSize: 16
   reloadTime: 2
   orbDurability: 3
   orbitRadius: 2

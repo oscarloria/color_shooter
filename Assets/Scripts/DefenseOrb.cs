@@ -31,13 +31,13 @@ public class DefenseOrb : MonoBehaviour
 
     void Update()
     {
-        // Actualizar el ángulo
+        // Actualizar el ángulo de órbita
         currentAngle += orbitSpeed * Time.deltaTime;
         float rad = currentAngle * Mathf.Deg2Rad;
         Vector3 orbitOffset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f) * orbitRadius;
         if (player != null)
         {
-            // Posicionar el orbe en función de la posición del jugador, sin depender de la rotación del jugador
+            // Posicionar el orbe en función de la posición del jugador (sin depender de la rotación del jugador)
             transform.position = player.position + orbitOffset;
         }
     }
@@ -47,14 +47,14 @@ public class DefenseOrb : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            // Obtener componente Enemy para verificar el color
+            // Obtener el componente Enemy para verificar el color.
             Enemy enemyComponent = other.GetComponent<Enemy>();
             if (enemyComponent != null)
             {
+                // Si los colores coinciden, se aplica el daño (destruir al enemigo) y se reduce la durabilidad.
                 if (enemyComponent.enemyColor == orbColor)
                 {
-                    // Infligir daño: se usa SendMessage para llamar a TakeDamage(1) si existe
-                    other.SendMessage("TakeDamage", 1, SendMessageOptions.DontRequireReceiver);
+                    enemyComponent.DestroyEnemy();
                     DecreaseDurability();
                 }
             }

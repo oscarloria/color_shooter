@@ -150,7 +150,7 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// Maneja la destrucción del enemigo, incluyendo efectos visuales y lógicos.
     /// </summary>
-    void DestroyEnemy()
+    public void DestroyEnemy()
     {
 
         // Añadir puntos al destruir al enemigo
