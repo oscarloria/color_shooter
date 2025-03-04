@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class DefenseOrbShooting : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class DefenseOrbShooting : MonoBehaviour
     [Header("Sistema de Color")]
     public Color currentColor = Color.white; // Color asignado al orbe (se actualiza con WASD)
 
+    [Header("UI")]
+    public TextMeshProUGUI ammoText;          // Texto que muestra la munición del orbe
+    public WeaponReloadIndicator reloadIndicator;  // Indicador radial de recarga
+
     // Variables internas accesibles para PlayerController
     public int currentAmmo;
     public bool isReloading = false;
@@ -27,6 +32,7 @@ public class DefenseOrbShooting : MonoBehaviour
     {
         currentAmmo = magazineSize;
         lastShotTime = Time.time;
+        UpdateAmmoText();
     }
 
     /// <summary>
@@ -61,7 +67,7 @@ public class DefenseOrbShooting : MonoBehaviour
         Vector3 spawnDirection = Quaternion.Euler(0, 0, newAngle) * Vector3.up;
         Vector3 spawnPosition = transform.position + spawnDirection.normalized * orbitRadius;
 
-        // Instanciar el orbe como objeto independiente (no hijo directo del jugador)
+        // Instanciar el orbe como objeto independiente (no se hace hijo directo para evitar influencias de rotación)
         GameObject orbObj = Instantiate(defenseOrbPrefab, spawnPosition, Quaternion.identity);
         DefenseOrb newOrb = orbObj.GetComponent<DefenseOrb>(); // Renombrada para evitar conflictos
         if (newOrb != null)
@@ -75,19 +81,49 @@ public class DefenseOrbShooting : MonoBehaviour
 
         currentAmmo--;
         nextFireTime = Time.time + fireRate;
+        UpdateAmmoText();
     }
 
     /// <summary>
-    /// Corrutina para recargar los orbes de defensa.
+    /// Corrutina para recargar los orbes de defensa, actualizando el indicador radial.
     /// </summary>
     public IEnumerator Reload()
     {
         if (currentAmmo == magazineSize) yield break;
 
         isReloading = true;
-        yield return new WaitForSeconds(reloadTime);
+        UpdateAmmoText();
+
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
+
+        float reloadTimer = 0f;
+        while (reloadTimer < reloadTime)
+        {
+            reloadTimer += Time.deltaTime;
+            if (reloadIndicator != null)
+                reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
+            yield return null;
+        }
+
         currentAmmo = magazineSize;
         isReloading = false;
+        UpdateAmmoText();
+
+        if (reloadIndicator != null)
+            reloadIndicator.ResetIndicator();
+    }
+
+    /// <summary>
+    /// Actualiza el texto de la munición en la UI.
+    /// </summary>
+    private void UpdateAmmoText()
+    {
+        if (ammoText == null) return;
+        if (isReloading)
+            ammoText.text = "Orbe: RELOADING";
+        else
+            ammoText.text = $"Orbe: {currentAmmo}/{magazineSize}";
     }
 
     /// <summary>
