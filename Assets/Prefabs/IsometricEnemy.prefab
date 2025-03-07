@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8393280582002155238}
   - component: {fileID: 5140612777342512156}
   - component: {fileID: 1904332298272123559}
+  - component: {fileID: -8140715811978450840}
   m_Layer: 7
   m_Name: IsometricEnemy
   m_TagString: Enemy
@@ -185,3 +186,25 @@ MonoBehaviour:
   minRotationSpeed: 500
   maxRotationSpeed: 1000
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
+--- !u!114 &-8140715811978450840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8251635640791360112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20caf7a9901b23043afe6c7bed78bb1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  indicatorPrefab: {fileID: 5051004599970868692, guid: d86da89dcc86b384fa4c3c9905f54ec0, type: 3}
+  margin: 0.05
+  minIndicatorScale: 0.1
+  maxIndicatorScale: 3
+  minDistance: 3
+  maxDistance: 20
+  minBlinkSpeed: 0.3
+  maxBlinkSpeed: 2
+  minAlpha: 0
+  maxAlpha: 1

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2395378809358648863}
   - component: {fileID: 4698641169129799372}
   - component: {fileID: 7218325211322791149}
+  - component: {fileID: 341431465804531270}
   m_Layer: 7
   m_Name: TankEnemy
   m_TagString: Enemy
@@ -181,6 +182,28 @@ MonoBehaviour:
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
   currentHealth: 0
   enemyColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &341431465804531270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6032822784827993704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20caf7a9901b23043afe6c7bed78bb1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  indicatorPrefab: {fileID: 5051004599970868692, guid: d86da89dcc86b384fa4c3c9905f54ec0, type: 3}
+  margin: 0.05
+  minIndicatorScale: 0.5
+  maxIndicatorScale: 3
+  minDistance: 5
+  maxDistance: 20
+  minBlinkSpeed: 0.5
+  maxBlinkSpeed: 3
+  minAlpha: 0.3
+  maxAlpha: 1
 --- !u!1 &7538881754469370178
 GameObject:
   m_ObjectHideFlags: 0

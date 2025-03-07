@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8393280582002155238}
   - component: {fileID: 5140612777342512156}
   - component: {fileID: 4304230550574178984}
+  - component: {fileID: 6224656157374247566}
   m_Layer: 7
   m_Name: ShooterEnemyPrefab
   m_TagString: Enemy
@@ -189,3 +190,25 @@ MonoBehaviour:
   shooterProjectilePrefab: {fileID: 3733679966772330407, guid: ebe9b3cd2a1f7f74c9b033b4abc5bf0f, type: 3}
   projectileSpeed: 3
   safeDistance: 3
+--- !u!114 &6224656157374247566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8251635640791360112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20caf7a9901b23043afe6c7bed78bb1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  indicatorPrefab: {fileID: 5051004599970868692, guid: d86da89dcc86b384fa4c3c9905f54ec0, type: 3}
+  margin: 0.05
+  minIndicatorScale: 0.5
+  maxIndicatorScale: 3
+  minDistance: 5
+  maxDistance: 20
+  minBlinkSpeed: 0.5
+  maxBlinkSpeed: 3
+  minAlpha: 0.3
+  maxAlpha: 1
