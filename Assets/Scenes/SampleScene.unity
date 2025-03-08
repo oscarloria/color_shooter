@@ -757,6 +757,9 @@ MonoBehaviour:
   maxHealth: 3
   invulnerabilityDuration: 2
   explosionPrefab: {fileID: 0}
+  explosionRadius: 10
+  shockwavePrefab: {fileID: 1281717388494725286, guid: 62c04ca8e47ade345ac280d3c1da3fcc, type: 3}
+  explosionRadiusIndicatorPrefab: {fileID: 4862697828659544469, guid: 7202c301bb268e14f96c588942d3fe10, type: 3}
 --- !u!114 &190124706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -823,12 +826,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
-  magazineSize: 6
-  reloadTime: 10
-  orbDurability: 3
+  magazineSize: 20
+  reloadTime: 2
+  orbDurability: 100
   orbitRadius: 2
   orbitSpeed: 90
-  fireRate: 0.2
+  fireRate: 0.5
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   ammoText: {fileID: 1922289426}
   reloadIndicator: {fileID: 487839296}
@@ -1149,7 +1152,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1210,14 +1213,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 519420031}
   playerTransform: {fileID: 190124698}
-  normalZoom: 8
-  zoomedInSize: 6
+  normalZoom: 10
+  zoomedInSize: 8
   zoomSpeed: 8
-  zoomForwardOffset: 2
-  minX: -10
-  maxX: 10
-  minY: -10
-  maxY: 10
+  zoomForwardOffset: 5
+  minX: -20
+  maxX: 20
+  minY: -20
+  maxY: 20
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1543,7 +1546,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.05, y: -0.18, z: 27.16}
-  m_LocalScale: {x: 33.987083, y: 19.463873, z: 13.658859}
+  m_LocalScale: {x: 59.52158, y: 34.087082, z: 23.92076}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3205,7 +3208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 1854467542}
-  lineLength: 12
+  lineLength: 20
   collisionMask:
     serializedVersion: 2
     m_Bits: 0
@@ -3423,12 +3426,12 @@ MonoBehaviour:
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
-  tankEnemySpawnChance: 0.2
-  shooterSpawnChance: 0.2
-  enemyZZSpawnChance: 0.2
-  spawnDistance: 18
+  tankEnemySpawnChance: 0
+  shooterSpawnChance: 0
+  enemyZZSpawnChance: 0
+  spawnDistance: 20
   enemyColors: []
-  initialEnemiesPerWave: 1
+  initialEnemiesPerWave: 1000
   enemiesPerWaveIncrement: 1
   initialSpawnRate: 1
   spawnRateDecrement: 0.01

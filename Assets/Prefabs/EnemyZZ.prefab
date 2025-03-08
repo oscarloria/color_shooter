@@ -211,7 +211,7 @@ MonoBehaviour:
   maxIndicatorScale: 3
   minDistance: 3
   maxDistance: 20
-  minBlinkSpeed: 0.3
-  maxBlinkSpeed: 2
+  minBlinkSpeed: 2
+  maxBlinkSpeed: 4
   minAlpha: 0
   maxAlpha: 1
