@@ -45,36 +45,29 @@ public class DefenseOrbShooting : MonoBehaviour
         if (isReloading || currentAmmo <= 0 || Time.time < nextFireTime)
             return;
 
-        // Calcular el ángulo inicial del nuevo orbe.
-        float newAngle = 90f; // Valor por defecto.
-        DefenseOrb[] existingOrbs = FindObjectsOfType<DefenseOrb>(); // Buscar todos los orbes activos.
-        if (existingOrbs.Length > 0)
-        {
-            float lastAngle = 0f;
-            foreach (var orb in existingOrbs)
-            {
-                if (orb.currentAngle > lastAngle)
-                    lastAngle = orb.currentAngle;
-            }
-            float delta = Time.time - lastShotTime;
-            // Separación mayor si se dispara con pausas; entre 5 y 45 grados.
-            float angleOffset = Mathf.Clamp(delta * 30f, 5f, 45f);
-            newAngle = lastAngle + angleOffset;
-        }
+        // Calcular la posición de spawn basándose en la posición del mouse.
+        // Convertir la posición del mouse (screen space) a world space.
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0f; // Asegurarse de que está en el plano 2D.
+        Vector3 direction = (mouseWorldPos - transform.position).normalized;
+        // Calcular el ángulo en grados a partir de la dirección.
+        float newAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
         lastShotTime = Time.time;
 
-        // Calcular la posición de spawn en base a la posición del jugador y el ángulo.
+        // Calcular la posición de spawn sobre la circunferencia de radio orbitRadius.
         Vector3 spawnDirection = Quaternion.Euler(0, 0, newAngle) * Vector3.up;
         Vector3 spawnPosition = transform.position + spawnDirection.normalized * orbitRadius;
 
-        // Instanciar el orbe como objeto independiente (no se hace hijo directo para evitar influencias de rotación)
+        // Instanciar el orbe (como objeto independiente para evitar que la rotación del jugador lo afecte)
         GameObject orbObj = Instantiate(defenseOrbPrefab, spawnPosition, Quaternion.identity);
-        DefenseOrb newOrb = orbObj.GetComponent<DefenseOrb>(); // Renombrada para evitar conflictos
+        DefenseOrb newOrb = orbObj.GetComponent<DefenseOrb>();
         if (newOrb != null)
         {
             newOrb.currentAngle = newAngle;
             newOrb.orbitRadius = orbitRadius;
-            newOrb.orbitSpeed = orbitSpeed;
+            // Para que los orbes sigan girando en sentido clockwise, se asigna un orbitSpeed negativo.
+            newOrb.orbitSpeed = -orbitSpeed;
             newOrb.durability = orbDurability;
             newOrb.orbColor = currentColor;
         }
@@ -132,7 +125,6 @@ public class DefenseOrbShooting : MonoBehaviour
     /// </summary>
     public void UpdateCurrentColor()
     {
-        // Detectar si se presionó alguna tecla WASD para asignar un color
         if (Input.GetKeyDown(KeyCode.W))
             SetCurrentColor(Color.yellow);
         else if (Input.GetKeyDown(KeyCode.A))
@@ -142,7 +134,6 @@ public class DefenseOrbShooting : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.D))
             SetCurrentColor(Color.red);
 
-        // Si no se está presionando ninguna tecla WASD, asignar Color.white
         if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.A) &&
             !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D))
         {

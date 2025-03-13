@@ -37,6 +37,9 @@ public class RifleShooting : MonoBehaviour
     public Color currentColor = Color.white;
     private KeyCode lastPressedKey = KeyCode.None; // Para lógica WASD
 
+    // Para asegurar que no se superpongan múltiples efectos de escala
+    private Coroutine scaleEffectCoroutine;
+
     void Start()
     {
         currentAmmo = magazineSize;
@@ -101,8 +104,13 @@ public class RifleShooting : MonoBehaviour
             projSpriteRenderer.color = currentColor;
         }
 
-        // Efecto de escala
-        StartCoroutine(ScaleEffect());
+        // Efecto de escala: detener el efecto en curso antes de iniciar uno nuevo.
+        if (scaleEffectCoroutine != null)
+        {
+            StopCoroutine(scaleEffectCoroutine);
+            transform.localScale = Vector3.one; // Reinicia a escala normal.
+        }
+        scaleEffectCoroutine = StartCoroutine(ScaleEffect());
 
         // Retroceso de cámara
         if (CameraShake.Instance != null)
@@ -177,13 +185,12 @@ public class RifleShooting : MonoBehaviour
     /// </summary>
     IEnumerator ScaleEffect()
     {
-        Vector3 originalScale = transform.localScale;
+        Vector3 originalScale = Vector3.one; // Suponemos que la escala normal es 1,1,1.
         Vector3 targetScale = originalScale * scaleMultiplier;
-
         float elapsedTime = 0f;
         float halfDuration = scaleDuration / 2f;
 
-        // Aumentar escala
+        // Escalar hacia arriba
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -191,12 +198,10 @@ public class RifleShooting : MonoBehaviour
             elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
-
         transform.localScale = targetScale;
 
         elapsedTime = 0f;
-
-        // Volver a escala original
+        // Escalar hacia abajo
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -204,8 +209,8 @@ public class RifleShooting : MonoBehaviour
             elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
-
         transform.localScale = originalScale;
+        scaleEffectCoroutine = null;
     }
 
     // -----------------------------------------------------------
@@ -213,7 +218,6 @@ public class RifleShooting : MonoBehaviour
     // -----------------------------------------------------------
     public void UpdateCurrentColor()
     {
-        // TECLADO (WASD)
         if (Input.GetKeyDown(KeyCode.W))
         {
             SetCurrentColor(Color.yellow);
@@ -235,7 +239,6 @@ public class RifleShooting : MonoBehaviour
             lastPressedKey = KeyCode.D;
         }
 
-        // Si se suelta la última tecla
         if (Input.GetKeyUp(lastPressedKey))
         {
             KeyCode newKey = GetLastKeyPressed();
@@ -289,9 +292,6 @@ public class RifleShooting : MonoBehaviour
         if (sr != null) sr.color = currentColor;
     }
 
-    // -----------------------------------------------------------
-    // MÉTODOS PÚBLICOS PARA DISPARO CONTINUO (mouse).
-    // -----------------------------------------------------------
     public void StartFiring()
     {
         if (isReloading)
@@ -299,7 +299,6 @@ public class RifleShooting : MonoBehaviour
             Debug.Log("StartFiring() llamado, pero estamos recargando. Ignoramos.");
             return;
         }
-
         Debug.Log("StartFiring() => Comenzamos disparo automático.");
         isFiring = true;
         nextFireTime = Time.time;

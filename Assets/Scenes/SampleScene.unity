@@ -714,15 +714,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
-  projectileSpeed: 30
-  fireRate: 0.01
+  projectileSpeed: 40
+  fireRate: 0.5
   normalDispersionAngle: 20
   zoomedDispersionAngle: 0
-  magazineSize: 5
-  reloadTime: 6
+  magazineSize: 8
+  reloadTime: 2
   currentAmmo: 0
   isReloading: 0
-  scaleMultiplier: 1.1
+  scaleMultiplier: 1.5
   scaleDuration: 0.1
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   ammoText: {fileID: 721255408}
@@ -773,15 +773,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
-  projectileSpeed: 30
+  projectileSpeed: 40
   fireRate: 0.5
   normalSpreadAngle: 40
-  zoomedSpreadAngle: 20
+  zoomedSpreadAngle: 10
   pelletsPerShot: 8
   magazineSize: 24
   reloadTime: 2
   isReloading: 0
-  scaleMultiplier: 1.2
+  scaleMultiplier: 2
   scaleDuration: 0.15
   ammoText: {fileID: 1044942143}
   reloadIndicator: {fileID: 1702291359}
@@ -808,8 +808,8 @@ MonoBehaviour:
   zoomedDispersionAngle: 3
   currentAmmo: 0
   isReloading: 0
-  scaleMultiplier: 1.05
-  scaleDuration: 0.05
+  scaleMultiplier: 1.5
+  scaleDuration: 0.3
   ammoText: {fileID: 29512016}
   reloadIndicator: {fileID: 1756493388}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
@@ -826,8 +826,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
-  magazineSize: 20
-  reloadTime: 2
+  magazineSize: 6
+  reloadTime: 8
   orbDurability: 100
   orbitRadius: 2
   orbitSpeed: 90
@@ -1195,10 +1195,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef6e7a35309bb12499a7238102f04313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shakeDuration: 0.3
-  shakeMagnitude: 0.4
-  recoilDistance: 0.1
-  recoilSpeed: 15
+  shakeDuration: 1
+  shakeMagnitude: 1
+  recoilDistance: 0.2
+  recoilSpeed: 20
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
