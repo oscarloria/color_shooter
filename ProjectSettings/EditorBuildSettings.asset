@@ -6,11 +6,23 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: 13569992cc92a494e93b8505a3fcff37
+  - enabled: 1
+    path: Assets/Scenes/SlotSelectionScene.unity
+    guid: 209c80b76655d0d49a47358f0af3f21e
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
     path: Assets/Scenes/GameOverScene.unity
     guid: 3105685dda76649f8ad5eb9d6c9bf128
+  - enabled: 1
+    path: Assets/Scenes/ScoreboardScene.unity
+    guid: 8212422e8bc306c4e9ebd59bcd8cc913
+  - enabled: 1
+    path: Assets/Scenes/CreditsScene.unity
+    guid: 674541fdb4ebeac47936edfa853a3841
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

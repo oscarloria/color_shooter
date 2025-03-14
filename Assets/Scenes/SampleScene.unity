@@ -757,7 +757,7 @@ MonoBehaviour:
   maxHealth: 3
   invulnerabilityDuration: 2
   explosionPrefab: {fileID: 0}
-  explosionRadius: 10
+  explosionRadius: 2
   shockwavePrefab: {fileID: 1281717388494725286, guid: 62c04ca8e47ade345ac280d3c1da3fcc, type: 3}
   explosionRadiusIndicatorPrefab: {fileID: 4862697828659544469, guid: 7202c301bb268e14f96c588942d3fe10, type: 3}
 --- !u!114 &190124706
