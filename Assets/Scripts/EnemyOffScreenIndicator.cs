@@ -3,32 +3,28 @@ using UnityEngine.UI;
 
 public class EnemyOffScreenIndicator : MonoBehaviour
 {
-    [Header("Configuración del Indicador")]
-    [Tooltip("Prefab del indicador (por ejemplo, una imagen de triángulo) que se mostrará en la UI.")]
+    [Header("Indicator Settings")]
+    [Tooltip("Indicator prefab (e.g., a triangle image) to show on the UI.")]
     public GameObject indicatorPrefab;
-    [Tooltip("Margen en porcentaje (del viewport) para no pegar el indicador al borde exacto.")]
+    [Tooltip("Margin (in viewport percentage) to avoid placing the indicator at the very edge.")]
     [Range(0f, 0.5f)]
     public float margin = 0.05f;
 
-    [Header("Escala del Indicador")]
-    [Tooltip("Escala mínima del indicador cuando el enemigo está lejos.")]
-    public float minIndicatorScale = 0.5f;
-    [Tooltip("Escala máxima del indicador cuando el enemigo está cerca.")]
+    [Header("Indicator Scale")]
+    [Tooltip("Maximum scale of the indicator when the enemy is near (center of screen).")]
     public float maxIndicatorScale = 1.5f;
-    [Tooltip("Distancia a partir de la cual el indicador alcanza su escala máxima.")]
-    public float minDistance = 5f;
-    [Tooltip("Distancia a partir de la cual el indicador alcanza su escala mínima.")]
-    public float maxDistance = 20f;
+    [Tooltip("Minimum scale of the indicator when the enemy is far (at the edge).")]
+    public float minIndicatorScale = 0.5f;
 
-    [Header("Parpadeo")]
-    [Tooltip("Velocidad mínima de parpadeo del indicador (cuando el enemigo está lejos).")]
+    [Header("Blink Settings")]
+    [Tooltip("Minimum blink speed when the enemy is far.")]
     public float minBlinkSpeed = 0.5f;
-    [Tooltip("Velocidad máxima de parpadeo del indicador (cuando el enemigo está cerca).")]
+    [Tooltip("Maximum blink speed when the enemy is near.")]
     public float maxBlinkSpeed = 3f;
-    [Tooltip("Alpha mínimo del parpadeo.")]
+    [Tooltip("Minimum alpha value for blinking.")]
     [Range(0f, 1f)]
     public float minAlpha = 0.3f;
-    [Tooltip("Alpha máximo del parpadeo.")]
+    [Tooltip("Maximum alpha value for blinking.")]
     [Range(0f, 1f)]
     public float maxAlpha = 1f;
 
@@ -36,9 +32,12 @@ public class EnemyOffScreenIndicator : MonoBehaviour
     private Image indicatorImage;
     private Camera mainCamera;
     private Canvas canvas;
-    
-    // No vamos a usar una variable de tipo Enemy, sino obtener el color desde cualquiera de los scripts
+
+    // Variable to store the enemy's color from various scripts.
     private Color enemyColor = Color.white;
+
+    // Temporizador local para el parpadeo.
+    private float blinkTimer = 0f;
 
     void Start()
     {
@@ -47,36 +46,33 @@ public class EnemyOffScreenIndicator : MonoBehaviour
 
         if (indicatorPrefab != null && canvas != null)
         {
+            // Instanciar el indicador como hijo del Canvas
             indicatorInstance = Instantiate(indicatorPrefab, canvas.transform);
             indicatorImage = indicatorInstance.GetComponent<Image>();
         }
     }
 
-    // Método para intentar obtener el color del enemigo desde diferentes scripts.
+    // Método para actualizar el color del enemigo desde distintos componentes.
     private void UpdateEnemyColor()
     {
-        // Intentar con Enemy
         Enemy enemyComp = GetComponent<Enemy>();
         if (enemyComp != null)
         {
             enemyColor = enemyComp.enemyColor;
             return;
         }
-        // Intentar con ShooterEnemy
         ShooterEnemy shooterComp = GetComponent<ShooterEnemy>();
         if (shooterComp != null)
         {
             enemyColor = shooterComp.enemyColor;
             return;
         }
-        // Intentar con TankEnemy
         TankEnemy tankComp = GetComponent<TankEnemy>();
         if (tankComp != null)
         {
             enemyColor = tankComp.enemyColor;
             return;
         }
-        // Intentar con EnemyZZ
         EnemyZZ zzComp = GetComponent<EnemyZZ>();
         if (zzComp != null)
         {
@@ -87,7 +83,8 @@ public class EnemyOffScreenIndicator : MonoBehaviour
 
     void LateUpdate()
     {
-        if (indicatorInstance == null || mainCamera == null) return;
+        if (indicatorInstance == null || mainCamera == null)
+            return;
 
         // Actualizar el color del enemigo
         UpdateEnemyColor();
@@ -120,26 +117,29 @@ public class EnemyOffScreenIndicator : MonoBehaviour
         RectTransform indicatorRect = indicatorInstance.GetComponent<RectTransform>();
         if (indicatorRect != null)
         {
+            // Posicionar el indicador en la pantalla
             indicatorRect.position = screenPos;
 
-            // Calcular dirección y ajustar rotación
+            // Calcular dirección desde el centro de la pantalla y ajustar la rotación
             Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
             Vector2 direction = (screenPos - (Vector3)screenCenter).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             indicatorRect.rotation = Quaternion.Euler(0, 0, angle - 90f);
 
-            // Calcular escala en función de la distancia
-            float distance = Vector3.Distance(transform.position, mainCamera.transform.position);
-            float tScale = Mathf.InverseLerp(maxDistance, minDistance, distance);
-            float scaleFactor = Mathf.Lerp(minIndicatorScale, maxIndicatorScale, tScale);
+            // Usar la distancia euclidiana desde el centro para determinar la escala
+            float distance = Vector2.Distance(screenPos, screenCenter);
+            float maxPossibleDistance = Vector2.Distance(Vector2.zero, screenCenter);
+            float normalizedDistance = distance / maxPossibleDistance;
+            float scaleFactor = Mathf.Lerp(maxIndicatorScale, minIndicatorScale, normalizedDistance);
             indicatorRect.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
 
-            // Calcular velocidad de parpadeo en función de la distancia
-            float tBlink = Mathf.InverseLerp(minDistance, maxDistance, distance);
-            float currentBlinkSpeed = Mathf.Lerp(maxBlinkSpeed, minBlinkSpeed, tBlink);
+            // Calcular la velocidad de parpadeo basada en la distancia
+            float currentBlinkSpeed = Mathf.Lerp(maxBlinkSpeed, minBlinkSpeed, normalizedDistance);
 
-            // Calcular alpha usando PingPong
-            float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(Time.time * currentBlinkSpeed, 1f));
+            // Incrementar el temporizador local para el parpadeo
+            blinkTimer += Time.deltaTime * currentBlinkSpeed;
+            // Calcular alpha usando PingPong con el temporizador local
+            float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(blinkTimer, 1f));
 
             if (indicatorImage != null)
             {

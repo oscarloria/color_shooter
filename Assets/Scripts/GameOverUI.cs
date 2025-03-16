@@ -8,6 +8,10 @@ public class GameOverUI : MonoBehaviour
 
     void Start()
     {
+        // Asegurarse de que el cursor esté visible y desbloqueado en la escena de Game Over.
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         // Obtener la puntuación final guardada en PlayerPrefs
         int finalScore = PlayerPrefs.GetInt("FinalScore", 0);
         scoreText.text = "Puntuación: " + finalScore;
@@ -21,10 +25,7 @@ public class GameOverUI : MonoBehaviour
 
     public void Quit()
     {
-        // Salir del juego (funciona en la compilación final)
-        Application.Quit();
-
-        // Si estás en el editor de Unity y quieres probar, puedes usar:
-        // UnityEditor.EditorApplication.isPlaying = false;
+        // Cargar la escena del menú principal
+        SceneManager.LoadScene("MainMenuScene");
     }
 }

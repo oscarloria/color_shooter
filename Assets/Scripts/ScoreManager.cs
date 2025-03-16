@@ -1,72 +1,55 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class ScoreManager : MonoBehaviour
 {
-    public static ScoreManager Instance;
+    public static ScoreManager Instance;  // Instancia global del ScoreManager
 
-    public int CurrentScore { get; private set; } = 0;
+    public int CurrentScore = 0;          // Puntaje actual del jugador
 
-    public TextMeshProUGUI scoreText;
-
-    private int nextLifeScoreThreshold = 5000; // Umbral para ganar una vida extra
+    [Header("UI")]
+    public TextMeshProUGUI scoreText;       // Referencia al TextMeshPro que muestra el puntaje
 
     void Awake()
     {
-        // Implementación del patrón Singleton
+        // Al no querer persistir el ScoreManager entre partidas, no usamos DontDestroyOnLoad.
+        // Si ya existe una instancia en la escena, la destruimos para que se use la nueva.
         if (Instance == null)
         {
             Instance = this;
-            // No destruir este objeto al cargar nuevas escenas
-            DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
     }
 
-    void Start()
+    // Método para agregar puntos al puntaje actual
+    public void AddScore(int points)
     {
-        // Reiniciar la puntuación si estamos en la escena principal
-        if (SceneManager.GetActiveScene().name == "SampleScene") // Reemplaza "SampleScene" con el nombre de tu escena principal si es diferente
-        {
-            CurrentScore = 0;
-            nextLifeScoreThreshold = 5000; // Reiniciar el umbral de vida extra
-            UpdateScoreText();
-        }
+        CurrentScore += points;
+        Debug.Log("Score added: " + points + ", Total Score: " + CurrentScore);
+        UpdateScoreUI();
     }
 
-    public void AddScore(int amount)
+    // Método para reiniciar el puntaje (al iniciar una nueva partida)
+    public void ResetScore()
     {
-        CurrentScore += amount;
-        UpdateScoreText();
-
-        // Verificar si se ha alcanzado el umbral para ganar una vida extra
-        if (CurrentScore >= nextLifeScoreThreshold)
-        {
-            // Obtener referencia al jugador
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    playerHealth.GainHealth();
-                }
-            }
-
-            // Incrementar el siguiente umbral
-            nextLifeScoreThreshold += 5000;
-        }
+        CurrentScore = 0;
+        UpdateScoreUI();
     }
 
-    void UpdateScoreText()
+    // Actualiza el texto del puntaje en la UI
+    private void UpdateScoreUI()
     {
         if (scoreText != null)
         {
-            scoreText.text = "Puntuación: " + CurrentScore;
+            scoreText.text = CurrentScore.ToString();
+        }
+        else
+        {
+            Debug.LogWarning("ScoreText is not assigned in ScoreManager.");
         }
     }
 }

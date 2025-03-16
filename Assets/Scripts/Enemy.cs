@@ -6,13 +6,15 @@ using UnityEngine;
 /// </summary>
 public class Enemy : MonoBehaviour
 {
-    // Variables públicas configurables desde el Inspector
     [Header("Configuración del Enemigo")]
     public Color enemyColor; // Color del enemigo
     public float speed = 2f; // Velocidad de movimiento hacia el jugador
     public float minRotationSpeed = -180f; // Velocidad mínima de rotación en grados por segundo
     public float maxRotationSpeed = 180f;  // Velocidad máxima de rotación en grados por segundo
     public GameObject explosionPrefab; // Prefab de la explosión que se instancia al destruir al enemigo
+
+    [Header("Score Settings")]
+    public int scoreValue = 100; // Puntos otorgados al destruir este enemigo
 
     // Variables privadas
     private float rotationSpeed;       // Velocidad de rotación asignada al enemigo
@@ -142,21 +144,18 @@ public class Enemy : MonoBehaviour
 
             // Destruir al enemigo
             DestroyEnemy();
-
-            // Aquí puedes añadir lógica adicional si lo deseas
         }
     }
 
     /// <summary>
-    /// Maneja la destrucción del enemigo, incluyendo efectos visuales y lógicos.
+    /// Maneja la destrucción del enemigo, incluyendo efectos visuales y la asignación de puntos.
     /// </summary>
     public void DestroyEnemy()
     {
-
-        // Añadir puntos al destruir al enemigo
+        // Añadir puntos al destruir al enemigo (valor configurable desde el Inspector)
         if (ScoreManager.Instance != null)
         {
-            ScoreManager.Instance.AddScore(100);
+            ScoreManager.Instance.AddScore(scoreValue);
         }
 
         // Instanciar el efecto de explosión en la posición del enemigo
@@ -177,7 +176,6 @@ public class Enemy : MonoBehaviour
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
-            // Obtener el componente SlowMotion del jugador
             SlowMotion slowMotion = playerObject.GetComponent<SlowMotion>();
             if (slowMotion != null)
             {
