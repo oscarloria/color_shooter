@@ -492,7 +492,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 985339720}
         m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: OnShowScoreboard
+        m_MethodName: OnShowOptions
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

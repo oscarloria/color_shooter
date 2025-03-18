@@ -14,6 +14,12 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene("ScoreboardScene");
     }
 
+    public void OnShowOptions()
+    {
+        SceneManager.LoadScene("OptionsScene");
+    }
+
+
     public void OnShowCredits()
     {
         SceneManager.LoadScene("CreditsScene");
