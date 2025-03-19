@@ -158,6 +158,19 @@ public class Enemy : MonoBehaviour
             ScoreManager.Instance.AddScore(scoreValue);
         }
 
+
+
+// Llamar a TryDropCoins() si este enemigo tiene el script EnemyCoinDrop
+        EnemyCoinDrop coinDrop = GetComponent<EnemyCoinDrop>();
+        if (coinDrop != null)
+        {
+            coinDrop.TryDropCoins();
+        }
+
+
+
+
+
         // Instanciar el efecto de explosión en la posición del enemigo
         if (explosionPrefab != null)
         {
