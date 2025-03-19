@@ -11,13 +11,14 @@ public class PlayerShooting : MonoBehaviour
     public float fireRate = 0.01f;
 
     // Variables de dispersión
-    public float normalDispersionAngle = 5f; // Ángulo de dispersión en modo normal
-    public float zoomedDispersionAngle = 0f;   // Ángulo de dispersión en modo Zoom
+    public float normalDispersionAngle = 5f;  // Ángulo de dispersión en modo normal
+    public float zoomedDispersionAngle = 0f;  // Ángulo de dispersión en modo Zoom
 
     // Referencia al estado de Zoom
     private CameraZoom cameraZoom;
 
     // Variables de munición
+    // magazineSize ahora se lee desde PlayerPrefs en Start()
     public int magazineSize = 6;
     public float reloadTime = 1f;
     [HideInInspector] public int currentAmmo;
@@ -41,6 +42,9 @@ public class PlayerShooting : MonoBehaviour
 
     void Start()
     {
+        // Leer el tamaño de cargador desde PlayerPrefs, si existe. Si no, usa 6 por defecto.
+        magazineSize = PlayerPrefs.GetInt("PistolMagazineSize", 6);
+
         currentAmmo = magazineSize;
         UpdateAmmoText();
         cameraZoom = FindObjectOfType<CameraZoom>(); // Obtener referencia al script de Zoom
@@ -248,7 +252,7 @@ public class PlayerShooting : MonoBehaviour
             reloadIndicator.ResetIndicator();
     }
 
-    void UpdateAmmoText()
+    public void UpdateAmmoText()
     {
         if (ammoText == null) return;
 
