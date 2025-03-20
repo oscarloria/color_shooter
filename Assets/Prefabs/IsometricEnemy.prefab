@@ -221,5 +221,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropChance: 0.5
-  coinAmount: 1
+  coinAmount: 50
   lumiCoinPrefab: {fileID: 2297602669565704670, guid: df92e5c73937fbe43a70311eb35126f8, type: 3}

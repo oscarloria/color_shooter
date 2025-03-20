@@ -5,57 +5,68 @@ using UnityEngine.InputSystem; // Para usar Gamepad.current
 
 public class PlayerShooting : MonoBehaviour
 {
-    // Variables de disparo
+    // -------------------- Variables de disparo --------------------
     public GameObject projectilePrefab;
     public float projectileSpeed = 20f;
     public float fireRate = 0.01f;
 
-    // Variables de dispersión
-    public float normalDispersionAngle = 5f;  // Ángulo de dispersión en modo normal
-    public float zoomedDispersionAngle = 0f;  // Ángulo de dispersión en modo Zoom
+    // -------------------- Variables de dispersión --------------------
+    public float normalDispersionAngle = 5f;    // Ángulo de dispersión en modo normal
+    public float zoomedDispersionAngle = 0f;    // Ángulo de dispersión en modo Zoom
 
-    // Referencia al estado de Zoom
-    private CameraZoom cameraZoom;
+    // -------------------- Valores predeterminados (Inspector) --------------------
+    [Header("Default Values (if no PlayerPrefs)")]
+    [SerializeField] private int defaultMagazineSize = 4;    // Inicia con 4 balas
+    [SerializeField] private float defaultReloadTime = 6f;   // Inicia con 6.0s de recarga
 
-    // Variables de munición
-    // magazineSize ahora se lee desde PlayerPrefs en Start()
-    public int magazineSize = 6;
-    public float reloadTime = 1f;
-    [HideInInspector] public int currentAmmo;
+    // -------------------- Variables de munición y recarga --------------------
+    [HideInInspector] public int magazineSize;    // Se leerá desde PlayerPrefs o defaultMagazineSize
     [HideInInspector] public bool isReloading = false;
+    public float reloadTime;                      // Se leerá desde PlayerPrefs o defaultReloadTime
+    [HideInInspector] public int currentAmmo;
 
-    // Variables de efecto de escala
+    // -------------------- Variables de efecto de escala --------------------
     public float scaleMultiplier = 1.1f;
     public float scaleDuration = 0.1f;
 
-    // Variables de color
+    // -------------------- Variables de color --------------------
     public Color currentColor = Color.white;
 
-    // UI
+    // -------------------- UI --------------------
     public TextMeshProUGUI ammoText;
+    public WeaponReloadIndicator reloadIndicator;  // Indicador radial de recarga
 
-    // Indicador radial de recarga (nuevo)
-    public WeaponReloadIndicator reloadIndicator;
+    // -------------------- Referencia al estado de Zoom --------------------
+    private CameraZoom cameraZoom;
 
     // Pilas para gestionar el orden de las teclas presionadas
     private KeyCode lastPressedKey = KeyCode.None;
 
+    // Claves PlayerPrefs
+    private const string PISTOL_MAGAZINE_SIZE_KEY = "PistolMagazineSize";
+    private const string PISTOL_RELOAD_TIME_KEY   = "PistolReloadTime";
+
     void Start()
     {
-        // Leer el tamaño de cargador desde PlayerPrefs, si existe. Si no, usa 6 por defecto.
-        magazineSize = PlayerPrefs.GetInt("PistolMagazineSize", 6);
+        // Leer tamaño de cargador desde PlayerPrefs (o usar 4 si no existe)
+        magazineSize = PlayerPrefs.GetInt(PISTOL_MAGAZINE_SIZE_KEY, defaultMagazineSize);
+
+        // Leer tiempo de recarga desde PlayerPrefs (o usar 6f si no existe)
+        reloadTime = PlayerPrefs.GetFloat(PISTOL_RELOAD_TIME_KEY, defaultReloadTime);
 
         currentAmmo = magazineSize;
         UpdateAmmoText();
-        cameraZoom = FindObjectOfType<CameraZoom>(); // Obtener referencia al script de Zoom
+
+        cameraZoom = FindObjectOfType<CameraZoom>(); // Obtener referencia al script CameraZoom
     }
 
     void Update()
     {
-        // Actualiza el color en función de la última tecla presionada o soltada
+        // Actualiza el color en función de las teclas o del gamepad
         UpdateCurrentColor();
     }
 
+    // -------------------- Actualizar color (teclado + gamepad) --------------------
     public void UpdateCurrentColor()
     {
         // -------------------- TECLADO (WASD) --------------------
@@ -80,7 +91,7 @@ public class PlayerShooting : MonoBehaviour
             lastPressedKey = KeyCode.D;
         }
 
-        // Si se suelta la última tecla, retrocede al color previo según el estado de la tecla
+        // Al soltar la última tecla presionada, ver si hay otra activa
         if (Input.GetKeyUp(lastPressedKey))
         {
             KeyCode newKey = GetLastKeyPressed();
@@ -94,11 +105,9 @@ public class PlayerShooting : MonoBehaviour
             Vector2 leftStick = gp.leftStick.ReadValue();
             float threshold = 0.5f;
 
-            // Comprobamos primero si el stick está prácticamente en neutro:
+            // Stick casi en neutro => color blanco si no hay WASD presionado
             if (Mathf.Abs(leftStick.x) < threshold && Mathf.Abs(leftStick.y) < threshold)
             {
-                // => color blanco (no se puede disparar un color)
-                // Solo si NO se está pulsando ninguna WASD
                 if (!AnyWASDPressed())
                 {
                     SetCurrentColor(Color.white);
@@ -106,32 +115,27 @@ public class PlayerShooting : MonoBehaviour
             }
             else
             {
-                // Si no está en neutro, asignamos color según dirección
+                // Asignar color según la dirección del stick
                 if (leftStick.y > threshold)
                 {
-                    // Arriba => Amarillo
                     SetCurrentColor(Color.yellow);
                 }
                 else if (leftStick.y < -threshold)
                 {
-                    // Abajo => Verde
                     SetCurrentColor(Color.green);
                 }
                 else if (leftStick.x > threshold)
                 {
-                    // Derecha => Rojo
                     SetCurrentColor(Color.red);
                 }
                 else if (leftStick.x < -threshold)
                 {
-                    // Izquierda => Azul
                     SetCurrentColor(Color.blue);
                 }
             }
         }
     }
 
-    // Comprueba si se mantiene pulsada alguna de las teclas W, A, S, D
     bool AnyWASDPressed()
     {
         return (Input.GetKey(KeyCode.W) ||
@@ -183,8 +187,10 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
+    // -------------------- Disparo --------------------
     public void Shoot()
     {
+        // No dispara si no hay color, está recargando o no queda munición
         if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
 
         // Reducir la munición y actualizar la UI
@@ -192,16 +198,14 @@ public class PlayerShooting : MonoBehaviour
         UpdateAmmoText();
 
         // Calcular el ángulo de dispersión según el estado de Zoom
-        float dispersionAngle = normalDispersionAngle;
-        if (cameraZoom != null && cameraZoom.IsZoomedIn)
-        {
-            dispersionAngle = zoomedDispersionAngle;
-        }
+        float dispersionAngle = (cameraZoom != null && cameraZoom.IsZoomedIn)
+            ? zoomedDispersionAngle
+            : normalDispersionAngle;
 
-        // Calcular un ángulo aleatorio dentro del rango de dispersión
+        // Ángulo aleatorio dentro del rango
         float randomAngle = Random.Range(-dispersionAngle / 2f, dispersionAngle / 2f);
 
-        // Crear el proyectil con dispersión
+        // Instanciar el proyectil con ese ángulo
         Quaternion projectileRotation = transform.rotation * Quaternion.Euler(0, 0, randomAngle);
         GameObject projectile = Instantiate(projectilePrefab, transform.position, projectileRotation);
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
@@ -214,16 +218,18 @@ public class PlayerShooting : MonoBehaviour
             projSpriteRenderer.color = currentColor;
         }
 
+        // Efecto de escala
         StartCoroutine(ScaleEffect());
 
-        // Llamar al efecto de retroceso de cámara
+        // Efecto de retroceso de cámara
         if (CameraShake.Instance != null)
         {
-            Vector3 recoilDirection = -transform.up; // Dirección opuesta a la dirección de disparo
+            Vector3 recoilDirection = -transform.up; // opuesto a la dirección de disparo
             CameraShake.Instance.RecoilCamera(recoilDirection);
         }
     }
 
+    // -------------------- Recarga --------------------
     public IEnumerator Reload()
     {
         isReloading = true;
@@ -242,7 +248,7 @@ public class PlayerShooting : MonoBehaviour
                 reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
             yield return null;
         }
-        
+
         currentAmmo = magazineSize;
         isReloading = false;
         UpdateAmmoText();
@@ -252,6 +258,7 @@ public class PlayerShooting : MonoBehaviour
             reloadIndicator.ResetIndicator();
     }
 
+    // -------------------- UI --------------------
     public void UpdateAmmoText()
     {
         if (ammoText == null) return;
@@ -266,6 +273,7 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
+    // -------------------- Efecto de escala al disparar --------------------
     IEnumerator ScaleEffect()
     {
         Vector3 originalScale = transform.localScale;
