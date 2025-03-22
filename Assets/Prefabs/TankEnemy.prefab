@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4698641169129799372}
   - component: {fileID: 7218325211322791149}
   - component: {fileID: 341431465804531270}
+  - component: {fileID: 7447790939666963089}
   m_Layer: 7
   m_Name: TankEnemy
   m_TagString: Enemy
@@ -196,14 +197,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indicatorPrefab: {fileID: 5051004599970868692, guid: d86da89dcc86b384fa4c3c9905f54ec0, type: 3}
   margin: 0.05
-  minIndicatorScale: 0.5
   maxIndicatorScale: 3
-  minDistance: 5
-  maxDistance: 20
+  minIndicatorScale: 0.5
   minBlinkSpeed: 2
   maxBlinkSpeed: 4
   minAlpha: 0
   maxAlpha: 1
+--- !u!114 &7447790939666963089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6032822784827993704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14380d2fdc626c94099559c8fdef839d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropChance: 1
+  coinAmount: 1
+  lumiCoinPrefab: {fileID: 2297602669565704670, guid: df92e5c73937fbe43a70311eb35126f8, type: 3}
 --- !u!1 &7538881754469370178
 GameObject:
   m_ObjectHideFlags: 0

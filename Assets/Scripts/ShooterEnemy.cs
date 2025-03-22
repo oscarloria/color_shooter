@@ -8,7 +8,7 @@ using System.Collections;
 /// 3) Dispara un proyectil hacia el jugador.
 /// 4) Se mueve lateralmente (dodging) para evitar contacto directo.
 /// Luego repite los pasos 2-4 hasta recibir 3 impactos efectivos.
-/// 
+///
 /// Además, una vez que el enemigo está dentro de la vista del jugador, se limita su posición para que no salga de la pantalla.
 /// Se agrega feedback de daño (flash y shake) cuando recibe un impacto efectivo.
 /// </summary>
@@ -22,7 +22,7 @@ public class ShooterEnemy : MonoBehaviour
 
     [Header("Disparo")]
     public GameObject shooterProjectilePrefab; // Prefab del proyectil que dispara
-    public float projectileSpeed = 5f;           // Velocidad de los proyectiles
+    public float projectileSpeed = 5f;         // Velocidad de los proyectiles
 
     [Header("Distancia Mínima")]
     public float safeDistance = 6f; // El enemigo se mantendrá a esta distancia del jugador
@@ -86,7 +86,6 @@ public class ShooterEnemy : MonoBehaviour
         if (player == null)
             return;
 
-        // Determinar si el Zoom está activo usando la referencia cacheada
         bool isZoomActive = (cameraZoom != null && cameraZoom.IsZoomedIn);
 
         // Solo aplicar la corrección de distancia si el Zoom NO está activo
@@ -102,7 +101,7 @@ public class ShooterEnemy : MonoBehaviour
             }
         }
 
-        // Procesa el comportamiento según el estado actual
+        // Procesar la lógica según el estado actual
         switch (currentState)
         {
             case ShooterState.Entering:
@@ -119,7 +118,7 @@ public class ShooterEnemy : MonoBehaviour
                 break;
         }
 
-        // Solo aplicar el clamping de posición cuando el Zoom NO está activo y no estamos en estado Entering.
+        // Clampear la posición (margen) si no está en Entering y no hay Zoom
         if (currentState != ShooterState.Entering && !isZoomActive)
         {
             transform.position = ClampToCameraView(transform.position);
@@ -143,7 +142,7 @@ public class ShooterEnemy : MonoBehaviour
         }
     }
 
-    // Estado Aiming: Apunta al jugador durante 3 segundos sin moverse.
+    // Estado Aiming: Apunta al jugador durante 3 segundos.
     private void ProcessAimingState()
     {
         AimAtPlayer();
@@ -154,7 +153,7 @@ public class ShooterEnemy : MonoBehaviour
         }
     }
 
-    // Estado Shooting: Dispara un proyectil y pasa a Dodging.
+    // Estado Shooting: Dispara y pasa a Dodging.
     private void ProcessShootingState()
     {
         ShootProjectile();
@@ -164,11 +163,11 @@ public class ShooterEnemy : MonoBehaviour
         Vector3 perpendicular = new Vector3(-toPlayer.y, toPlayer.x, 0f);
         if (Random.value > 0.5f)
             perpendicular = -perpendicular;
-        // Se define un desplazamiento lateral de, por ejemplo, 2 unidades.
+
         dodgeTarget = transform.position + perpendicular * 2f;
 
         currentState = ShooterState.Dodging;
-        stateTimer = 1f; // Duración del movimiento lateral
+        stateTimer = 1f;
     }
 
     // Estado Dodging: Se mueve lateralmente y luego regresa a Aiming.
@@ -183,7 +182,7 @@ public class ShooterEnemy : MonoBehaviour
         }
     }
 
-    // Rota el ShooterEnemy para apuntar al jugador.
+    // Rota el enemigo para apuntar al jugador.
     private void AimAtPlayer()
     {
         Vector2 dir = (player.position - transform.position).normalized;
@@ -202,27 +201,32 @@ public class ShooterEnemy : MonoBehaviour
         Vector3 spawnPos = transform.position + transform.up * 0.5f;
         GameObject projObj = Instantiate(shooterProjectilePrefab, spawnPos, transform.rotation);
 
-        // Asignar color al SpriteRenderer del proyectil
+        // Asignar color al SpriteRenderer
         SpriteRenderer sr = projObj.GetComponent<SpriteRenderer>();
         if (sr != null)
+        {
             sr.color = enemyColor;
+        }
 
-        // Asignar el color al script EnemyProjectile (para el color matching en colisiones)
+        // Asignar color al script EnemyProjectile (para colisiones)
         EnemyProjectile enemyProj = projObj.GetComponent<EnemyProjectile>();
         if (enemyProj != null)
+        {
             enemyProj.bulletColor = enemyColor;
+        }
 
-        // Darle velocidad al proyectil en la dirección en que está apuntando el enemigo.
+        // Velocidad al proyectil
         Rigidbody2D rb = projObj.GetComponent<Rigidbody2D>();
         if (rb != null)
+        {
             rb.linearVelocity = transform.up * projectileSpeed;
+        }
     }
 
     // Retorna true si el ShooterEnemy está dentro de la vista principal de la cámara.
     private bool IsInView()
     {
-        if (Camera.main == null)
-            return false;
+        if (Camera.main == null) return false;
         Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
         return (viewportPos.x >= 0 && viewportPos.x <= 1 &&
                 viewportPos.y >= 0 && viewportPos.y <= 1 &&
@@ -230,18 +234,15 @@ public class ShooterEnemy : MonoBehaviour
     }
 
     /// <summary>
-    /// Recibe una posición en mundo y la clampa para que esté dentro de la vista de la cámara.
-    /// Se usan márgenes diferenciados para evitar que el enemigo quede justo en el borde.
+    /// Limita la posición para que no salga de la vista de la cámara (con márgenes).
     /// </summary>
     private Vector3 ClampToCameraView(Vector3 pos)
     {
         Camera cam = Camera.main;
-        if (cam == null)
-            return pos;
+        if (cam == null) return pos;
 
         Vector3 viewportPos = cam.WorldToViewportPoint(pos);
 
-        // Márgenes diferenciados: 20% horizontal y 10% vertical.
         float horizontalMargin = 0.2f;
         float verticalMargin = 0.1f;
 
@@ -253,10 +254,8 @@ public class ShooterEnemy : MonoBehaviour
         return clampedPos;
     }
 
-    // Manejo de colisiones: verifica impactos de proyectiles del jugador o contacto con el jugador.
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // Si colisiona con un proyectil del jugador
         if (collision.collider.CompareTag("Projectile"))
         {
             Projectile projectile = collision.collider.GetComponent<Projectile>();
@@ -271,32 +270,33 @@ public class ShooterEnemy : MonoBehaviour
                 }
                 else
                 {
-                    // Feedback de daño: flash y shake
                     StartCoroutine(DamageFeedback());
                 }
             }
         }
-        // Si colisiona con el jugador
         else if (collision.collider.CompareTag("Player"))
         {
             PlayerHealth playerHealth = collision.collider.GetComponent<PlayerHealth>();
             if (playerHealth != null)
+            {
                 playerHealth.TakeDamage();
+            }
 
             if (CameraShake.Instance != null)
+            {
                 CameraShake.Instance.ShakeCamera();
+            }
 
             DestroyShooterEnemy();
         }
     }
 
     /// <summary>
-    /// Feedback visual de daño: hace un flash del color y un pequeño shake del ShooterEnemy.
+    /// Efecto visual de daño: flash y un pequeño shake del ShooterEnemy.
     /// </summary>
     private IEnumerator DamageFeedback()
     {
         Color originalColor = spriteRenderer.color;
-        // Usamos una mezcla entre enemyColor y blanco para crear el efecto flash
         Color flashColor = Color.Lerp(enemyColor, Color.white, 0.5f);
         spriteRenderer.color = flashColor;
 
@@ -318,12 +318,23 @@ public class ShooterEnemy : MonoBehaviour
         spriteRenderer.color = originalColor;
     }
 
-    // Manejo de la destrucción del ShooterEnemy.
+    // -------------------------------------------------
+    // Manejo de la destrucción del ShooterEnemy
+    // -------------------------------------------------
     private void DestroyShooterEnemy()
     {
+        // Sumar score
         if (ScoreManager.Instance != null)
             ScoreManager.Instance.AddScore(150);
 
+        // Intentar soltar Lumi-Coins (Script EnemyCoinDrop)
+        EnemyCoinDrop coinDrop = GetComponent<EnemyCoinDrop>();
+        if (coinDrop != null)
+        {
+            coinDrop.TryDropCoins();
+        }
+
+        // Efecto de explosión
         if (explosionPrefab != null)
         {
             GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
@@ -335,6 +346,7 @@ public class ShooterEnemy : MonoBehaviour
             }
         }
 
+        // Añadir slow motion
         GameObject pObj = GameObject.FindGameObjectWithTag("Player");
         if (pObj != null)
         {
@@ -343,6 +355,7 @@ public class ShooterEnemy : MonoBehaviour
                 slow.AddSlowMotionCharge();
         }
 
+        // Destruir
         Destroy(gameObject);
     }
 }
