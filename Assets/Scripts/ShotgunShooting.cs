@@ -6,42 +6,42 @@ using UnityEngine.InputSystem; // Necesario para usar Gamepad.current
 /// <summary>
 /// Maneja el disparo y la recarga de la escopeta (spread shot).
 /// Se integra con el sistema de color y el zoom igual que la pistola.
+///
+/// Se ha modificado la lógica de dispersion de pellets para que
+/// haya un tiro central (cuando pelletsPerShot es impar)
+/// y el resto se distribuya simétricamente alrededor de ese ángulo.
 /// </summary>
 public class ShotgunShooting : MonoBehaviour
 {
     // -------------- Variables de Configuración --------------
     [Header("Configuración de la Escopeta (Spread Shot)")]
-    public GameObject projectilePrefab;      // Prefab del proyectil
-    public float projectileSpeed = 20f;        // Velocidad de los proyectiles
-    public float fireRate = 0.5f;              // Tiempo mínimo entre disparos (si lo deseas)
+    public GameObject projectilePrefab;       // Prefab del proyectil
+    public float projectileSpeed = 20f;       // Velocidad de los proyectiles
+    public float fireRate = 0.5f;             // Tiempo mínimo entre disparos
 
-    public float normalSpreadAngle = 80f;      // Ángulo de dispersión sin zoom
-    public float zoomedSpreadAngle = 50f;      // Ángulo de dispersión con zoom
-    public int pelletsPerShot = 5;             // Número de proyectiles disparados simultáneamente
+    public float normalSpreadAngle = 80f;     // Ángulo de dispersión sin zoom
+    public float zoomedSpreadAngle = 50f;     // Ángulo de dispersión con zoom
+    public int pelletsPerShot = 5;            // Número de proyectiles disparados simultáneamente
 
-    public int magazineSize = 8;               // Cantidad de cartuchos
-    public float reloadTime = 60f;             // Tiempo de recarga en segundos
+    public int magazineSize = 8;              // Cantidad de cartuchos
+    public float reloadTime = 60f;            // Tiempo de recarga en segundos
     [HideInInspector] public bool isReloading = false; // Estado de recarga
 
     [Header("Efectos")]
-    public float scaleMultiplier = 1.2f;       // Escala para feedback visual
+    public float scaleMultiplier = 1.2f;      // Escala para feedback visual
     public float scaleDuration = 0.15f;
 
     [Header("UI")]
-    public TextMeshProUGUI ammoText;           // Texto para mostrar la munición en la UI (escopeta)
-    // NUEVO: Indicador radial de recarga
-    public WeaponReloadIndicator reloadIndicator;
+    public TextMeshProUGUI ammoText;          // Texto para mostrar la munición en la UI (escopeta)
+    public WeaponReloadIndicator reloadIndicator; // Indicador radial de recarga
 
     // -------------- Variables Internas --------------
-    [HideInInspector] public int currentAmmo;    // Cartuchos actuales
-    private CameraZoom cameraZoom;               // Referencia al Zoom (para saber si está activo)
-    private bool canShoot = true;                // Si el arma puede disparar (control de fireRate)
+    [HideInInspector] public int currentAmmo;  // Cartuchos actuales
+    private CameraZoom cameraZoom;             // Referencia al Zoom (para saber si está activo)
+    private bool canShoot = true;             // Control de fireRate
 
     // ----------------- Sistema de color -----------------
-    public Color currentColor = Color.white;      // Color asignado a los proyectiles
-
-    // Opcional: si quieres imitar la misma lógica de PlayerShooting,
-    // podrías definir un KeyCode para trackear la última tecla pulsada
+    public Color currentColor = Color.white;   // Color asignado a los proyectiles
     private KeyCode lastPressedKey = KeyCode.None;
 
     void Start()
@@ -64,34 +64,50 @@ public class ShotgunShooting : MonoBehaviour
 
     /// <summary>
     /// Dispara el spread shot (si hay cartuchos y no se está recargando).
+    /// Ahora se distribuyen los pellets de forma simétrica.
     /// </summary>
     public void Shoot()
     {
-        // Si el color es blanco, está recargando o no hay cartuchos, o no se puede disparar aún, salimos
+        // No dispara si no hay color, está recargando o sin munición
         if (currentColor == Color.white || isReloading || currentAmmo <= 0 || !canShoot) return;
 
-        // Disminuir la munición y actualizar la UI
+        // Disminuir munición
         currentAmmo--;
         UpdateAmmoText();
 
-        // Calcular el ángulo total de dispersión
-        float spreadAngle = (cameraZoom != null && cameraZoom.IsZoomedIn) ? zoomedSpreadAngle : normalSpreadAngle;
+        // Determinar ángulo total de dispersión
+        float totalSpread = (cameraZoom != null && cameraZoom.IsZoomedIn) 
+            ? zoomedSpreadAngle 
+            : normalSpreadAngle;
 
-        // Disparar "pelletsPerShot" proyectiles simultáneamente
+        // Calcular los ángulos equidistantes en [-totalSpread/2 .. +totalSpread/2]
+        // Con pelletsPerShot = 5, se obtienen -40, -20, 0, +20, +40 (si totalSpread=80).
+        // Si pelletsPerShot es par, no habrá un tiro exactamente en 0°, pero seguirán siendo simétricos.
+        
+        float angleStep = (pelletsPerShot > 1)
+            ? totalSpread / (pelletsPerShot - 1)
+            : 0f;
+
+        float startAngle = -totalSpread * 0.5f; // ángulo inicial (izquierda)
+        
+        // Disparar "pelletsPerShot" proyectiles
         for (int i = 0; i < pelletsPerShot; i++)
         {
-            float offset = Random.Range(-spreadAngle * 0.5f, spreadAngle * 0.5f);
+            float currentAngle = startAngle + angleStep * i;
+            
+            // Rotación base de la escopeta
             Quaternion baseRotation = transform.rotation;
-            Quaternion pelletRotation = baseRotation * Quaternion.Euler(0, 0, offset);
+            // Aplicar el offset de "currentAngle" en Z
+            Quaternion pelletRotation = baseRotation * Quaternion.Euler(0, 0, currentAngle);
 
-            // Instanciar proyectil
+            // Instanciar el proyectil
             GameObject projectile = Instantiate(projectilePrefab, transform.position, pelletRotation);
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
 
             // Asignar velocidad
             rb.linearVelocity = projectile.transform.up * projectileSpeed;
 
-            // Asignar color al proyectil
+            // Asignar color
             SpriteRenderer projSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
             if (projSpriteRenderer != null)
             {
@@ -107,10 +123,10 @@ public class ShotgunShooting : MonoBehaviour
             CameraShake.Instance.RecoilCamera(recoilDirection);
         }
 
-        // Control de "fireRate"
+        // Control de fireRate
         StartCoroutine(FireRateCooldown());
 
-        // Verificar si se quedó sin cartuchos y, de ser así, iniciar recarga
+        // Verificar recarga
         if (currentAmmo <= 0 && !isReloading)
         {
             StartCoroutine(Reload());
@@ -118,7 +134,7 @@ public class ShotgunShooting : MonoBehaviour
     }
 
     /// <summary>
-    /// Corrutina que controla el cooldown entre disparos.
+    /// Corrutina para controlar el cooldown entre disparos (fireRate).
     /// </summary>
     IEnumerator FireRateCooldown()
     {
@@ -132,12 +148,11 @@ public class ShotgunShooting : MonoBehaviour
     /// </summary>
     public IEnumerator Reload()
     {
-        if (currentAmmo == magazineSize) yield break; // no recargar si está lleno
+        if (currentAmmo == magazineSize) yield break;
 
         isReloading = true;
         UpdateAmmoText();
 
-        // Reiniciar el indicador de recarga
         if (reloadIndicator != null)
             reloadIndicator.ResetIndicator();
 
@@ -154,7 +169,6 @@ public class ShotgunShooting : MonoBehaviour
         isReloading = false;
         UpdateAmmoText();
 
-        // Reiniciar el indicador al finalizar
         if (reloadIndicator != null)
             reloadIndicator.ResetIndicator();
     }
@@ -199,7 +213,6 @@ public class ShotgunShooting : MonoBehaviour
         transform.localScale = targetScale;
 
         elapsedTime = 0f;
-
         // Escalar hacia abajo
         while (elapsedTime < halfDuration)
         {
@@ -263,7 +276,7 @@ public class ShotgunShooting : MonoBehaviour
             }
             else
             {
-                // Stick NO en neutro => asignar color
+                // Asignar color según la dirección
                 if (leftStick.y > threshold)
                 {
                     SetCurrentColor(Color.yellow);
@@ -326,18 +339,22 @@ public class ShotgunShooting : MonoBehaviour
     void SetCurrentColor(Color color)
     {
         currentColor = color;
-        // (Opcional) podrías cambiar el color del sprite de la nave si lo deseas, similar a PlayerShooting
+        // (Opcional) cambiar color del sprite base, igual a PlayerShooting
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null) sr.color = currentColor;
+        if (sr != null)
+        {
+            sr.color = currentColor;
+        }
     }
 
-    // ------------------------------------------------------------------
-    // Método público para asignar color desde fuera (si lo deseas)
-    // ------------------------------------------------------------------
+    // Método público para asignar color desde fuera (opcional)
     public void SetShotgunColor(Color newColor)
     {
         currentColor = newColor;
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null) sr.color = currentColor;
+        if (sr != null)
+        {
+            sr.color = newColor;
+        }
     }
 }

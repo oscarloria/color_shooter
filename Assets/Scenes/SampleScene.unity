@@ -972,12 +972,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
   projectileSpeed: 40
-  fireRate: 0.5
+  fireRate: 1
   normalSpreadAngle: 40
   zoomedSpreadAngle: 10
-  pelletsPerShot: 8
-  magazineSize: 24
-  reloadTime: 2
+  pelletsPerShot: 12
+  magazineSize: 8
+  reloadTime: 1
   isReloading: 0
   scaleMultiplier: 2
   scaleDuration: 0.15
