@@ -954,7 +954,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 3
   invulnerabilityDuration: 2
-  explosionPrefab: {fileID: 0}
+  explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
   explosionRadius: 2
   shockwavePrefab: {fileID: 1281717388494725286, guid: 62c04ca8e47ade345ac280d3c1da3fcc, type: 3}
   explosionRadiusIndicatorPrefab: {fileID: 4862697828659544469, guid: 7202c301bb268e14f96c588942d3fe10, type: 3}
@@ -1003,7 +1003,7 @@ MonoBehaviour:
   reloadTime: 1
   magazineSize: 30
   normalDispersionAngle: 20
-  zoomedDispersionAngle: 3
+  zoomedDispersionAngle: 1
   currentAmmo: 0
   isReloading: 0
   scaleMultiplier: 1.5
@@ -1024,12 +1024,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
-  magazineSize: 6
-  reloadTime: 8
-  orbDurability: 100
+  magazineSize: 4
+  reloadTime: 2
+  orbDurability: 3
   orbitRadius: 2
   orbitSpeed: 90
-  fireRate: 0.5
+  fireRate: 0.2
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   ammoText: {fileID: 1922289426}
   reloadIndicator: {fileID: 487839296}
@@ -5570,18 +5570,19 @@ MonoBehaviour:
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
-  tankEnemySpawnChance: 1
-  shooterSpawnChance: 0
-  enemyZZSpawnChance: 0
-  spawnDistance: 20
+  tankEnemySpawnChance: 0.2
+  shooterSpawnChance: 0.1
+  enemyZZSpawnChance: 0.1
+  spawnDistance: 25
   enemyColors: []
-  initialEnemiesPerWave: 1
-  enemiesPerWaveIncrement: 1
-  initialSpawnRate: 1
-  spawnRateDecrement: 0.01
-  initialEnemySpeed: 1
-  enemySpeedIncrement: 0.1
-  wavePause: 10
+  initialEnemiesPerWave: 4
+  maxEnemiesPerWave: 24
+  initialSpawnRate: 2.5
+  minSpawnRate: 0.3
+  initialEnemySpeed: 1.8
+  maxEnemySpeed: 4
+  wavePause: 5
+  eventChance: 0.3
 --- !u!4 &1941573991
 Transform:
   m_ObjectHideFlags: 0

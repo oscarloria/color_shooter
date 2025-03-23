@@ -33,7 +33,7 @@ public class EnemyOffScreenIndicator : MonoBehaviour
     private Camera mainCamera;
     private Canvas canvas;
 
-    // Variable to store the enemy's color from various scripts.
+    // Variable para almacenar el color del enemigo (Enemy, TankEnemy, etc.).
     private Color enemyColor = Color.white;
 
     // Temporizador local para el parpadeo.
@@ -46,13 +46,14 @@ public class EnemyOffScreenIndicator : MonoBehaviour
 
         if (indicatorPrefab != null && canvas != null)
         {
-            // Instanciar el indicador como hijo del Canvas
             indicatorInstance = Instantiate(indicatorPrefab, canvas.transform);
             indicatorImage = indicatorInstance.GetComponent<Image>();
         }
     }
 
-    // Método para actualizar el color del enemigo desde distintos componentes.
+    /// <summary>
+    /// Método para actualizar el color del enemigo desde distintos scripts (Enemy, TankEnemy, etc.).
+    /// </summary>
     private void UpdateEnemyColor()
     {
         Enemy enemyComp = GetComponent<Enemy>();
@@ -92,11 +93,12 @@ public class EnemyOffScreenIndicator : MonoBehaviour
         // Convertir la posición del enemigo a coordenadas viewport
         Vector3 viewportPos = mainCamera.WorldToViewportPoint(transform.position);
 
-        // Determinar si el enemigo está en pantalla
+        // Verificar si el enemigo está en pantalla
         bool isOnScreen = (viewportPos.z > 0 &&
                            viewportPos.x > 0 && viewportPos.x < 1 &&
                            viewportPos.y > 0 && viewportPos.y < 1);
 
+        // Si está en pantalla, desactivar el indicador
         if (isOnScreen)
         {
             indicatorInstance.SetActive(false);
@@ -108,8 +110,8 @@ public class EnemyOffScreenIndicator : MonoBehaviour
         }
 
         // Clampear viewportPos con márgenes
-        viewportPos.x = Mathf.Clamp(viewportPos.x, margin, 1 - margin);
-        viewportPos.y = Mathf.Clamp(viewportPos.y, margin, 1 - margin);
+        viewportPos.x = Mathf.Clamp(viewportPos.x, margin, 1f - margin);
+        viewportPos.y = Mathf.Clamp(viewportPos.y, margin, 1f - margin);
 
         // Convertir a posición de pantalla
         Vector3 screenPos = mainCamera.ViewportToScreenPoint(viewportPos);
@@ -121,25 +123,45 @@ public class EnemyOffScreenIndicator : MonoBehaviour
             indicatorRect.position = screenPos;
 
             // Calcular dirección desde el centro de la pantalla y ajustar la rotación
-            Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
-            Vector2 direction = (screenPos - (Vector3)screenCenter).normalized;
+            Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            Vector2 direction = ((Vector2)screenPos - screenCenter).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            indicatorRect.rotation = Quaternion.Euler(0, 0, angle - 90f);
+            indicatorRect.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
 
-            // Usar la distancia euclidiana desde el centro para determinar la escala
-            float distance = Vector2.Distance(screenPos, screenCenter);
-            float maxPossibleDistance = Vector2.Distance(Vector2.zero, screenCenter);
-            float normalizedDistance = distance / maxPossibleDistance;
-            float scaleFactor = Mathf.Lerp(maxIndicatorScale, minIndicatorScale, normalizedDistance);
+            // ---------------- CORRECCIÓN DE RELACIÓN DE ASPECTO ----------------
+            // Normalizar X e Y para que la distancia no dependa del aspect ratio
+            Vector2 offset = new Vector2(
+                (screenPos.x - screenCenter.x) / (Screen.width * 0.5f),
+                (screenPos.y - screenCenter.y) / (Screen.height * 0.5f)
+            );
+            float distance01 = offset.magnitude;  // Va de 0 (centro) hasta algo >1 si está muy lejos
+
+            // Clampear la distancia a [0..1] para que no se salga de rango
+            distance01 = Mathf.Clamp01(distance01);
+
+            // ---------------- ESCALA DEL INDICADOR ----------------
+            // Near => distance01 ~ 0 => grande (maxIndicatorScale)
+            // Far  => distance01 ~ 1 => pequeño (minIndicatorScale)
+            float scaleFactor = Mathf.Lerp(maxIndicatorScale, minIndicatorScale, distance01);
             indicatorRect.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
 
-            // Calcular la velocidad de parpadeo basada en la distancia
-            float currentBlinkSpeed = Mathf.Lerp(maxBlinkSpeed, minBlinkSpeed, normalizedDistance);
+            // ---------------- PARPADEO (BLINK) ----------------
+            // Near => blink rápido => maxBlinkSpeed
+            // Far  => blink lento => minBlinkSpeed
+            float currentBlinkSpeed = Mathf.Lerp(maxBlinkSpeed, minBlinkSpeed, distance01);
 
             // Incrementar el temporizador local para el parpadeo
             blinkTimer += Time.deltaTime * currentBlinkSpeed;
-            // Calcular alpha usando PingPong con el temporizador local
-            float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(blinkTimer, 1f));
+
+            // Reiniciarlo para que no crezca indefinidamente
+            if (blinkTimer > 2f) 
+            {
+                blinkTimer -= 2f; 
+            }
+
+            // Calcular alpha usando PingPong con el temporizador local (0..1)
+            float pingPong = Mathf.PingPong(blinkTimer, 1f);
+            float alpha = Mathf.Lerp(minAlpha, maxAlpha, pingPong);
 
             if (indicatorImage != null)
             {
