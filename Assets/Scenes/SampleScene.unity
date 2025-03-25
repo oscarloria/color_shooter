@@ -1024,9 +1024,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
-  magazineSize: 4
+  magazineSize: 100
   reloadTime: 2
-  orbDurability: 3
+  orbDurability: 500
   orbitRadius: 2
   orbitSpeed: 90
   fireRate: 0.2
@@ -5819,6 +5819,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1941573991}
   - component: {fileID: 1941573990}
+  - component: {fileID: 1941573992}
   m_Layer: 8
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -5842,21 +5843,52 @@ MonoBehaviour:
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
-  tankEnemySpawnChance: 0.2
-  shooterSpawnChance: 0.1
-  enemyZZSpawnChance: 0.1
-  spawnDistance: 25
+  tankEnemySpawnChance: 0.3
+  shooterSpawnChance: 0.2
+  enemyZZSpawnChance: 0.2
+  spawnDistance: 20
   enemyColors: []
-  initialEnemiesPerWave: 4
+  initialEnemiesPerWave: 1
   maxEnemiesPerWave: 24
   initialSpawnRate: 2.5
   minSpawnRate: 0.3
   initialEnemySpeed: 1.8
   maxEnemySpeed: 4
-  wavePause: 5
   eventChance: 0.3
+  enemiesPerWave: 0
+  currentSpawnRate: 0
+  currentEnemySpeed: 0
+--- !u!4 &1941573991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941573989}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1941573992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941573989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9eac42c164df4504b13699c6c6026a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemySpawner: {fileID: 1941573990}
   waveAnnouncementText: {fileID: 1150832584}
   waveNumberText: {fileID: 1545973626}
+  wavePause: 5
   randomWaveMessages:
   - Fight!
   - GO!
@@ -5895,21 +5927,6 @@ MonoBehaviour:
   - A pelear!
   - Ikuzo!
   - Spin to Win!
---- !u!4 &1941573991
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1941573989}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1967838132
 GameObject:
   m_ObjectHideFlags: 0

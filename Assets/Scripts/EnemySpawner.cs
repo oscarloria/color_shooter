@@ -21,7 +21,7 @@ public class EnemySpawner : MonoBehaviour
 
     public float spawnDistance = 10f;
 
-    // Lista completa de colores posibles para los enemigos
+    // Lista completa de colores posibles para los enemigos (usada en formaciones si se quiere)
     public List<Color> enemyColors = new List<Color>();
 
     [Header("Dificultad Incremental")]
@@ -31,43 +31,72 @@ public class EnemySpawner : MonoBehaviour
     public float minSpawnRate = 0.3f;         
     public float initialEnemySpeed = 1.8f;    
     public float maxEnemySpeed = 4.0f;        
-    public float wavePause = 5f;             
 
     [Header("Eventos Aleatorios")]
     public float eventChance = 0.3f; // Probabilidad de que ocurra un evento especial
 
-    [Header("UI de Oleadas")]
-    [Tooltip("Texto UI central (TextMeshPro) para anunciar la oleada. Se activa unos segundos y se oculta.")]
-    public TextMeshProUGUI waveAnnouncementText;
+    #region Variables para oleadas (para uso por WaveManager)
+    [HideInInspector] public int enemiesPerWave; 
+    [HideInInspector] public float currentSpawnRate;
+    [HideInInspector] public float currentEnemySpeed;
+    #endregion
 
-    [Tooltip("Texto UI permanente (TextMeshPro) que muestra la ola actual en pantalla (p.ej. en la esquina).")]
-    public TextMeshProUGUI waveNumberText;
+    #region Métodos de Quadrant Spawn
 
-    [Header("Mensajes aleatorios tras Wave #")]
-    [Tooltip("Lista de frases que se mostrarán al azar en lugar de 'Let's go!'")]
-    public string[] randomWaveMessages =
+    /// <summary>
+    /// Retorna una posición de spawn y el color asignado según el cuadrante.
+    /// Los cuadrantes se definen usando dos líneas diagonales:
+    /// - Superior: ángulos entre 45° y 135° → Amarillo.
+    /// - Derecho: ángulos entre -45° y 45° → Rojo.
+    /// - Inferior: ángulos entre 225° y 315° → Verde.
+    /// - Izquierdo: ángulos entre 135° y 225° → Azul.
+    /// </summary>
+    private (Vector2 spawnPosition, Color quadrantColor) GetSpawnData()
     {
-        "Fight!", "GO!", "Get ready!", "Let the battle begin!",
-        "Let's Rock!", "The battle begins!", "Start!", "FIGHT!",
-        "Tussle!", "Duel!", "The duel begins!", "Go for it!",
-        "Let the Beast roar... Fight!", "Battle Start!", "It's time to make history!",
-        "Cross the field... Clash!", "Ready Set Melty!", "Let the battle commence!",
-        "Let's dance!", "Destroy your enemy!", "Get Ready... Action!", "Hajime!",
-        "Show them your true power!", "En garde!", "Slappin' Time!", "Let's... BALL!",
-        "Mucha Lucha!", "Let the skies decide!", "Strike! Fight!", "Eliminate the target!",
-        "Let's Rumble!", "FIGHTINGU!", "Believe it!", "Set ablaze! Fight!",
-        "A pelear!", "Ikuzo!", "Spin to Win!"
-    };
+        int quadrant = Random.Range(0, 4); // 0: Superior, 1: Derecho, 2: Inferior, 3: Izquierdo
+        float angle = 0f;
+        Color chosenColor = Color.white;
+        switch (quadrant)
+        {
+            case 0: // Superior
+                angle = Random.Range(45f, 135f);
+                chosenColor = Color.yellow;
+                break;
+            case 1: // Derecho
+                angle = Random.Range(-45f, 45f);
+                chosenColor = Color.red;
+                break;
+            case 2: // Inferior
+                angle = Random.Range(225f, 315f);
+                chosenColor = Color.green;
+                break;
+            case 3: // Izquierdo
+                angle = Random.Range(135f, 225f);
+                chosenColor = Color.blue;
+                break;
+        }
+        Vector2 spawnDirection = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+        Vector2 spawnPosition = (Vector2)transform.position + spawnDirection * spawnDistance;
+        return (spawnPosition, chosenColor);
+    }
 
-    private int currentWave = 1;
-    private int enemiesPerWave;
-    private float currentSpawnRate;
-    private float currentEnemySpeed;
-    private bool isSpecialWave = false;
-
-    void Start()
+    /// <summary>
+    /// Calcula el color de cuadrante a partir de una dirección (relativa a la posición del spawner).
+    /// </summary>
+    private Color GetQuadrantColorFromDirection(Vector2 direction)
     {
-        // Inicializar colores
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        if (angle < 0) angle += 360f;
+        if (angle >= 45f && angle < 135f) return Color.yellow;
+        else if (angle >= 135f && angle < 225f) return Color.blue;
+        else if (angle >= 225f && angle < 315f) return Color.green;
+        else return Color.red;
+    }
+
+    #endregion
+
+    void Awake()
+    {
         if (enemyColors.Count == 0)
         {
             enemyColors.Add(Color.yellow);
@@ -79,124 +108,11 @@ public class EnemySpawner : MonoBehaviour
         enemiesPerWave = initialEnemiesPerWave;
         currentSpawnRate = initialSpawnRate;
         currentEnemySpeed = initialEnemySpeed;
-
-        // Asegurarnos de ocultar el texto de la oleada al inicio
-        if (waveAnnouncementText != null)
-        {
-            waveAnnouncementText.gameObject.SetActive(false);
-        }
-
-        // Asegurarnos de mostrar en waveNumberText la wave #1 al inicio
-        if (waveNumberText != null)
-        {
-            waveNumberText.text = "Wave: 1";
-        }
-
-        // Iniciar ciclo de oleadas
-        StartCoroutine(WaveCycle());
     }
 
-    IEnumerator WaveCycle()
-    {
-        while (true)
-        {
-            // Mostrar anuncio de oleada (Wave #N y un mensaje random)
-            yield return StartCoroutine(ShowWaveAnnouncement(currentWave));
+    #region Métodos Principales de Spawn (llamados desde WaveManager)
 
-            // Decidir si es una oleada especial
-            isSpecialWave = (Random.value < eventChance && currentWave > 3);
-
-            // Ejecutar la oleada (sea normal o especial)
-            if (isSpecialWave)
-            {
-                yield return StartCoroutine(ExecuteSpecialWave());
-            }
-            else
-            {
-                yield return StartCoroutine(SpawnWave());
-            }
-
-            // Pausa entre oleadas
-            yield return new WaitForSeconds(wavePause);
-
-            // Incrementar dificultad
-            IncrementDifficulty();
-        }
-    }
-
-    /// <summary>
-    /// Muestra un texto "Wave #N" durante 1.0s y luego un mensaje aleatorio 0.5s.
-    /// Después esconde el texto.
-    /// </summary>
-    IEnumerator ShowWaveAnnouncement(int waveNumber)
-    {
-        if (waveAnnouncementText != null)
-        {
-            waveAnnouncementText.gameObject.SetActive(true);
-
-            // 1) "Wave #N"
-            waveAnnouncementText.text = "Wave #" + waveNumber;
-            yield return new WaitForSeconds(1.0f);
-
-            // 2) Escoger un mensaje al azar
-            if (randomWaveMessages != null && randomWaveMessages.Length > 0)
-            {
-                int randomIndex = Random.Range(0, randomWaveMessages.Length);
-                waveAnnouncementText.text = randomWaveMessages[randomIndex];
-            }
-            else
-            {
-                waveAnnouncementText.text = "Let's go!"; // fallback
-            }
-            yield return new WaitForSeconds(1.0f);
-
-            // 3) Ocultar
-            waveAnnouncementText.text = "";
-            waveAnnouncementText.gameObject.SetActive(false);
-        }
-        else
-        {
-            // Si no asignaste waveAnnouncementText en inspector, al menos logs
-            Debug.Log("Wave #" + waveNumber);
-            yield return new WaitForSeconds(1.0f);
-            Debug.Log("Random message or 'Let's go!'");
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-    void IncrementDifficulty()
-    {
-        currentWave++;
-
-        // Actualizar waveNumberText
-        if (waveNumberText != null)
-        {
-            waveNumberText.text = "Wave: " + currentWave;
-        }
-
-        if (currentWave <= 5)
-        {
-            enemiesPerWave += 1;
-        }
-        else if (currentWave <= 15)
-        {
-            enemiesPerWave += 2;
-        }
-        else
-        {
-            enemiesPerWave += 3;
-        }
-
-        enemiesPerWave = Mathf.Min(enemiesPerWave, maxEnemiesPerWave);
-
-        float spawnRateDecrement = 0.1f * Mathf.Min(1f, currentWave / 10f);
-        currentSpawnRate = Mathf.Max(minSpawnRate, currentSpawnRate - spawnRateDecrement);
-
-        float speedIncrement = 0.15f * Mathf.Min(1f, currentWave / 15f);
-        currentEnemySpeed = Mathf.Min(maxEnemySpeed, currentEnemySpeed + speedIncrement);
-    }
-
-    IEnumerator SpawnWave()
+    public IEnumerator SpawnWave()
     {
         int enemiesSpawned = 0;
         while (enemiesSpawned < enemiesPerWave)
@@ -207,12 +123,10 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    IEnumerator ExecuteSpecialWave()
+    public IEnumerator ExecuteSpecialWave()
     {
         Debug.Log("¡Oleada Especial! Prepárate para una sorpresa...");
-
         int eventType = Random.Range(0, 4);
-
         switch (eventType)
         {
             case 0:
@@ -230,14 +144,16 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Métodos de Eventos Especiales
+
     IEnumerator RapidWave()
     {
         Debug.Log("¡Oleada Rápida! Muchos enemigos aparecerán rápidamente.");
-
         int extraEnemies = enemiesPerWave + 6;
         float tempSpawnRate = currentSpawnRate * 0.5f;
         float tempSpeed = currentEnemySpeed * 1.2f;
-
         for (int i = 0; i < extraEnemies; i++)
         {
             SpawnSpecificEnemy(0, tempSpeed);
@@ -248,10 +164,8 @@ public class EnemySpawner : MonoBehaviour
     IEnumerator EliteWave()
     {
         Debug.Log("¡Oleada de Élite! Pocos enemigos pero más poderosos.");
-
         int reducedEnemies = Mathf.Max(3, enemiesPerWave / 2);
         float tempSpawnRate = currentSpawnRate * 1.5f;
-
         for (int i = 0; i < reducedEnemies; i++)
         {
             SpawnSpecificEnemy(Random.Range(1, 3), currentEnemySpeed * 0.8f);
@@ -261,9 +175,10 @@ public class EnemySpawner : MonoBehaviour
 
     IEnumerator SingleColorWave()
     {
+        // En oleadas de color, se usa el color específico pasado por parámetro,
+        // por lo que no se aplica la lógica de cuadrante.
         Color waveColor = GetRandomColorFromAvailable();
         Debug.Log("¡Oleada de Color! Todos los enemigos son de color " + ColorToString(waveColor));
-
         for (int i = 0; i < enemiesPerWave; i++)
         {
             SpawnEnemyWithColor(waveColor);
@@ -274,19 +189,17 @@ public class EnemySpawner : MonoBehaviour
     IEnumerator FormationWave()
     {
         Debug.Log("¡Oleada de Formación! Los enemigos aparecen en patrones.");
-
-        // Patrón 1: Círculo
         yield return StartCoroutine(SpawnInCircle(enemiesPerWave / 3));
         yield return new WaitForSeconds(1f);
-
-        // Patrón 2: Línea
         yield return StartCoroutine(SpawnInLine(enemiesPerWave / 3));
         yield return new WaitForSeconds(1f);
-
-        // Patrón 3: Dos grupos
         int remaining = enemiesPerWave - (2 * (enemiesPerWave / 3));
         yield return StartCoroutine(SpawnInGroups(remaining));
     }
+
+    #endregion
+
+    #region Métodos de Patrones de Spawn
 
     IEnumerator SpawnInCircle(int count)
     {
@@ -295,10 +208,9 @@ public class EnemySpawner : MonoBehaviour
             float angle = (i / (float)count) * 2 * Mathf.PI;
             Vector2 spawnDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
             Vector2 spawnPosition = (Vector2)transform.position + spawnDirection * spawnDistance;
-
-            GameObject prefab = (i % 2 == 0) ? enemyPrefab : tankEnemyPrefab;
-            SpawnEnemyAtPosition(prefab, spawnPosition);
-
+            // En formaciones, usamos GetQuadrantColorFromDirection
+            Color quadrantColor = GetQuadrantColorFromDirection(spawnDirection);
+            SpawnEnemyAtPosition(enemyPrefab, spawnPosition, quadrantColor);
             yield return new WaitForSeconds(0.2f);
         }
     }
@@ -307,13 +219,14 @@ public class EnemySpawner : MonoBehaviour
     {
         Vector2 startPosition = (Vector2)transform.position + Vector2.right * spawnDistance;
         Vector2 endPosition = (Vector2)transform.position - Vector2.right * spawnDistance;
-
         for (int i = 0; i < count; i++)
         {
-            float t = i / (float)(count - 1);
+            float t = (count == 1) ? 0.5f : i / (float)(count - 1);
             Vector2 spawnPosition = Vector2.Lerp(startPosition, endPosition, t);
-
-            SpawnEnemyAtPosition(shooterEnemyPrefab, spawnPosition);
+            // Calculamos la dirección desde el spawner a la posición generada
+            Vector2 direction = (spawnPosition - (Vector2)transform.position).normalized;
+            Color quadrantColor = GetQuadrantColorFromDirection(direction);
+            SpawnEnemyAtPosition(shooterEnemyPrefab, spawnPosition, quadrantColor);
             yield return new WaitForSeconds(0.2f);
         }
     }
@@ -322,75 +235,78 @@ public class EnemySpawner : MonoBehaviour
     {
         Vector2 position1 = (Vector2)transform.position + Vector2.up * spawnDistance;
         Vector2 position2 = (Vector2)transform.position + Vector2.down * spawnDistance;
-
         for (int i = 0; i < count; i++)
         {
             Vector2 spawnPosition = (i % 2 == 0) ? position1 : position2;
+            Vector2 direction = (spawnPosition - (Vector2)transform.position).normalized;
+            Color quadrantColor = GetQuadrantColorFromDirection(direction);
             GameObject prefab = (i % 2 == 0) ? enemyZZPrefab : enemyPrefab;
-            SpawnEnemyAtPosition(prefab, spawnPosition);
-
+            SpawnEnemyAtPosition(prefab, spawnPosition, quadrantColor);
             yield return new WaitForSeconds(0.3f);
         }
     }
 
-    void SpawnEnemyAtPosition(GameObject prefab, Vector2 position)
+    #endregion
+
+    #region Métodos Principales de Spawn
+
+    /// <summary>
+    /// Genera la posición de spawn y utiliza la lógica de cuadrante para asignar el color.
+    /// </summary>
+    public void SpawnEnemy()
     {
-        if (prefab == null)
+        // Usamos el helper para obtener la posición y color según cuadrante.
+        (Vector2 spawnPosition, Color quadrantColor) = GetSpawnData();
+        GameObject enemyObject = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        // Asignamos el color calculado
+        TankEnemy tankScript = enemyObject.GetComponent<TankEnemy>();
+        if (tankScript != null)
         {
-            prefab = enemyPrefab; 
+            tankScript.speed = currentEnemySpeed;
+            tankScript.enemyColor = quadrantColor;
+            tankScript.ApplyColor();
+            return;
         }
-
-        GameObject enemyObject = Instantiate(prefab, position, Quaternion.identity);
-
-        List<Color> availableColors = GetAvailableColorsForWave(currentWave);
-        if (availableColors.Count > 0)
+        ShooterEnemy shooterScript = enemyObject.GetComponent<ShooterEnemy>();
+        if (shooterScript != null)
         {
-            Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
-            ApplyColorToEnemy(enemyObject, chosenColor);
+            shooterScript.enemyColor = quadrantColor;
+            shooterScript.speed = currentEnemySpeed;
+            return;
+        }
+        EnemyZZ enemyZZScript = enemyObject.GetComponent<EnemyZZ>();
+        if (enemyZZScript != null)
+        {
+            enemyZZScript.enemyColor = quadrantColor;
+            enemyZZScript.speed = currentEnemySpeed;
+            return;
+        }
+        Enemy enemyScript = enemyObject.GetComponent<Enemy>();
+        if (enemyScript != null)
+        {
+            enemyScript.enemyColor = quadrantColor;
+            enemyScript.speed = currentEnemySpeed;
         }
     }
 
+    /// <summary>
+    /// Similar a SpawnEnemy, pero se utiliza cuando se desea forzar un color específico (por ejemplo, en oleadas de color).
+    /// </summary>
     void SpawnEnemyWithColor(Color specificColor)
     {
         Vector2 spawnDirection = Random.insideUnitCircle.normalized;
         Vector2 spawnPosition = (Vector2)transform.position + spawnDirection * spawnDistance;
-
-        float randomValue = Random.Range(0f, 1f);
-        GameObject prefab = SelectEnemyPrefabByProbability(randomValue);
-
-        GameObject enemyObject = Instantiate(prefab, spawnPosition, Quaternion.identity);
+        GameObject enemyObject = Instantiate(SelectEnemyPrefabByProbability(Random.Range(0f, 1f)), spawnPosition, Quaternion.identity);
         ApplyColorToEnemy(enemyObject, specificColor);
     }
 
-    GameObject SelectEnemyPrefabByProbability(float randomValue)
-    {
-        float adjustedTankChance = tankEnemySpawnChance;
-        float adjustedShooterChance = adjustedTankChance + shooterSpawnChance;
-        float adjustedZZChance = adjustedShooterChance + enemyZZSpawnChance;
-
-        if (randomValue <= adjustedTankChance)
-        {
-            return tankEnemyPrefab;
-        }
-        else if (randomValue <= adjustedShooterChance)
-        {
-            return shooterEnemyPrefab ?? enemyPrefab;
-        }
-        else if (randomValue <= adjustedZZChance)
-        {
-            return enemyZZPrefab ?? enemyPrefab;
-        }
-        else
-        {
-            return enemyPrefab;
-        }
-    }
-
-    void SpawnSpecificEnemy(int enemyType, float speedModifier)
+    /// <summary>
+    /// Genera un enemigo de tipo específico (0: normal, 1: TankEnemy, 2: ShooterEnemy, 3: EnemyZZ) con speedModifier.
+    /// </summary>
+    public void SpawnSpecificEnemy(int enemyType, float speedModifier)
     {
         Vector2 spawnDirection = Random.insideUnitCircle.normalized;
         Vector2 spawnPosition = (Vector2)transform.position + spawnDirection * spawnDistance;
-
         GameObject prefab;
         switch (enemyType)
         {
@@ -407,119 +323,69 @@ public class EnemySpawner : MonoBehaviour
                 prefab = enemyPrefab;
                 break;
         }
-
         GameObject enemyObject = Instantiate(prefab, spawnPosition, Quaternion.identity);
-
-        List<Color> availableColors = GetAvailableColorsForWave(currentWave);
-        if (availableColors.Count > 0)
-        {
-            Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
-            ApplyColorToEnemy(enemyObject, chosenColor, speedModifier);
-        }
+        // Usamos la dirección para determinar el color del cuadrante
+        Color quadrantColor = GetQuadrantColorFromDirection(spawnDirection);
+        ApplyColorToEnemy(enemyObject, quadrantColor, speedModifier);
     }
 
-    void SpawnEnemy()
+    /// <summary>
+    /// Genera un enemigo en una posición específica y le asigna el color pasado.
+    /// </summary>
+    void SpawnEnemyAtPosition(GameObject prefab, Vector2 position, Color overrideColor = default)
     {
-        Vector2 spawnDirection = Random.insideUnitCircle.normalized;
-        Vector2 spawnPosition = (Vector2)transform.position + spawnDirection * spawnDistance;
+        if (prefab == null) prefab = enemyPrefab;
+        GameObject enemyObject = Instantiate(prefab, position, Quaternion.identity);
 
-        GameObject enemyObject = null;
-
-        float combinedChanceTank = tankEnemySpawnChance;
-        float combinedChanceShooter = combinedChanceTank + shooterSpawnChance;
-        float combinedChanceZZ = combinedChanceShooter + enemyZZSpawnChance;
-        float randomValue = Random.Range(0f, 1f);
-
-        if (randomValue <= combinedChanceTank)
+        Color colorToApply = overrideColor;
+        // Si no se pasó un color específico (default es (0,0,0,0) o Color.clear), lo calculamos a partir de la dirección
+        if (colorToApply == default(Color))
         {
-            enemyObject = Instantiate(tankEnemyPrefab, spawnPosition, Quaternion.identity);
-
-            List<Color> availableColors = GetAvailableColorsForWave(currentWave);
-            if (availableColors.Count > 0)
-            {
-                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
-                TankEnemy tankScript = enemyObject.GetComponent<TankEnemy>();
-                if (tankScript != null)
-                {
-                    tankScript.speed = currentEnemySpeed;
-                    tankScript.enemyColor = chosenColor;
-                    tankScript.ApplyColor();
-                }
-            }
+            Vector2 direction = (position - (Vector2)transform.position).normalized;
+            colorToApply = GetQuadrantColorFromDirection(direction);
         }
-        else if (randomValue <= combinedChanceShooter)
-        {
-            if (shooterEnemyPrefab == null)
-            {
-                Debug.LogWarning("ShooterEnemyPrefab no asignado en EnemySpawner!");
-                return;
-            }
+        ApplyColorToEnemy(enemyObject, colorToApply);
+    }
 
-            enemyObject = Instantiate(shooterEnemyPrefab, spawnPosition, Quaternion.identity);
+    GameObject SelectEnemyPrefabByProbability(float randomValue)
+    {
+        float adjustedTankChance = tankEnemySpawnChance;
+        float adjustedShooterChance = adjustedTankChance + shooterSpawnChance;
+        float adjustedZZChance = adjustedShooterChance + enemyZZSpawnChance;
 
-            List<Color> availableColors = GetAvailableColorsForWave(currentWave);
-            if (availableColors.Count > 0)
-            {
-                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
-                ShooterEnemy shooterScript = enemyObject.GetComponent<ShooterEnemy>();
-                if (shooterScript != null)
-                {
-                    shooterScript.enemyColor = chosenColor;
-                    shooterScript.speed = currentEnemySpeed;
-                }
-            }
-        }
-        else if (randomValue <= combinedChanceZZ)
-        {
-            if (enemyZZPrefab == null)
-            {
-                Debug.LogWarning("EnemyZZPrefab no asignado en EnemySpawner!");
-                return;
-            }
-
-            enemyObject = Instantiate(enemyZZPrefab, spawnPosition, Quaternion.identity);
-
-            List<Color> availableColors = GetAvailableColorsForWave(currentWave);
-            if (availableColors.Count > 0)
-            {
-                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
-                EnemyZZ enemyZZScript = enemyObject.GetComponent<EnemyZZ>();
-                if (enemyZZScript != null)
-                {
-                    enemyZZScript.enemyColor = chosenColor;
-                    enemyZZScript.speed = currentEnemySpeed;
-                }
-            }
-        }
+        if (randomValue <= adjustedTankChance)
+            return tankEnemyPrefab;
+        else if (randomValue <= adjustedShooterChance)
+            return shooterEnemyPrefab ?? enemyPrefab;
+        else if (randomValue <= adjustedZZChance)
+            return enemyZZPrefab ?? enemyPrefab;
         else
-        {
-            enemyObject = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-
-            List<Color> availableColors = GetAvailableColorsForWave(currentWave);
-            if (availableColors.Count > 0)
-            {
-                Color chosenColor = availableColors[Random.Range(0, availableColors.Count)];
-                Enemy enemyScript = enemyObject.GetComponent<Enemy>();
-                if (enemyScript != null)
-                {
-                    enemyScript.enemyColor = chosenColor;
-                    enemyScript.speed = currentEnemySpeed;
-                }
-            }
-        }
+            return enemyPrefab;
     }
+    #endregion
 
-    float GetAdjustedProbability(float baseProbability, int wave, int minWave)
+    #region Ajuste de Dificultad
+    /// <summary>
+    /// Incrementa la dificultad: más enemigos, menor spawnRate, mayor velocidad.
+    /// Llamado por WaveManager tras cada oleada.
+    /// </summary>
+    public void IncrementDifficulty()
     {
-        if (wave < minWave)
-        {
-            return 0f;
-        }
+        if (enemiesPerWave <= 5) { enemiesPerWave += 1; }
+        else if (enemiesPerWave <= 15) { enemiesPerWave += 2; }
+        else { enemiesPerWave += 3; }
 
-        float scaleFactor = Mathf.Min(2.0f, 1.0f + ((wave - minWave) / 20.0f));
-        return Mathf.Min(0.5f, baseProbability * scaleFactor);
+        enemiesPerWave = Mathf.Min(enemiesPerWave, maxEnemiesPerWave);
+
+        float spawnRateDecrement = 0.1f;
+        currentSpawnRate = Mathf.Max(minSpawnRate, currentSpawnRate - spawnRateDecrement);
+
+        float speedIncrement = 0.15f;
+        currentEnemySpeed = Mathf.Min(maxEnemySpeed, currentEnemySpeed + speedIncrement);
     }
+    #endregion
 
+    #region Color y Utilidades
     void ApplyColorToEnemy(GameObject enemyObject, Color color, float speedModifier = 1.0f)
     {
         TankEnemy tankScript = enemyObject.GetComponent<TankEnemy>();
@@ -557,71 +423,20 @@ public class EnemySpawner : MonoBehaviour
 
     Color GetRandomColorFromAvailable()
     {
-        List<Color> availableColors = GetAvailableColorsForWave(currentWave);
-        if (availableColors.Count > 0)
-        {
-            return availableColors[Random.Range(0, availableColors.Count)];
-        }
+        // Si se quiere usar la lista enemyColors (por ejemplo en oleadas de color)
+        if (enemyColors != null && enemyColors.Count > 0)
+            return enemyColors[Random.Range(0, enemyColors.Count)];
         return Color.red;
     }
 
-    string ColorToString(Color color)
-    {
-        if (color == Color.red) return "rojo";
-        if (color == Color.blue) return "azul";
-        if (color == Color.green) return "verde";
-        if (color == Color.yellow) return "amarillo";
-        return "desconocido";
-    }
 
-    List<Color> GetAvailableColorsForWave(int wave)
-    {
-        Color rojo = Color.red;
-        Color azul = Color.blue;
-        Color verde = Color.green;
-        Color amarillo = Color.yellow;
-
-        List<Color> colorsForThisWave = new List<Color>();
-
-        if (wave <= 3)
-        {
-            colorsForThisWave.Add(rojo);
-        }
-        else if (wave <= 6)
-        {
-            colorsForThisWave.Add(rojo);
-            colorsForThisWave.Add(azul);
-        }
-        else if (wave <= 10)
-        {
-            colorsForThisWave.Add(azul);
-            colorsForThisWave.Add(verde);
-        }
-        else if (wave <= 15)
-        {
-            colorsForThisWave.Add(rojo);
-            colorsForThisWave.Add(azul);
-            colorsForThisWave.Add(verde);
-        }
-        else if (wave <= 20)
-        {
-            colorsForThisWave.Add(verde);
-            colorsForThisWave.Add(amarillo);
-        }
-        else if (wave <= 25)
-        {
-            colorsForThisWave.Add(amarillo);
-            colorsForThisWave.Add(rojo);
-            colorsForThisWave.Add(verde);
-        }
-        else
-        {
-            colorsForThisWave.Add(rojo);
-            colorsForThisWave.Add(azul);
-            colorsForThisWave.Add(verde);
-            colorsForThisWave.Add(amarillo);
-        }
-
-        return colorsForThisWave;
-    }
+string ColorToString(Color color)
+{
+    if (color == Color.red) return "rojo";
+    if (color == Color.blue) return "azul";
+    if (color == Color.green) return "verde";
+    if (color == Color.yellow) return "amarillo";
+    return "desconocido";
+}
+    #endregion
 }
