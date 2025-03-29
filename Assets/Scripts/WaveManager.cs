@@ -39,7 +39,7 @@ public class WaveManager : MonoBehaviour
         "Show them your true power!", "En garde!", "Slappin' Time!", "Let's... BALL!",
         "Mucha Lucha!", "Let the skies decide!", "Strike! Fight!", "Eliminate the target!",
         "Let's Rumble!", "FIGHTINGU!", "Believe it!", "Set ablaze! Fight!",
-        "A pelear!", "Ikuzo!", "Spin to Win!"
+        "A pelear!", "Ikuzo!", "Spin to Win!", "Don't give up!"
     };
 
     // Variables internas de ola/dificultad
