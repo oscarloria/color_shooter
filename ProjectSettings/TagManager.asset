@@ -19,7 +19,7 @@ TagManager:
   - Player
   - AimLine
   - EnemyProjectile
-  - 
+  - PlayerBase
   - 
   - 
   - 
@@ -44,11 +44,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Player
-    uniqueID: 3109880895
-    locked: 0
   - name: AimLine
     uniqueID: 1396765819
+    locked: 0
+  - name: PlayerBase
+    uniqueID: 2527301057
+    locked: 0
+  - name: Projectile
+    uniqueID: 1300089767
+    locked: 0
+  - name: Player
+    uniqueID: 3109880895
     locked: 0
   m_RenderingLayers:
   - Default
