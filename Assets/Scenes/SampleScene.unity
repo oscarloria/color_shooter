@@ -5970,7 +5970,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1941573990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6305,7 +6305,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.39, y: 0.65}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -6323,16 +6323,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e48fb9d292d7834cbacd5648c8fc6fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directionalSprites:
+  upSprites:
   - {fileID: 5713540224448721588, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -7128277849644958460, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -7126535747464870327, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -2264087942744113136, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  upLeftSprites:
   - {fileID: -1871135457039237487, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 6746785297207038493, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 194848669475164707, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -8243027076145204965, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  leftSprites:
   - {fileID: -4582010285631840054, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 387382383643849044, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -8117353556480614088, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 3849914990933587512, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  downLeftSprites:
   - {fileID: -3859367136997027223, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 7787655665464393482, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -4732654059870301969, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -5432999149285057981, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  downSprites:
   - {fileID: -2783567254147224343, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 5186210738665830346, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 5186210738665830346, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -2798179063811447568, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  downRightSprites:
   - {fileID: -5788349717046803360, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 3430733377283856369, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 1208860246895250497, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -3633195646822449980, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  rightSprites:
   - {fileID: -5067885388891889094, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 43509091537581479, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -3844380031863884088, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -3633195646822449980, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  upRightSprites:
+  - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
   - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
   shipTransform: {fileID: 190124698}
+  framesPerSecond: 4
 --- !u!1 &2057956303
 GameObject:
   m_ObjectHideFlags: 0

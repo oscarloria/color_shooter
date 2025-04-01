@@ -35,6 +35,69 @@ TextureImporter:
   - first:
       213: 387382383643849044
     second: SpriteSheetTest_10
+  - first:
+      213: 7787655665464393482
+    second: SpriteSheetTest_11
+  - first:
+      213: 3018033211335189881
+    second: SpriteSheetTest_12
+  - first:
+      213: 3430733377283856369
+    second: SpriteSheetTest_13
+  - first:
+      213: 43509091537581479
+    second: SpriteSheetTest_14
+  - first:
+      213: 319842955825769735
+    second: SpriteSheetTest_15
+  - first:
+      213: -7126535747464870327
+    second: SpriteSheetTest_16
+  - first:
+      213: 194848669475164707
+    second: SpriteSheetTest_17
+  - first:
+      213: -8117353556480614088
+    second: SpriteSheetTest_18
+  - first:
+      213: -4732654059870301969
+    second: SpriteSheetTest_19
+  - first:
+      213: 5186210738665830346
+    second: SpriteSheetTest_20
+  - first:
+      213: 1208860246895250497
+    second: SpriteSheetTest_21
+  - first:
+      213: -3844380031863884088
+    second: SpriteSheetTest_22
+  - first:
+      213: 7819687997400818593
+    second: SpriteSheetTest_23
+  - first:
+      213: -2264087942744113136
+    second: SpriteSheetTest_24
+  - first:
+      213: -8243027076145204965
+    second: SpriteSheetTest_25
+  - first:
+      213: 3849914990933587512
+    second: SpriteSheetTest_26
+  - first:
+      213: -5432999149285057981
+    second: SpriteSheetTest_27
+  - first:
+      213: -2798179063811447568
+    second: SpriteSheetTest_28
+  - first:
+      213: -5401270669186437924
+    second: SpriteSheetTest_29
+  - first:
+      213: -3633195646822449980
+    second: SpriteSheetTest_30
+  - first:
+      213: -7025606592730844255
+    second: SpriteSheetTest_31
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -102,7 +165,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 16384
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 2
@@ -133,12 +196,12 @@ TextureImporter:
       name: SpriteSheetTest_0
       rect:
         serializedVersion: 2
-        x: 24
-        y: 565
+        x: 25
+        y: 564
         width: 39
         height: 65
-      alignment: 9
-      pivot: {x: 0.3904544, y: 0.55143946}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -159,8 +222,8 @@ TextureImporter:
         y: 583
         width: 65
         height: 39
-      alignment: 9
-      pivot: {x: 0.48856917, y: 0.33806434}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -181,8 +244,8 @@ TextureImporter:
         y: 581
         width: 66
         height: 40
-      alignment: 9
-      pivot: {x: 0.46341267, y: 0.37461853}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -203,8 +266,8 @@ TextureImporter:
         y: 575
         width: 58
         height: 49
-      alignment: 9
-      pivot: {x: 0.6120916, y: 0.4317652}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -225,8 +288,8 @@ TextureImporter:
         y: 566
         width: 36
         height: 65
-      alignment: 9
-      pivot: {x: 0.53095925, y: 0.40283862}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -247,8 +310,8 @@ TextureImporter:
         y: 570
         width: 58
         height: 49
-      alignment: 9
-      pivot: {x: 0.3622884, y: 0.43934724}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -269,8 +332,8 @@ TextureImporter:
         y: 575
         width: 66
         height: 40
-      alignment: 9
-      pivot: {x: 0.5309596, y: 0.4024826}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -291,8 +354,8 @@ TextureImporter:
         y: 578
         width: 65
         height: 39
-      alignment: 9
-      pivot: {x: 0.5057157, y: 0.35711512}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -309,12 +372,12 @@ TextureImporter:
       name: SpriteSheetTest_8
       rect:
         serializedVersion: 2
-        x: 20
-        y: 479
-        width: 34
-        height: 74
+        x: 24
+        y: 484
+        width: 41
+        height: 65
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -331,12 +394,12 @@ TextureImporter:
       name: SpriteSheetTest_9
       rect:
         serializedVersion: 2
-        x: 100
-        y: 479
-        width: 34
-        height: 82
+        x: 87
+        y: 499
+        width: 65
+        height: 40
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -353,12 +416,12 @@ TextureImporter:
       name: SpriteSheetTest_10
       rect:
         serializedVersion: 2
-        x: 180
-        y: 479
-        width: 36
-        height: 74
+        x: 168
+        y: 499
+        width: 66
+        height: 38
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -371,11 +434,473 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_11
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 491
+        width: 59
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f3015219f431c60800000000000000
+      internalID: 7787655665464393482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_12
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 482
+        width: 36
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97527f9273532e920800000000000000
+      internalID: 3018033211335189881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_13
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 489
+        width: 59
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f7941074d96c9f20800000000000000
+      internalID: 3430733377283856369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_14
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 498
+        width: 66
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a5f899c9439a9000800000000000000
+      internalID: 43509091537581479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_15
+      rect:
+        serializedVersion: 2
+        x: 568
+        y: 500
+        width: 65
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70de7e5497f407400800000000000000
+      internalID: 319842955825769735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_16
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 402
+        width: 40
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 946cb35ee75791d90800000000000000
+      internalID: -7126535747464870327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_17
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 421
+        width: 65
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 322560125dd34b200800000000000000
+      internalID: 194848669475164707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_18
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 418
+        width: 66
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83128bda2fd595f80800000000000000
+      internalID: -8117353556480614088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_19
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 410
+        width: 59
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe0de9c053c325eb0800000000000000
+      internalID: -4732654059870301969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_20
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 403
+        width: 36
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac73e78603f19f740800000000000000
+      internalID: 5186210738665830346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_21
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 407
+        width: 59
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14c484f5dfbb6c010800000000000000
+      internalID: 1208860246895250497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_22
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 417
+        width: 66
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c6f52bbab406aac0800000000000000
+      internalID: -3844380031863884088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_23
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 420
+        width: 65
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a3267b9dcc158c60800000000000000
+      internalID: 7819687997400818593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_24
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 321
+        width: 39
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0100e7003085490e0800000000000000
+      internalID: -2264087942744113136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_25
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 337
+        width: 65
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1130743c82ea9d80800000000000000
+      internalID: -8243027076145204965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_26
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 337
+        width: 66
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8363c0a5945ad6530800000000000000
+      internalID: 3849914990933587512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_27
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 331
+        width: 59
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34a5dd91f0c1a94b0800000000000000
+      internalID: -5432999149285057981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_28
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 323
+        width: 36
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f4659387feda29d0800000000000000
+      internalID: -2798179063811447568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_29
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 325
+        width: 59
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdce76b81f4da05b0800000000000000
+      internalID: -5401270669186437924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_30
+      rect:
+        serializedVersion: 2
+        x: 486
+        y: 334
+        width: 66
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ccf6a70fcb449dc0800000000000000
+      internalID: -3633195646822449980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheetTest_31
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 337
+        width: 65
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a3b2a4f608008e90800000000000000
+      internalID: -7025606592730844255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: fec10f19b7549f34994f8b83e7884fae
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -388,8 +913,29 @@ TextureImporter:
       SpriteSheetTest_0: 5713540224448721588
       SpriteSheetTest_1: -1871135457039237487
       SpriteSheetTest_10: 387382383643849044
+      SpriteSheetTest_11: 7787655665464393482
+      SpriteSheetTest_12: 3018033211335189881
+      SpriteSheetTest_13: 3430733377283856369
+      SpriteSheetTest_14: 43509091537581479
+      SpriteSheetTest_15: 319842955825769735
+      SpriteSheetTest_16: -7126535747464870327
+      SpriteSheetTest_17: 194848669475164707
+      SpriteSheetTest_18: -8117353556480614088
+      SpriteSheetTest_19: -4732654059870301969
       SpriteSheetTest_2: -4582010285631840054
+      SpriteSheetTest_20: 5186210738665830346
+      SpriteSheetTest_21: 1208860246895250497
+      SpriteSheetTest_22: -3844380031863884088
+      SpriteSheetTest_23: 7819687997400818593
+      SpriteSheetTest_24: -2264087942744113136
+      SpriteSheetTest_25: -8243027076145204965
+      SpriteSheetTest_26: 3849914990933587512
+      SpriteSheetTest_27: -5432999149285057981
+      SpriteSheetTest_28: -2798179063811447568
+      SpriteSheetTest_29: -5401270669186437924
       SpriteSheetTest_3: -3859367136997027223
+      SpriteSheetTest_30: -3633195646822449980
+      SpriteSheetTest_31: -7025606592730844255
       SpriteSheetTest_4: -2783567254147224343
       SpriteSheetTest_5: -5788349717046803360
       SpriteSheetTest_6: -5067885388891889094
