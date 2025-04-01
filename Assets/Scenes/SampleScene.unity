@@ -925,6 +925,9 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   ammoText: {fileID: 721255408}
   reloadIndicator: {fileID: 1111079481}
+  idleScript: {fileID: 1990132648}
+  attackScript: {fileID: 1990132649}
+  attackAnimationDuration: 0.4
 --- !u!114 &190124704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6233,6 +6236,7 @@ GameObject:
   - component: {fileID: 1990132646}
   - component: {fileID: 1990132647}
   - component: {fileID: 1990132648}
+  - component: {fileID: 1990132649}
   m_Layer: 8
   m_Name: Character
   m_TagString: Untagged
@@ -6365,6 +6369,44 @@ MonoBehaviour:
   - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
   shipTransform: {fileID: 190124698}
   framesPerSecond: 4
+--- !u!114 &1990132649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990132645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e517336823c45dbac46ae245f57e16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackUpSprites:
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  attackUpLeftSprites:
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  attackLeftSprites:
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  attackDownLeftSprites:
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  attackDownSprites:
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  attackDownRightSprites:
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  attackRightSprites:
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  attackUpRightSprites:
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  shipTransform: {fileID: 190124698}
+  framesPerSecond: 6
 --- !u!1 &2057956303
 GameObject:
   m_ObjectHideFlags: 0

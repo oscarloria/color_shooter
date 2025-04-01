@@ -46,6 +46,15 @@ public class PlayerShooting : MonoBehaviour
     private const string PISTOL_MAGAZINE_SIZE_KEY = "PistolMagazineSize";
     private const string PISTOL_RELOAD_TIME_KEY   = "PistolReloadTime";
 
+    // ADICIÓN: Referencias a los scripts de Idle y Attack
+    [Header("Animaciones en 8 direcciones")]
+    public ShipBody8Directions idleScript;             // Script Idle
+    public ShipBodyAttack8Directions attackScript;     // Script Attack
+    public float attackAnimationDuration = 0.4f;       // Duración de la anim de ataque
+
+    // Para evitar activar múltiples rutinas de ataque a la vez
+    private bool isPlayingAttackAnim = false;
+
     void Start()
     {
         // Leer tamaño de cargador desde PlayerPrefs (o usar 4 si no existe)
@@ -227,6 +236,31 @@ public class PlayerShooting : MonoBehaviour
             Vector3 recoilDirection = -transform.up; // opuesto a la dirección de disparo
             CameraShake.Instance.RecoilCamera(recoilDirection);
         }
+
+        // ADICIÓN: Activar la animación de ataque
+        StartCoroutine(PlayAttackAnimation());
+    }
+
+    // ADICIÓN: Corrutina que desactiva el Idle y activa Attack durante "attackAnimationDuration"
+    IEnumerator PlayAttackAnimation()
+    {
+        if (isPlayingAttackAnim) yield break; // para no sobreponer múltiples animaciones
+
+        isPlayingAttackAnim = true;
+
+        // Desactivar Idle
+        if (idleScript != null) idleScript.enabled = false;
+        // Activar Attack
+        if (attackScript != null) attackScript.enabled = true;
+
+        yield return new WaitForSeconds(attackAnimationDuration);
+
+        // Desactivar Attack
+        if (attackScript != null) attackScript.enabled = false;
+        // Reactivar Idle
+        if (idleScript != null) idleScript.enabled = true;
+
+        isPlayingAttackAnim = false;
     }
 
     // -------------------- Recarga --------------------
