@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: b51696dd1bc60e34888fc8cf2519362e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2924838641363883127
+    second: PistolAttack_0
+  - first:
+      213: 3141631439622773631
+    second: PistolAttack_1
+  - first:
+      213: 8452583132991447968
+    second: PistolAttack_2
+  - first:
+      213: -5521479257163047230
+    second: PistolAttack_3
+  - first:
+      213: 5543538069100559267
+    second: PistolAttack_4
+  - first:
+      213: -4548537518638312472
+    second: PistolAttack_5
+  - first:
+      213: 1738701399433497830
+    second: PistolAttack_6
+  - first:
+      213: -9002852053133641650
+    second: PistolAttack_7
+  - first:
+      213: -5016234284449999724
+    second: PistolAttack_8
+  - first:
+      213: 2456694802038391996
+    second: PistolAttack_9
+  - first:
+      213: 3649934588841933947
+    second: PistolAttack_10
+  - first:
+      213: -309676146265078036
+    second: PistolAttack_11
+  - first:
+      213: -8160077241646452531
+    second: PistolAttack_12
+  - first:
+      213: -1349062145830034994
+    second: PistolAttack_13
+  - first:
+      213: 9063932800554575206
+    second: PistolAttack_14
+  - first:
+      213: -3980190037573449082
+    second: PistolAttack_15
+  - first:
+      213: 6078912202257821968
+    second: PistolAttack_16
+  - first:
+      213: -855196111353448815
+    second: PistolAttack_17
+  - first:
+      213: 3067648887618554256
+    second: PistolAttack_18
+  - first:
+      213: -2471201210334199305
+    second: PistolAttack_19
+  - first:
+      213: -4409379319751621213
+    second: PistolAttack_20
+  - first:
+      213: 6350360221092308621
+    second: PistolAttack_21
+  - first:
+      213: 8309650560987519996
+    second: PistolAttack_22
+  - first:
+      213: 8499268060534962349
+    second: PistolAttack_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 24
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: PistolAttack_0
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 885
+        width: 40
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98b6b2c80c2e867d0800000000000000
+      internalID: -2924838641363883127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_1
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 915
+        width: 34
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7b1ae53621599b20800000000000000
+      internalID: 3141631439622773631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_2
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 911
+        width: 36
+        height: 74
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a3e964639b9d4570800000000000000
+      internalID: 8452583132991447968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_3
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 778
+        width: 57
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cedb12aed3cf53b0800000000000000
+      internalID: -5521479257163047230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_4
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 786
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3abf79fb08a9eec40800000000000000
+      internalID: 5543538069100559267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_5
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 782
+        width: 68
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e3d60ad93950e0c0800000000000000
+      internalID: -4548537518638312472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_6
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 654
+        width: 78
+        height: 67
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ec45b3f5bb112810800000000000000
+      internalID: 1738701399433497830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_7
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 658
+        width: 74
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e48b29fb1c17f0380800000000000000
+      internalID: -9002852053133641650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_8
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 658
+        width: 75
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 494d835de71c26ab0800000000000000
+      internalID: -5016234284449999724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_9
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 513
+        width: 66
+        height: 58
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb40c0508eee71220800000000000000
+      internalID: 2456694802038391996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_10
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 375
+        width: 41
+        height: 74
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7cb55d9b2c27a230800000000000000
+      internalID: 3649934588841933947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_11
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 502
+        width: 69
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce6457a8f2fc3bbf0800000000000000
+      internalID: -309676146265078036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_12
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 368
+        width: 31
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc0f9ef8bf491ce80800000000000000
+      internalID: -8160077241646452531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_13
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 509
+        width: 68
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec1efd1402b274de0800000000000000
+      internalID: -1349062145830034994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_14
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 371
+        width: 45
+        height: 74
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 665211dfbde89cd70800000000000000
+      internalID: 9063932800554575206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_15
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 243
+        width: 68
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68ac2efaf3683c8c0800000000000000
+      internalID: -3980190037573449082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_16
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 236
+        width: 69
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0117d54c072ac5450800000000000000
+      internalID: 6078912202257821968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_17
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 251
+        width: 59
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1967b71faabb124f0800000000000000
+      internalID: -855196111353448815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_18
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 154
+        width: 75
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0994022096a729a20800000000000000
+      internalID: 3067648887618554256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_19
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 154
+        width: 74
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f1c389979784bdd0800000000000000
+      internalID: -2471201210334199305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_20
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 154
+        width: 74
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a5404ededcbec2c0800000000000000
+      internalID: -4409379319751621213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_21
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 30
+        width: 68
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d866af5b9f2012850800000000000000
+      internalID: 6350360221092308621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_22
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 34
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfb5947a82fc15370800000000000000
+      internalID: 8309650560987519996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PistolAttack_23
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 26
+        width: 57
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da8720f154773f570800000000000000
+      internalID: 8499268060534962349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 67b2d83c88ce8f842b0ae553ec0a9b78
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      PistolAttack_0: -2924838641363883127
+      PistolAttack_1: 3141631439622773631
+      PistolAttack_10: 3649934588841933947
+      PistolAttack_11: -309676146265078036
+      PistolAttack_12: -8160077241646452531
+      PistolAttack_13: -1349062145830034994
+      PistolAttack_14: 9063932800554575206
+      PistolAttack_15: -3980190037573449082
+      PistolAttack_16: 6078912202257821968
+      PistolAttack_17: -855196111353448815
+      PistolAttack_18: 3067648887618554256
+      PistolAttack_19: -2471201210334199305
+      PistolAttack_2: 8452583132991447968
+      PistolAttack_20: -4409379319751621213
+      PistolAttack_21: 6350360221092308621
+      PistolAttack_22: 8309650560987519996
+      PistolAttack_23: 8499268060534962349
+      PistolAttack_3: -5521479257163047230
+      PistolAttack_4: 5543538069100559267
+      PistolAttack_5: -4548537518638312472
+      PistolAttack_6: 1738701399433497830
+      PistolAttack_7: -9002852053133641650
+      PistolAttack_8: -5016234284449999724
+      PistolAttack_9: 2456694802038391996
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

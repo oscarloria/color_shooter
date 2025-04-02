@@ -927,7 +927,7 @@ MonoBehaviour:
   reloadIndicator: {fileID: 1111079481}
   idleScript: {fileID: 1990132648}
   attackScript: {fileID: 1990132649}
-  attackAnimationDuration: 0.4
+  attackAnimationDuration: 0.2
 --- !u!114 &190124704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5973,7 +5973,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1941573990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6364,11 +6364,11 @@ MonoBehaviour:
   - {fileID: -3633195646822449980, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
   upRightSprites:
   - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
-  - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
-  - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
-  - {fileID: 2087283007469253297, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 319842955825769735, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: 7819687997400818593, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  - {fileID: -7025606592730844255, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
   shipTransform: {fileID: 190124698}
-  framesPerSecond: 4
+  framesPerSecond: 3
 --- !u!114 &1990132649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6382,31 +6382,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackUpSprites:
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: -2924838641363883127, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: 3141631439622773631, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: 8452583132991447968, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   attackUpLeftSprites:
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: -5521479257163047230, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: 5543538069100559267, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -4548537518638312472, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   attackLeftSprites:
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 1738701399433497830, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -9002852053133641650, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -5016234284449999724, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   attackDownLeftSprites:
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: -2015901961681485058, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 2456694802038391996, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -309676146265078036, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -1349062145830034994, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   attackDownSprites:
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 3649934588841933947, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -8160077241646452531, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: 9063932800554575206, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   attackDownRightSprites:
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: -3980190037573449082, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: 6078912202257821968, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -855196111353448815, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   attackRightSprites:
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 3067648887618554256, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -2471201210334199305, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: -4409379319751621213, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   attackUpRightSprites:
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
-  - {fileID: 290398441325212779, guid: 6130830925deacd4baf0f5469ae05f66, type: 3}
+  - {fileID: 6350360221092308621, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: 8309650560987519996, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
+  - {fileID: 8499268060534962349, guid: b51696dd1bc60e34888fc8cf2519362e, type: 3}
   shipTransform: {fileID: 190124698}
-  framesPerSecond: 6
+  framesPerSecond: 8
 --- !u!1 &2057956303
 GameObject:
   m_ObjectHideFlags: 0

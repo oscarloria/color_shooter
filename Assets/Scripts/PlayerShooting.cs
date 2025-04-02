@@ -57,16 +57,20 @@ public class PlayerShooting : MonoBehaviour
 
     void Start()
     {
-        // Leer tamaño de cargador desde PlayerPrefs (o usar 4 si no existe)
+        // Leer tamaño de cargador desde PlayerPrefs (o usar defaultMagazineSize si no existe)
         magazineSize = PlayerPrefs.GetInt(PISTOL_MAGAZINE_SIZE_KEY, defaultMagazineSize);
 
-        // Leer tiempo de recarga desde PlayerPrefs (o usar 6f si no existe)
+        // Leer tiempo de recarga desde PlayerPrefs (o usar defaultReloadTime si no existe)
         reloadTime = PlayerPrefs.GetFloat(PISTOL_RELOAD_TIME_KEY, defaultReloadTime);
 
         currentAmmo = magazineSize;
         UpdateAmmoText();
 
         cameraZoom = FindObjectOfType<CameraZoom>(); // Obtener referencia al script CameraZoom
+
+        // ADICIÓN: Asegurar que Idle esté activado y Attack desactivado al iniciar
+        if (idleScript != null)  idleScript.enabled = true;
+        if (attackScript != null) attackScript.enabled = false;
     }
 
     void Update()

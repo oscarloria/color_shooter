@@ -45,7 +45,7 @@ public class ShipBodyAttack8Directions : MonoBehaviour
     public Transform shipTransform;
 
     [Header("Frames por segundo (ataque)")]
-    public float framesPerSecond = 6f; // algo más rápido que idle
+    public float framesPerSecond = 3f; // algo más rápido que idle
 
     // Internos
     private SpriteRenderer sr;
@@ -119,9 +119,9 @@ public class ShipBodyAttack8Directions : MonoBehaviour
         if (framesPerSecond > 0f)
         {
             animTimer += Time.deltaTime * framesPerSecond;
-            if (animTimer >= 1f)
+            if (animTimer >= 0.5f)
             {
-                animTimer -= 1f;
+                animTimer -= 0.5f;
                 currentFrame++;
                 if (currentFrame >= currentAnim.Length)
                 {
