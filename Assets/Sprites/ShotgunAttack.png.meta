@@ -1,0 +1,993 @@
+fileFormatVersion: 2
+guid: 9e8b0a0523ea37647af6270e865bdaf3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4596354331862526315
+    second: ShotgunAttack_0
+  - first:
+      213: -1823959266619371539
+    second: ShotgunAttack_1
+  - first:
+      213: 7718484474768171098
+    second: ShotgunAttack_2
+  - first:
+      213: 8893261448767510396
+    second: ShotgunAttack_3
+  - first:
+      213: 9034389555930376199
+    second: ShotgunAttack_4
+  - first:
+      213: 3667340122890340855
+    second: ShotgunAttack_5
+  - first:
+      213: 1257634608435748404
+    second: ShotgunAttack_6
+  - first:
+      213: -7820473629217555518
+    second: ShotgunAttack_7
+  - first:
+      213: -7539034319922108562
+    second: ShotgunAttack_8
+  - first:
+      213: 6098469789523677251
+    second: ShotgunAttack_9
+  - first:
+      213: 8362795510802344727
+    second: ShotgunAttack_10
+  - first:
+      213: -85816554703902991
+    second: ShotgunAttack_11
+  - first:
+      213: -8108169977177495202
+    second: ShotgunAttack_12
+  - first:
+      213: 8740343228308207973
+    second: ShotgunAttack_13
+  - first:
+      213: 6489486394016242441
+    second: ShotgunAttack_14
+  - first:
+      213: 6290536099433710813
+    second: ShotgunAttack_15
+  - first:
+      213: -5950096041966982246
+    second: ShotgunAttack_16
+  - first:
+      213: 2618601052832931609
+    second: ShotgunAttack_17
+  - first:
+      213: 2482728000755078510
+    second: ShotgunAttack_18
+  - first:
+      213: 458648303679560641
+    second: ShotgunAttack_19
+  - first:
+      213: -2360362747805855827
+    second: ShotgunAttack_20
+  - first:
+      213: 3003029901958593276
+    second: ShotgunAttack_21
+  - first:
+      213: 5475746544502342682
+    second: ShotgunAttack_22
+  - first:
+      213: -243630437238079038
+    second: ShotgunAttack_23
+  - first:
+      213: 3107241077191559335
+    second: ShotgunAttack_24
+  - first:
+      213: -9031454105646963884
+    second: ShotgunAttack_25
+  - first:
+      213: 1040611475587207983
+    second: ShotgunAttack_26
+  - first:
+      213: -42640667750751357
+    second: ShotgunAttack_27
+  - first:
+      213: 7211619157483440277
+    second: ShotgunAttack_28
+  - first:
+      213: 1324166979200628066
+    second: ShotgunAttack_29
+  - first:
+      213: -1593880196411969038
+    second: ShotgunAttack_30
+  - first:
+      213: -6323046537752765832
+    second: ShotgunAttack_31
+  - first:
+      213: -1917425122107222173
+    second: ShotgunAttack_32
+  - first:
+      213: -3556822881498135268
+    second: ShotgunAttack_33
+  - first:
+      213: 8135104634465335345
+    second: ShotgunAttack_34
+  - first:
+      213: 2690662924916894447
+    second: ShotgunAttack_35
+  - first:
+      213: -2288797427069196986
+    second: ShotgunAttack_36
+  - first:
+      213: 9083628736000662665
+    second: ShotgunAttack_37
+  - first:
+      213: -51213381488575628
+    second: ShotgunAttack_38
+  - first:
+      213: -5601660215892127095
+    second: ShotgunAttack_39
+  - first:
+      213: -8342582296040710846
+    second: ShotgunAttack_40
+  - first:
+      213: 941407692530079426
+    second: ShotgunAttack_41
+  - first:
+      213: -8944116355887837967
+    second: ShotgunAttack_42
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 24
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ShotgunAttack_0
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 837
+        width: 60
+        height: 51
+      alignment: 9
+      pivot: {x: 0.14130034, y: 0.30422553}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 596918376187630c0800000000000000
+      internalID: -4596354331862526315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_1
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 851
+        width: 67
+        height: 47
+      alignment: 9
+      pivot: {x: 0.34541982, y: 0.08016773}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: defce54f5beffa6e0800000000000000
+      internalID: -1823959266619371539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_2
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 851
+        width: 84
+        height: 63
+      alignment: 9
+      pivot: {x: 0.43405297, y: 0.04818774}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a50acea4cb09d1b60800000000000000
+      internalID: 7718484474768171098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_3
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 848
+        width: 112
+        height: 66
+      alignment: 9
+      pivot: {x: 0.58934647, y: 0.05960823}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c77967c4b263b6b70800000000000000
+      internalID: 8893261448767510396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_4
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 762
+        width: 68
+        height: 34
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 708aab35f69906d70800000000000000
+      internalID: 9034389555930376199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_5
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 762
+        width: 112
+        height: 58
+      alignment: 9
+      pivot: {x: 0.48171154, y: 0.31784058}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f98a6f496205e230800000000000000
+      internalID: 3667340122890340855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_6
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 758
+        width: 112
+        height: 62
+      alignment: 9
+      pivot: {x: 0.46243885, y: 0.3234312}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43edc0d5304047110800000000000000
+      internalID: 1257634608435748404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_7
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 736
+        width: 112
+        height: 84
+      alignment: 9
+      pivot: {x: 0.48780742, y: 0.4599653}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cb7d2b3ba8187390800000000000000
+      internalID: -7820473629217555518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_8
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 658
+        width: 35
+        height: 52
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e676093ca38ff5790800000000000000
+      internalID: -7539034319922108562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_9
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 659
+        width: 47
+        height: 62
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 340920666fd12a450800000000000000
+      internalID: 6098469789523677251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_10
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 634
+        width: 80
+        height: 88
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71bea96853e9e0470800000000000000
+      internalID: 8362795510802344727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_12
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 626
+        width: 77
+        height: 100
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5929db5d5ef97f80800000000000000
+      internalID: -8108169977177495202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 564
+        width: 40
+        height: 57
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90b911a1e794f0a50800000000000000
+      internalID: 6489486394016242441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_15
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 564
+        width: 80
+        height: 58
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd48485f0497c4750800000000000000
+      internalID: 6290536099433710813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_17
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 523
+        width: 76
+        height: 100
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91f129a98c3275420800000000000000
+      internalID: 2618601052832931609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_18
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 526
+        width: 106
+        height: 74
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e651cee66fb647220800000000000000
+      internalID: 2482728000755078510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_21
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 467
+        width: 52
+        height: 54
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfa3e1cf8c7eca920800000000000000
+      internalID: 3003029901958593276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_23
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 447
+        width: 73
+        height: 83
+      alignment: 9
+      pivot: {x: 0.68483514, y: 0.24965474}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c183fb78637e9cf0800000000000000
+      internalID: -243630437238079038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_24
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 433
+        width: 72
+        height: 67
+      alignment: 9
+      pivot: {x: 0.68740207, y: 0.5178537}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a8418dfb432f1b20800000000000000
+      internalID: 3107241077191559335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_25
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 433
+        width: 108
+        height: 68
+      alignment: 9
+      pivot: {x: 0.43307072, y: 0.5031514}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4536ba37754d9a280800000000000000
+      internalID: -9031454105646963884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_27
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 347
+        width: 40
+        height: 57
+      alignment: 9
+      pivot: {x: 0.33822346, y: 0.039733887}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3832bb1e982886ff0800000000000000
+      internalID: -42640667750751357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_28
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 352
+        width: 80
+        height: 58
+      alignment: 9
+      pivot: {x: 0.20880261, y: 0.027892014}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 598c3393a61d41460800000000000000
+      internalID: 7211619157483440277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_29
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 324
+        width: 74
+        height: 99
+      alignment: 9
+      pivot: {x: 0.115234785, y: 0.4052574}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2653e821ad2606210800000000000000
+      internalID: 1324166979200628066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_31
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 327
+        width: 106
+        height: 74
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87a9bf2cca60048a0800000000000000
+      internalID: -6323046537752765832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_33
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 211
+        width: 35
+        height: 52
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1582532f60a3aec0800000000000000
+      internalID: -3556822881498135268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_34
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 214
+        width: 47
+        height: 62
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 138b0fb3092b5e070800000000000000
+      internalID: 8135104634465335345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_35
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 197
+        width: 80
+        height: 88
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fea2cf9aca7275520800000000000000
+      internalID: 2690662924916894447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_36
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 195
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64566bcddde8c30e0800000000000000
+      internalID: -2288797427069196986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_39
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 97
+        width: 68
+        height: 34
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 982df4766b7e242b0800000000000000
+      internalID: -5601660215892127095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_40
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 91
+        width: 112
+        height: 58
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24dd7074a91393c80800000000000000
+      internalID: -8342582296040710846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_41
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 92
+        width: 112
+        height: 62
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c6531efe4d801d00800000000000000
+      internalID: 941407692530079426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShotgunAttack_42
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 80
+        width: 112
+        height: 84
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fc4b81ff8d10e380800000000000000
+      internalID: -8944116355887837967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 8136c838dc8dd80438d10088d11874fe
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ShotgunAttack_0: -4596354331862526315
+      ShotgunAttack_1: -1823959266619371539
+      ShotgunAttack_10: 8362795510802344727
+      ShotgunAttack_11: -85816554703902991
+      ShotgunAttack_12: -8108169977177495202
+      ShotgunAttack_13: 8740343228308207973
+      ShotgunAttack_14: 6489486394016242441
+      ShotgunAttack_15: 6290536099433710813
+      ShotgunAttack_16: -5950096041966982246
+      ShotgunAttack_17: 2618601052832931609
+      ShotgunAttack_18: 2482728000755078510
+      ShotgunAttack_19: 458648303679560641
+      ShotgunAttack_2: 7718484474768171098
+      ShotgunAttack_20: -2360362747805855827
+      ShotgunAttack_21: 3003029901958593276
+      ShotgunAttack_22: 5475746544502342682
+      ShotgunAttack_23: -243630437238079038
+      ShotgunAttack_24: 3107241077191559335
+      ShotgunAttack_25: -9031454105646963884
+      ShotgunAttack_26: 1040611475587207983
+      ShotgunAttack_27: -42640667750751357
+      ShotgunAttack_28: 7211619157483440277
+      ShotgunAttack_29: 1324166979200628066
+      ShotgunAttack_3: 8893261448767510396
+      ShotgunAttack_30: -1593880196411969038
+      ShotgunAttack_31: -6323046537752765832
+      ShotgunAttack_32: -1917425122107222173
+      ShotgunAttack_33: -3556822881498135268
+      ShotgunAttack_34: 8135104634465335345
+      ShotgunAttack_35: 2690662924916894447
+      ShotgunAttack_36: -2288797427069196986
+      ShotgunAttack_37: 9083628736000662665
+      ShotgunAttack_38: -51213381488575628
+      ShotgunAttack_39: -5601660215892127095
+      ShotgunAttack_4: 9034389555930376199
+      ShotgunAttack_40: -8342582296040710846
+      ShotgunAttack_41: 941407692530079426
+      ShotgunAttack_42: -8944116355887837967
+      ShotgunAttack_5: 3667340122890340855
+      ShotgunAttack_6: 1257634608435748404
+      ShotgunAttack_7: -7820473629217555518
+      ShotgunAttack_8: -7539034319922108562
+      ShotgunAttack_9: 6098469789523677251
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

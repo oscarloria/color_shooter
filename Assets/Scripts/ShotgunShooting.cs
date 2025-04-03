@@ -10,6 +10,9 @@ using UnityEngine.InputSystem; // Necesario para usar Gamepad.current
 /// Se ha modificado la lógica de dispersion de pellets para que
 /// haya un tiro central (cuando pelletsPerShot es impar)
 /// y el resto se distribuya simétricamente alrededor de ese ángulo.
+///
+/// NUEVO: Referencias a "Idle" y "Attack" para animaciones 8directions,
+/// al igual que en PlayerShooting.
 /// </summary>
 public class ShotgunShooting : MonoBehaviour
 {
@@ -44,6 +47,13 @@ public class ShotgunShooting : MonoBehaviour
     public Color currentColor = Color.white;   // Color asignado a los proyectiles
     private KeyCode lastPressedKey = KeyCode.None;
 
+    // ----------------- NUEVO: Manejo de animaciones IDLE/ATTACK -----------------
+    [Header("Animaciones en 8 direcciones (Shotgun)")]
+    public ShipBody8Directions shotgunIdleScript;           // Script de Idle en 8 direcciones
+    public ShipBodyShotgunAttack8Directions shotgunAttackScript;   // Script de Attack en 8 direcciones
+    public float shotgunAttackAnimationDuration = 0.5f;     // Duración anim de ataque (escopeta)
+    private bool isPlayingShotgunAttackAnim = false;
+
     void Start()
     {
         currentAmmo = magazineSize;
@@ -51,6 +61,10 @@ public class ShotgunShooting : MonoBehaviour
 
         // Buscar el script de Zoom si está en la escena
         cameraZoom = FindObjectOfType<CameraZoom>();
+
+        // Asegurar que Idle esté activo y Attack desactivado al inicio
+        if (shotgunIdleScript != null)  shotgunIdleScript.enabled = true;
+        if (shotgunAttackScript != null) shotgunAttackScript.enabled = false;
     }
 
     void Update()
@@ -64,11 +78,11 @@ public class ShotgunShooting : MonoBehaviour
 
     /// <summary>
     /// Dispara el spread shot (si hay cartuchos y no se está recargando).
-    /// Ahora se distribuyen los pellets de forma simétrica.
+    /// Se distribuyen los pellets de forma simétrica.
     /// </summary>
     public void Shoot()
     {
-        // No dispara si no hay color, está recargando o sin munición
+        // No dispara si no hay color, está recargando o sin munición o cooldown
         if (currentColor == Color.white || isReloading || currentAmmo <= 0 || !canShoot) return;
 
         // Disminuir munición
@@ -76,25 +90,22 @@ public class ShotgunShooting : MonoBehaviour
         UpdateAmmoText();
 
         // Determinar ángulo total de dispersión
-        float totalSpread = (cameraZoom != null && cameraZoom.IsZoomedIn) 
-            ? zoomedSpreadAngle 
+        float totalSpread = (cameraZoom != null && cameraZoom.IsZoomedIn)
+            ? zoomedSpreadAngle
             : normalSpreadAngle;
 
         // Calcular los ángulos equidistantes en [-totalSpread/2 .. +totalSpread/2]
-        // Con pelletsPerShot = 5, se obtienen -40, -20, 0, +20, +40 (si totalSpread=80).
-        // Si pelletsPerShot es par, no habrá un tiro exactamente en 0°, pero seguirán siendo simétricos.
-        
         float angleStep = (pelletsPerShot > 1)
             ? totalSpread / (pelletsPerShot - 1)
             : 0f;
 
         float startAngle = -totalSpread * 0.5f; // ángulo inicial (izquierda)
-        
+
         // Disparar "pelletsPerShot" proyectiles
         for (int i = 0; i < pelletsPerShot; i++)
         {
             float currentAngle = startAngle + angleStep * i;
-            
+
             // Rotación base de la escopeta
             Quaternion baseRotation = transform.rotation;
             // Aplicar el offset de "currentAngle" en Z
@@ -125,6 +136,9 @@ public class ShotgunShooting : MonoBehaviour
 
         // Control de fireRate
         StartCoroutine(FireRateCooldown());
+
+        // ADICIÓN: Activar la animación de ataque (Shotgun)
+        StartCoroutine(PlayShotgunAttackAnimation());
 
         // Verificar recarga
         if (currentAmmo <= 0 && !isReloading)
@@ -164,7 +178,7 @@ public class ShotgunShooting : MonoBehaviour
                 reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
             yield return null;
         }
-        
+
         currentAmmo = magazineSize;
         isReloading = false;
         UpdateAmmoText();
@@ -226,7 +240,7 @@ public class ShotgunShooting : MonoBehaviour
     }
 
     // ------------------------------------------------------------------
-    // NUEVO: Lógica para la selección de color (similar a PlayerShooting)
+    // LÓGICA PARA COLOR (similar a PlayerShooting)
     // ------------------------------------------------------------------
     public void UpdateCurrentColor()
     {
@@ -252,7 +266,6 @@ public class ShotgunShooting : MonoBehaviour
             lastPressedKey = KeyCode.D;
         }
 
-        // Si se suelta la última tecla
         if (Input.GetKeyUp(lastPressedKey))
         {
             KeyCode newKey = GetLastKeyPressed();
@@ -266,7 +279,6 @@ public class ShotgunShooting : MonoBehaviour
             Vector2 leftStick = gp.leftStick.ReadValue();
             float threshold = 0.5f;
 
-            // Stick en neutro => color blanco si no hay W,A,S,D pulsadas
             if (Mathf.Abs(leftStick.x) < threshold && Mathf.Abs(leftStick.y) < threshold)
             {
                 if (!AnyWASDPressed())
@@ -276,7 +288,6 @@ public class ShotgunShooting : MonoBehaviour
             }
             else
             {
-                // Asignar color según la dirección
                 if (leftStick.y > threshold)
                 {
                     SetCurrentColor(Color.yellow);
@@ -339,7 +350,7 @@ public class ShotgunShooting : MonoBehaviour
     void SetCurrentColor(Color color)
     {
         currentColor = color;
-        // (Opcional) cambiar color del sprite base, igual a PlayerShooting
+        // (Opcional) cambiar color del sprite base, similar a PlayerShooting
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
@@ -347,14 +358,25 @@ public class ShotgunShooting : MonoBehaviour
         }
     }
 
-    // Método público para asignar color desde fuera (opcional)
-    public void SetShotgunColor(Color newColor)
+    // -------------------- DISPARO de ATAQUE Shotgun (Animación) --------------------
+    IEnumerator PlayShotgunAttackAnimation()
     {
-        currentColor = newColor;
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            sr.color = newColor;
-        }
+        if (isPlayingShotgunAttackAnim) yield break;  // evitar solapamiento
+
+        isPlayingShotgunAttackAnim = true;
+
+        // Desactivar Idle
+        if (shotgunIdleScript != null) shotgunIdleScript.enabled = false;
+        // Activar Attack
+        if (shotgunAttackScript != null) shotgunAttackScript.enabled = true;
+
+        yield return new WaitForSeconds(shotgunAttackAnimationDuration);
+
+        // Desactivar Attack
+        if (shotgunAttackScript != null) shotgunAttackScript.enabled = false;
+        // Reactivar Idle
+        if (shotgunIdleScript != null) shotgunIdleScript.enabled = true;
+
+        isPlayingShotgunAttackAnim = false;
     }
 }
