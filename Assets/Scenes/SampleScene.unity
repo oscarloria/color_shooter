@@ -910,24 +910,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
-  projectileSpeed: 40
-  fireRate: 0.5
-  normalDispersionAngle: 20
+  projectileSpeed: 20
+  fireRate: 0.2
+  normalDispersionAngle: 5
   zoomedDispersionAngle: 0
-  defaultMagazineSize: 4
-  defaultReloadTime: 4
-  magazineSize: 4
+  defaultMagazineSize: 40
+  defaultReloadTime: 6
+  magazineSize: 0
   isReloading: 0
-  reloadTime: 4
+  reloadTime: 0
   currentAmmo: 0
-  scaleMultiplier: 1.5
+  scaleMultiplier: 1.1
   scaleDuration: 0.1
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   ammoText: {fileID: 721255408}
   reloadIndicator: {fileID: 1111079481}
   idleScript: {fileID: 1990132648}
   attackScript: {fileID: 1990132649}
-  attackAnimationDuration: 0.15
+  attackAnimationDuration: 0.2
 --- !u!114 &190124704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1004,19 +1004,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
-  projectileSpeed: 30
+  projectileSpeed: 20
   fireRate: 0.1
-  reloadTime: 1
+  reloadTime: 2
   magazineSize: 30
-  normalDispersionAngle: 20
-  zoomedDispersionAngle: 1
+  normalDispersionAngle: 5
+  zoomedDispersionAngle: 2
   currentAmmo: 0
   isReloading: 0
-  scaleMultiplier: 1.5
-  scaleDuration: 0.3
+  scaleMultiplier: 1.05
+  scaleDuration: 0.05
   ammoText: {fileID: 29512016}
   reloadIndicator: {fileID: 1756493388}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
+  rifleIdleScript: {fileID: 1990132648}
+  rifleAttackScript: {fileID: 1990132651}
 --- !u!114 &190124708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6241,6 +6243,7 @@ GameObject:
   - component: {fileID: 1990132648}
   - component: {fileID: 1990132649}
   - component: {fileID: 1990132650}
+  - component: {fileID: 1990132651}
   m_Layer: 8
   m_Name: Character
   m_TagString: Untagged
@@ -6308,12 +6311,12 @@ SpriteRenderer:
   m_SortingLayerID: -1185086401
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 5713540224448721588, guid: 8596d1e9fda7f07418b26a04fc1faa1a, type: 3}
+  m_Sprite: {fileID: 4723107735738678597, guid: c15a63a28d41f544facc3916f5b8e1cb, type: 3}
   m_Color: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.39, y: 0.65}
+  m_Size: {x: 5.3333335, y: 5.3333335}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -6386,39 +6389,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackUpSprites:
-  - {fileID: -8620346528447645916, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 4098831209169328323, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 6640147006558883833, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -3176797054300790310, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -6605898745584468969, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -1038912933779076204, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   attackUpLeftSprites:
-  - {fileID: -170188503766422721, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 4578666497915951452, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 5107200084220234299, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 3177079510152887314, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -3252780991643357093, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 763683778781617134, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   attackLeftSprites:
-  - {fileID: 2226366758987319890, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 1914741608096414955, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 2268190336548869671, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 1545658639476199031, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 8584816165449296792, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 5909322338526147272, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   attackDownLeftSprites:
-  - {fileID: 2430993422660300664, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: -1382230622577256900, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 8451388990711389605, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -3991355769771149558, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -3500098330498541579, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 510962063909228357, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   attackDownSprites:
-  - {fileID: 5179416866770235064, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 8751632240237405348, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 8633530245938936738, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -5462940948709213388, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -1331136268139052519, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 4422875212504368210, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   attackDownRightSprites:
-  - {fileID: 3887783059100504243, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: -5596925043165754544, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 7421731557101947370, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -8782144381928434960, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -2863015383266001341, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 2915896351553055035, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   attackRightSprites:
-  - {fileID: 8850890018107687323, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 242804186073561414, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 6307004026713591068, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -8938991563812168015, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 8327391784409114440, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -3588784792989379618, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   attackUpRightSprites:
-  - {fileID: 6846198242984202642, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 2250281506372658427, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: -718356854204191170, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -247426449069921616, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: -1893260045134070107, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
+  - {fileID: 5323159577621997868, guid: ce83bd88564baad42992b310d1bfe010, type: 3}
   shipTransform: {fileID: 190124698}
-  framesPerSecond: 3
+  framesPerSecond: 10
 --- !u!114 &1990132650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6465,6 +6468,52 @@ MonoBehaviour:
   - {fileID: -9007121229575453108, guid: bda69b540da02014eac4735f529d0eb7, type: 3}
   shipTransform: {fileID: 190124698}
   framesPerSecond: 14
+--- !u!114 &1990132651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990132645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62da73594f35ac9438c01cb8f597ae6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rifleAttackUpSprites:
+  - {fileID: -8620346528447645916, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 4098831209169328323, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 6640147006558883833, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  rifleAttackUpLeftSprites:
+  - {fileID: -170188503766422721, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 4578666497915951452, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 5107200084220234299, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  rifleAttackLeftSprites:
+  - {fileID: 2226366758987319890, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 1914741608096414955, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 2268190336548869671, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  rifleAttackDownLeftSprites:
+  - {fileID: 2430993422660300664, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -1382230622577256900, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 8451388990711389605, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  rifleAttackDownSprites:
+  - {fileID: 5179416866770235064, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 8751632240237405348, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 8633530245938936738, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  rifleAttackDownRightSprites:
+  - {fileID: 3887783059100504243, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -5596925043165754544, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 7421731557101947370, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  rifleAttackRightSprites:
+  - {fileID: 8850890018107687323, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 242804186073561414, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 6307004026713591068, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  rifleAttackUpRightSprites:
+  - {fileID: 6846198242984202642, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: 2250281506372658427, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  - {fileID: -718356854204191170, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
+  shipTransform: {fileID: 190124698}
+  framesPerSecond: 16
 --- !u!1 &2057956303
 GameObject:
   m_ObjectHideFlags: 0

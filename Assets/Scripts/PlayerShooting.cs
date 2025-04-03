@@ -8,7 +8,7 @@ public class PlayerShooting : MonoBehaviour
     // -------------------- Variables de disparo --------------------
     public GameObject projectilePrefab;
     public float projectileSpeed = 20f;
-    public float fireRate = 0.01f;
+    public float fireRate = 0.1f;
 
     // -------------------- Variables de dispersión --------------------
     public float normalDispersionAngle = 5f;    // Ángulo de dispersión en modo normal
@@ -54,6 +54,8 @@ public class PlayerShooting : MonoBehaviour
 
     // Para evitar activar múltiples rutinas de ataque a la vez
     private bool isPlayingAttackAnim = false;
+
+    private float nextFireTime = 0f; // Agrega esto fuera del método, a nivel de clase
 
     void Start()
     {
@@ -203,6 +205,13 @@ public class PlayerShooting : MonoBehaviour
     // -------------------- Disparo --------------------
     public void Shoot()
     {
+        
+        // Control de fireRate
+    if (Time.time < nextFireTime) return;
+    nextFireTime = Time.time + fireRate;
+
+
+        
         // No dispara si no hay color, está recargando o no queda munición
         if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
 

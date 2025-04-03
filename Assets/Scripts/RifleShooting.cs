@@ -30,8 +30,7 @@ public class RifleShooting : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI ammoText;   // Texto para munición
-    // NUEVO: Indicador radial de recarga
-    public WeaponReloadIndicator reloadIndicator;
+    public WeaponReloadIndicator reloadIndicator; // Indicador radial de recarga
 
     // ----------------- Sistema de color -----------------
     public Color currentColor = Color.white;
@@ -40,6 +39,12 @@ public class RifleShooting : MonoBehaviour
     // Para asegurar que no se superpongan múltiples efectos de escala
     private Coroutine scaleEffectCoroutine;
 
+    // NUEVO: Referencias para Idle y Attack en 8 direcciones (rifle)
+    [Header("Animaciones en 8 direcciones (Rifle)")]
+    public ShipBody8Directions rifleIdleScript;                  // script Idle
+    public ShipBodyRifleAttack8Directions rifleAttackScript;     // script Attack
+    private bool rifleAttackActive = false;                      // para saber si Attack está ON
+
     void Start()
     {
         currentAmmo = magazineSize;
@@ -47,6 +52,10 @@ public class RifleShooting : MonoBehaviour
 
         // Obtener referencia al Zoom
         cameraZoom = FindObjectOfType<CameraZoom>();
+
+        // Idle ON, Attack OFF al inicio
+        if (rifleIdleScript != null)  rifleIdleScript.enabled = true;
+        if (rifleAttackScript != null) rifleAttackScript.enabled = false;
     }
 
     void Update()
@@ -185,7 +194,7 @@ public class RifleShooting : MonoBehaviour
     /// </summary>
     IEnumerator ScaleEffect()
     {
-        Vector3 originalScale = Vector3.one; // Suponemos que la escala normal es 1,1,1.
+        Vector3 originalScale = Vector3.one; 
         Vector3 targetScale = originalScale * scaleMultiplier;
         float elapsedTime = 0f;
         float halfDuration = scaleDuration / 2f;
@@ -214,7 +223,7 @@ public class RifleShooting : MonoBehaviour
     }
 
     // -----------------------------------------------------------
-    // LÓGICA DE COLOR (WASD). Sin usar InputSystem/Gamepad.
+    // LÓGICA DE COLOR (WASD). 
     // -----------------------------------------------------------
     public void UpdateCurrentColor()
     {
@@ -292,21 +301,39 @@ public class RifleShooting : MonoBehaviour
         if (sr != null) sr.color = currentColor;
     }
 
+    // NUEVO: Manejo de disparo continuo => Attack vs Idle
+
     public void StartFiring()
     {
         if (isReloading)
         {
-            Debug.Log("StartFiring() llamado, pero estamos recargando. Ignoramos.");
+            Debug.Log("StartFiring() => estamos recargando, ignoramos.");
             return;
         }
-        Debug.Log("StartFiring() => Comenzamos disparo automático.");
+        Debug.Log("StartFiring() => Disparo automático rifle ON");
         isFiring = true;
         nextFireTime = Time.time;
+
+        // Activar anim de ataque, desactivar idle
+        if (!rifleAttackActive)
+        {
+            rifleAttackActive = true;
+            if (rifleIdleScript != null)  rifleIdleScript.enabled = false;
+            if (rifleAttackScript != null) rifleAttackScript.enabled = true;
+        }
     }
 
     public void StopFiring()
     {
-        Debug.Log("StopFiring() => Se detiene el disparo automático.");
+        Debug.Log("StopFiring() => Disparo automático rifle OFF");
         isFiring = false;
+
+        // Volver a Idle
+        if (rifleAttackActive)
+        {
+            rifleAttackActive = false;
+            if (rifleAttackScript != null) rifleAttackScript.enabled = false;
+            if (rifleIdleScript != null)   rifleIdleScript.enabled = true;
+        }
     }
 }
