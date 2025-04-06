@@ -200,7 +200,7 @@ Transform:
   m_GameObject: {fileID: 26972342}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: -1.988, y: 5.479, z: 10.1339855}
+  m_LocalPosition: {x: -1.9560001, y: 5.479, z: 10.1339855}
   m_LocalScale: {x: 0.43757436, y: 0.43757436, z: 0.43757436}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -911,7 +911,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
   projectileSpeed: 30
-  fireRate: 0.2
+  fireRate: 0.15
   normalDispersionAngle: 5
   zoomedDispersionAngle: 0
   defaultMagazineSize: 4
@@ -927,7 +927,7 @@ MonoBehaviour:
   reloadIndicator: {fileID: 1111079481}
   idleScript: {fileID: 1990132648}
   attackScript: {fileID: 1990132649}
-  attackAnimationDuration: 0.2
+  attackAnimationDuration: 0.25
 --- !u!114 &190124704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3690,7 +3690,7 @@ Transform:
   m_GameObject: {fileID: 1327919818}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: -1.076, y: 5.479, z: 10.1339855}
+  m_LocalPosition: {x: -1.0439999, y: 5.479, z: 10.1339855}
   m_LocalScale: {x: 0.43757436, y: 0.43757436, z: 0.43757436}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4372,7 +4372,7 @@ Transform:
   m_GameObject: {fileID: 1648381241}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: -0.162, y: 5.491, z: 10.1339855}
+  m_LocalPosition: {x: -0.13, y: 5.491, z: 10.1339855}
   m_LocalScale: {x: 0.43757436, y: 0.43757436, z: 0.43757436}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6311,7 +6311,7 @@ SpriteRenderer:
   m_SortingLayerID: -1185086401
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4723107735738678597, guid: c15a63a28d41f544facc3916f5b8e1cb, type: 3}
+  m_Sprite: {fileID: 5960844483825745430, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
   m_Color: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -6429,7 +6429,7 @@ MonoBehaviour:
   - {fileID: 3530987208329511268, guid: d409b965d7deb1c419b2d24fce5ac5d2, type: 3}
   - {fileID: -8271024919038142633, guid: d409b965d7deb1c419b2d24fce5ac5d2, type: 3}
   shipTransform: {fileID: 190124698}
-  framesPerSecond: 3
+  framesPerSecond: 6
 --- !u!114 &1990132650
 MonoBehaviour:
   m_ObjectHideFlags: 0
