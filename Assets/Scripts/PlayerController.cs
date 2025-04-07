@@ -49,6 +49,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        // FORZAR PISTOL al iniciar, por si tu variable se modificó en otro lado
+        currentWeapon = 1;   // <------------------ Importante
+
         // Actualizar la UI al inicio (arma 1: pistola)
         UpdateWeaponUI();
 
@@ -56,7 +59,7 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        // NUEVO: Asegurar que IdleScript de pistola esté activo,
+        // Asegurar que IdleScript de pistola esté activo,
         // y los demás idle scripts apagados, al empezar.
         EnableIdleForCurrentWeapon();
     }
@@ -255,11 +258,10 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
-        // NUEVO: Cada vez que cambiamos de arma, habilitamos/deshabilitamos Idle
+        // Cada vez que cambiamos de arma, habilitamos/deshabilitamos Idle
         EnableIdleForCurrentWeapon();
     }
 
-    // NUEVO: Habilita el IdleScript del arma actual y deshabilita los otros.
     private void EnableIdleForCurrentWeapon()
     {
         // 1) Desactivar todos

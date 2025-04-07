@@ -64,8 +64,8 @@ public class ShotgunShooting : MonoBehaviour
         cameraZoom = FindObjectOfType<CameraZoom>();
 
         // Asegurar que Idle esté activo y Attack desactivado al inicio
-        if (shotgunIdleScript != null)  shotgunIdleScript.enabled = true;
-        if (shotgunAttackScript != null) shotgunAttackScript.enabled = false;
+      //  if (shotgunIdleScript != null)  shotgunIdleScript.enabled = true;
+       // if (shotgunAttackScript != null) shotgunAttackScript.enabled = false;
     }
 
     void Update()

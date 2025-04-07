@@ -41,9 +41,10 @@ public class RifleShooting : MonoBehaviour
 
     // NUEVO: Referencias para Idle y Attack en 8 direcciones (rifle)
     [Header("Animaciones en 8 direcciones (Rifle)")]
-    public ShipBody8Directions rifleIdleScript;                  // script Idle
-    public ShipBodyRifleAttack8Directions rifleAttackScript;     // script Attack
-    private bool rifleAttackActive = false;                      // para saber si Attack está ON
+    // CORREGIDO: Referencia al script idle ESPECÍFICO para rifle
+    public ShipBodyRifleIdle8Directions rifleIdleScript;          
+    public ShipBodyRifleAttack8Directions rifleAttackScript;      
+    private bool rifleAttackActive = false;                       // indica si Attack está ON
 
     void Start()
     {
@@ -54,8 +55,8 @@ public class RifleShooting : MonoBehaviour
         cameraZoom = FindObjectOfType<CameraZoom>();
 
         // Idle ON, Attack OFF al inicio
-        if (rifleIdleScript != null)  rifleIdleScript.enabled = true;
-        if (rifleAttackScript != null) rifleAttackScript.enabled = false;
+      //  if (rifleIdleScript != null)  rifleIdleScript.enabled = true;
+       // if (rifleAttackScript != null) rifleAttackScript.enabled = false;
     }
 
     void Update()
@@ -302,7 +303,6 @@ public class RifleShooting : MonoBehaviour
     }
 
     // NUEVO: Manejo de disparo continuo => Attack vs Idle
-
     public void StartFiring()
     {
         if (isReloading)

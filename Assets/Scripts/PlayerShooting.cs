@@ -46,16 +46,16 @@ public class PlayerShooting : MonoBehaviour
     private const string PISTOL_MAGAZINE_SIZE_KEY = "PistolMagazineSize";
     private const string PISTOL_RELOAD_TIME_KEY   = "PistolReloadTime";
 
-    // ADICIÓN: Referencias a los scripts de Idle y Attack
-    [Header("Animaciones en 8 direcciones")]
-    public ShipBody8Directions idleScript;             // Script Idle
-    public ShipBodyAttack8Directions attackScript;     // Script Attack
-    public float attackAnimationDuration = 0.4f;       // Duración de la anim de ataque
+    // --------------------------------------------------------------------------------
+    // NUEVO: Referencias a los scripts de Idle (Pistol) y Attack (Pistol) en 8 direcciones
+    // --------------------------------------------------------------------------------
+    [Header("Animaciones en 8 direcciones (Pistola)")]
+    public ShipBodyPistolIdle8Directions idleScript;      // Script de Idle de la PISTOLA
+    public ShipBodyAttack8Directions attackScript;        // Script Attack (pistola)
+    public float attackAnimationDuration = 0.4f;          // Duración de la anim de ataque
 
-    // Para evitar activar múltiples rutinas de ataque a la vez
-    private bool isPlayingAttackAnim = false;
-
-    private float nextFireTime = 0f; // Agrega esto fuera del método, a nivel de clase
+    private bool isPlayingAttackAnim = false;             // Evitar múltiples ataques solapados
+    private float nextFireTime = 0f;                      // Control de fireRate
 
     void Start()
     {
@@ -70,9 +70,17 @@ public class PlayerShooting : MonoBehaviour
 
         cameraZoom = FindObjectOfType<CameraZoom>(); // Obtener referencia al script CameraZoom
 
-        // ADICIÓN: Asegurar que Idle esté activado y Attack desactivado al iniciar
-        if (idleScript != null)  idleScript.enabled = true;
-        if (attackScript != null) attackScript.enabled = false;
+        // Asegurar que Idle esté activado y Attack desactivado al iniciar
+      /*  if (idleScript != null)
+        {
+            Debug.Log("[PlayerShooting] Iniciando: habilitando Idle de la pistola.");
+            idleScript.enabled = true;
+        }
+        if (attackScript != null)
+        {
+            Debug.Log("[PlayerShooting] Iniciando: deshabilitando Attack de la pistola.");
+            attackScript.enabled = false;
+        }*/
     }
 
     void Update()
@@ -84,7 +92,6 @@ public class PlayerShooting : MonoBehaviour
     // -------------------- Actualizar color (teclado + gamepad) --------------------
     public void UpdateCurrentColor()
     {
-        // -------------------- TECLADO (WASD) --------------------
         if (Input.GetKeyDown(KeyCode.W))
         {
             SetCurrentColor(Color.yellow);
@@ -113,7 +120,7 @@ public class PlayerShooting : MonoBehaviour
             SetCurrentColorByKey(newKey);
         }
 
-        // -------------------- GAMEPAD (STICK IZQUIERDO) --------------------
+        // GAMEPAD (STICK IZQUIERDO)
         Gamepad gp = Gamepad.current;
         if (gp != null)
         {
@@ -153,10 +160,8 @@ public class PlayerShooting : MonoBehaviour
 
     bool AnyWASDPressed()
     {
-        return (Input.GetKey(KeyCode.W) ||
-                Input.GetKey(KeyCode.A) ||
-                Input.GetKey(KeyCode.S) ||
-                Input.GetKey(KeyCode.D));
+        return (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
+                Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D));
     }
 
     KeyCode GetLastKeyPressed()
@@ -205,13 +210,10 @@ public class PlayerShooting : MonoBehaviour
     // -------------------- Disparo --------------------
     public void Shoot()
     {
-        
         // Control de fireRate
-    if (Time.time < nextFireTime) return;
-    nextFireTime = Time.time + fireRate;
+        if (Time.time < nextFireTime) return;
+        nextFireTime = Time.time + fireRate;
 
-
-        
         // No dispara si no hay color, está recargando o no queda munición
         if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
 
@@ -246,7 +248,7 @@ public class PlayerShooting : MonoBehaviour
         // Efecto de retroceso de cámara
         if (CameraShake.Instance != null)
         {
-            Vector3 recoilDirection = -transform.up; // opuesto a la dirección de disparo
+            Vector3 recoilDirection = -transform.up;
             CameraShake.Instance.RecoilCamera(recoilDirection);
         }
 
@@ -260,18 +262,35 @@ public class PlayerShooting : MonoBehaviour
         if (isPlayingAttackAnim) yield break; // para no sobreponer múltiples animaciones
 
         isPlayingAttackAnim = true;
+        Debug.Log("[PlayerShooting] Activando anim de ataque de la pistola.");
 
         // Desactivar Idle
-        if (idleScript != null) idleScript.enabled = false;
+        if (idleScript != null)
+        {
+            idleScript.enabled = false;
+            Debug.Log("[PlayerShooting] Idle Pistola DESACTIVADA.");
+        }
         // Activar Attack
-        if (attackScript != null) attackScript.enabled = true;
+        if (attackScript != null)
+        {
+            attackScript.enabled = true;
+            Debug.Log("[PlayerShooting] Attack Pistola ACTIVADA.");
+        }
 
         yield return new WaitForSeconds(attackAnimationDuration);
 
         // Desactivar Attack
-        if (attackScript != null) attackScript.enabled = false;
+        if (attackScript != null)
+        {
+            attackScript.enabled = false;
+            Debug.Log("[PlayerShooting] Attack Pistola DESACTIVADA.");
+        }
         // Reactivar Idle
-        if (idleScript != null) idleScript.enabled = true;
+        if (idleScript != null)
+        {
+            idleScript.enabled = true;
+            Debug.Log("[PlayerShooting] Idle Pistola REACTIVADA.");
+        }
 
         isPlayingAttackAnim = false;
     }

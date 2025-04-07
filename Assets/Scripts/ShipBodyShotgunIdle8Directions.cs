@@ -4,24 +4,25 @@ using UnityEngine;
 ===========================================================================================
 ShipBodyShotgunIdle8Directions.cs
 
-Muestra la animación idle de la escopeta en 8 direcciones, sin Animator.
+Muestra la animación idle de la ESCOPETA en 8 direcciones, sin Animator.
 Cada dirección puede tener 1..N sprites para un mini-loop.
 
 FUNCIONAMIENTO:
-1) Lee angleZ de "shipTransform" (objeto que rota).
-2) Divide [0..360) en 8 sectores de 45°, centrados con +22.5° => rawIndex [0..7].
-3) Mapea rawIndex => finalIndex (0 => Up, 1 => Up-Left, 2 => Left, ...).
-4) Usa arrays shotgunIdleUpSprites, shotgunIdleLeftSprites, etc.
-5) Avanza la animación manualmente según framesPerSecond.
-6) Activa este script (enabled = true) sólo cuando la escopeta sea
-   el arma actual, y desactívalo (enabled = false) al cambiar a otra arma.
+1) Toma angleZ de 'shipTransform' para ver hacia dónde mira.
+2) Divide [0..360) en 8 sectores de 45°, sumando 22.5° => rawIndex [0..7].
+3) Mapea rawIndex => finalIndex (0=Up,1=UpLeft,2=Left,3=DownLeft,4=Down,5=DownRight,6=Right,7=UpRight).
+4) Usa arrays shotgunIdleUpSprites, shotgunIdleLeftSprites, etc. 
+   (1 array por dirección).
+5) Avanza la animación manualmente a 'framesPerSecond'.
+6) Debe habilitarse (enabled=true) sólo cuando la escopeta sea el arma actual
+   y deshabilitarse (enabled=false) al cambiar a otra arma.
 
 CONFIGURACIÓN:
 - Agregar este script al "ShipBody" que tenga un SpriteRenderer.
-- Rellenar en el Inspector los arrays con sprites idle para cada dirección.
-- Por defecto, framesPerSecond = 4 (puedes ajustar).
-- PlayerController u otro sistema se encarga de habilitar/deshabilitar
-  este script según el arma seleccionada.
+- Rellenar en el Inspector los arrays con sprites idle de la escopeta para cada dirección.
+- Por defecto, framesPerSecond=4. Ajusta a tu gusto.
+- Asegúrate de que, en el Inspector, si NO quieres que empiece activo, desmarcar “Enabled”
+  o dejar que PlayerController desactive/active según currentWeapon=2.
 
 ===========================================================================================
 */
@@ -30,22 +31,22 @@ CONFIGURACIÓN:
 public class ShipBodyShotgunIdle8Directions : MonoBehaviour
 {
     [Header("Sprites Idle (Escopeta) en 8 direcciones")]
-    public Sprite[] shotgunIdleUpSprites;         // finalIndex=0 => Up
-    public Sprite[] shotgunIdleUpLeftSprites;     // finalIndex=1 => Up-Left
-    public Sprite[] shotgunIdleLeftSprites;       // finalIndex=2 => Left
-    public Sprite[] shotgunIdleDownLeftSprites;   // finalIndex=3 => Down-Left
-    public Sprite[] shotgunIdleDownSprites;       // finalIndex=4 => Down
-    public Sprite[] shotgunIdleDownRightSprites;  // finalIndex=5 => Down-Right
-    public Sprite[] shotgunIdleRightSprites;      // finalIndex=6 => Right
-    public Sprite[] shotgunIdleUpRightSprites;    // finalIndex=7 => Up-Right
+    public Sprite[] shotgunIdleUpSprites;         
+    public Sprite[] shotgunIdleUpLeftSprites;     
+    public Sprite[] shotgunIdleLeftSprites;       
+    public Sprite[] shotgunIdleDownLeftSprites;   
+    public Sprite[] shotgunIdleDownSprites;       
+    public Sprite[] shotgunIdleDownRightSprites;  
+    public Sprite[] shotgunIdleRightSprites;      
+    public Sprite[] shotgunIdleUpRightSprites;    
 
     [Header("El objeto que rota (Ship)")]
     public Transform shipTransform;
 
     [Header("Frames por segundo (Idle de la escopeta)")]
-    public float framesPerSecond = 4f;   // Ajusta a tu gusto
+    public float framesPerSecond = 4f; // Ajusta a tu gusto
 
-    // Internos
+    // Variables internas
     private SpriteRenderer sr;
     private float animTimer = 0f;
     private int currentFrame = 0;
@@ -54,6 +55,7 @@ public class ShipBodyShotgunIdle8Directions : MonoBehaviour
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        Debug.Log("[ShipBodyShotgunIdle8Directions] Awake() => Referencia al SpriteRenderer obtenida.");
     }
 
     // Cada vez que se habilita este script, reiniciamos la animación
@@ -61,26 +63,36 @@ public class ShipBodyShotgunIdle8Directions : MonoBehaviour
     {
         animTimer = 0f;
         currentFrame = 0;
+
+        Debug.Log("[ShipBodyShotgunIdle8Directions] OnEnable() => Idle ESCOPETA ACTIVADA. Reset animTimer/currentFrame.");
+    }
+
+    void OnDisable()
+    {
+        Debug.Log("[ShipBodyShotgunIdle8Directions] OnDisable() => Idle ESCOPETA DESACTIVADA.");
     }
 
     void Update()
     {
-        if (shipTransform == null) return;
+        if (shipTransform == null)
+        {
+            Debug.LogWarning("[ShipBodyShotgunIdle8Directions] shipTransform es null; no se puede actualizar Idle Escopeta.");
+            return;
+        }
 
-        // Alinear la posición con el Ship
+        // 1) Alinear la posición con el Ship
         transform.position = shipTransform.position;
-        // Evitar rotación local (el sprite no gira)
         transform.rotation = Quaternion.identity;
 
-        // 1) Tomar ángulo z, normalizar a [0..360)
+        // 2) Calcular angleZ en [0..360)
         float angleZ = shipTransform.eulerAngles.z;
         angleZ = (angleZ + 360f) % 360f;
 
-        // 2) Dividir [0..360) en 8 sectores de 45°, sumando 22.5
+        // 3) Dividir en 8 sectores: (angleZ + 22.5) => rawIndex [0..7]
         float sector = (angleZ + 22.5f) % 360f;
-        int rawIndex = Mathf.FloorToInt(sector / 45f); // [0..7]
+        int rawIndex = Mathf.FloorToInt(sector / 45f);
 
-        // 3) Convertir rawIndex => finalIndex
+        // 4) Convertir rawIndex => finalIndex
         int finalIndex = 0;
         switch (rawIndex)
         {
@@ -94,7 +106,9 @@ public class ShipBodyShotgunIdle8Directions : MonoBehaviour
             case 7: finalIndex = 7; break; // Up-Right
         }
 
-        // 4) Elegir el array de sprites idle segun finalIndex
+       // Debug.Log($"[ShipBodyShotgunIdle8Directions] Update => angleZ={angleZ:F2}, rawIndex={rawIndex}, finalIndex={finalIndex}");
+
+        // 5) Seleccionar el array de sprites segun finalIndex
         switch (finalIndex)
         {
             case 0: currentAnim = shotgunIdleUpSprites; break;
@@ -107,14 +121,19 @@ public class ShipBodyShotgunIdle8Directions : MonoBehaviour
             case 7: currentAnim = shotgunIdleUpRightSprites; break;
         }
 
-        // Si no hay sprites, no hacemos nada
-        if (currentAnim == null || currentAnim.Length == 0) return;
+        if (currentAnim == null || currentAnim.Length == 0)
+        {
+            Debug.LogWarning("[ShipBodyShotgunIdle8Directions] No hay sprites en currentAnim => no se dibuja nada.");
+            return;
+        }
 
-        // 5) Avanzar animación manualmente
+        // 6) Avanzar animación manual
         if (framesPerSecond > 0f)
         {
             animTimer += Time.deltaTime * framesPerSecond;
-            if (animTimer >= 1f)
+
+            // Evitar saltos bruscos si la tasa de frames es alta y el juego se pausa un momento
+            while (animTimer >= 1f)
             {
                 animTimer -= 1f;
                 currentFrame++;
@@ -126,11 +145,11 @@ public class ShipBodyShotgunIdle8Directions : MonoBehaviour
         }
         else
         {
-            // Si framesPerSecond <= 0 => frame 0 fijo
+            // framesPerSecond <= 0 => frame 0
             currentFrame = 0;
         }
 
-        // 6) Asignar el sprite actual
+        // 7) Asignar el sprite actual
         sr.sprite = currentAnim[currentFrame];
     }
 }

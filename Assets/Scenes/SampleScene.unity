@@ -778,9 +778,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 190124696}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0020999336, y: -0.034440152, z: 10}
-  m_LocalScale: {x: 1, y: 1, z: 0.5}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1854467541}
@@ -804,7 +804,7 @@ MonoBehaviour:
   selectDefenseOrbImage: {fileID: 1751388433}
   pistolIdleScript: {fileID: 1990132652}
   shotgunIdleScript: {fileID: 1990132653}
-  rifleIdleScript: {fileID: 0}
+  rifleIdleScript: {fileID: 1990132654}
   orbsIdleScript: {fileID: 0}
 --- !u!50 &190124700
 Rigidbody2D:
@@ -914,8 +914,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
-  projectileSpeed: 30
-  fireRate: 0.15
+  projectileSpeed: 20
+  fireRate: 0.1
   normalDispersionAngle: 5
   zoomedDispersionAngle: 0
   defaultMagazineSize: 4
@@ -927,11 +927,11 @@ MonoBehaviour:
   scaleMultiplier: 1.1
   scaleDuration: 0.1
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  ammoText: {fileID: 721255408}
-  reloadIndicator: {fileID: 1111079481}
-  idleScript: {fileID: 1990132648}
+  ammoText: {fileID: 0}
+  reloadIndicator: {fileID: 0}
+  idleScript: {fileID: 1990132652}
   attackScript: {fileID: 1990132649}
-  attackAnimationDuration: 0.25
+  attackAnimationDuration: 0.4
 --- !u!114 &190124704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -992,7 +992,7 @@ MonoBehaviour:
   reloadIndicator: {fileID: 1702291359}
   currentAmmo: 0
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  shotgunIdleScript: {fileID: 0}
+  shotgunIdleScript: {fileID: 1990132653}
   shotgunAttackScript: {fileID: 1990132650}
   shotgunAttackAnimationDuration: 0.2
 --- !u!114 &190124707
@@ -1021,8 +1021,8 @@ MonoBehaviour:
   ammoText: {fileID: 29512016}
   reloadIndicator: {fileID: 1756493388}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  rifleIdleScript: {fileID: 1990132648}
-  rifleAttackScript: {fileID: 1990132651}
+  rifleIdleScript: {fileID: 1990132654}
+  rifleAttackScript: {fileID: 1990132655}
 --- !u!114 &190124708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6244,12 +6244,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1990132646}
   - component: {fileID: 1990132647}
-  - component: {fileID: 1990132648}
-  - component: {fileID: 1990132649}
-  - component: {fileID: 1990132650}
-  - component: {fileID: 1990132651}
   - component: {fileID: 1990132652}
+  - component: {fileID: 1990132649}
   - component: {fileID: 1990132653}
+  - component: {fileID: 1990132650}
+  - component: {fileID: 1990132654}
+  - component: {fileID: 1990132655}
   m_Layer: 8
   m_Name: Character
   m_TagString: Untagged
@@ -6328,60 +6328,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1990132648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1990132645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e48fb9d292d7834cbacd5648c8fc6fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  upSprites:
-  - {fileID: 5960844483825745430, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -9095035624182069391, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 6338147874653419279, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 1181164884431089472, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  upLeftSprites:
-  - {fileID: -6456299553658707018, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 1864893907593604266, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -1030489689449357134, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -960153847509598939, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  leftSprites:
-  - {fileID: -3777758055669498281, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 7831567188524198360, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 7230460453681236381, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 1003343984770194298, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  downLeftSprites:
-  - {fileID: 3832448389795060572, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 1735445458672148518, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -4205293108663785824, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 4700656882658419981, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  downSprites:
-  - {fileID: 2015178020077984733, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 1093005561971850533, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -6755271079262687900, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 6029219416352409167, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  downRightSprites:
-  - {fileID: 5337577070501577720, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -2612904755597318521, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 4505448486673378720, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -93948548897979081, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  rightSprites:
-  - {fileID: -8949463711418039779, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 9085524684638042691, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 3654693614090308704, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -3537596336586908911, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  upRightSprites:
-  - {fileID: -300578958084545682, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: 6241109825486851438, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -5737547632048829121, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  - {fileID: -750793338884915799, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
-  shipTransform: {fileID: 190124698}
-  framesPerSecond: 8
 --- !u!114 &1990132649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6389,7 +6335,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1990132645}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77e517336823c45dbac46ae245f57e16, type: 3}
   m_Name: 
@@ -6443,7 +6389,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1990132645}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbd542659e7fbcc4590ef2588f15cb0d, type: 3}
   m_Name: 
@@ -6482,52 +6428,6 @@ MonoBehaviour:
   - {fileID: -9007121229575453108, guid: bda69b540da02014eac4735f529d0eb7, type: 3}
   shipTransform: {fileID: 190124698}
   framesPerSecond: 14
---- !u!114 &1990132651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1990132645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62da73594f35ac9438c01cb8f597ae6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rifleAttackUpSprites:
-  - {fileID: -8620346528447645916, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 4098831209169328323, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 6640147006558883833, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  rifleAttackUpLeftSprites:
-  - {fileID: -170188503766422721, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 4578666497915951452, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 5107200084220234299, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  rifleAttackLeftSprites:
-  - {fileID: 2226366758987319890, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 1914741608096414955, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 2268190336548869671, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  rifleAttackDownLeftSprites:
-  - {fileID: 2430993422660300664, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: -1382230622577256900, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 8451388990711389605, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  rifleAttackDownSprites:
-  - {fileID: 5179416866770235064, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 8751632240237405348, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 8633530245938936738, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  rifleAttackDownRightSprites:
-  - {fileID: 3887783059100504243, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: -5596925043165754544, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 7421731557101947370, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  rifleAttackRightSprites:
-  - {fileID: 8850890018107687323, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 242804186073561414, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 6307004026713591068, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  rifleAttackUpRightSprites:
-  - {fileID: 6846198242984202642, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: 2250281506372658427, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  - {fileID: -718356854204191170, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
-  shipTransform: {fileID: 190124698}
-  framesPerSecond: 16
 --- !u!114 &1990132652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6535,7 +6435,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1990132645}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bc44dd7251dbc94687636e9dd662395, type: 3}
   m_Name: 
@@ -6589,7 +6489,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1990132645}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e432a3824eab7cb498dbd16ae3353726, type: 3}
   m_Name: 
@@ -6636,6 +6536,106 @@ MonoBehaviour:
   - {fileID: 651003147, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
   shipTransform: {fileID: 190124698}
   framesPerSecond: 4
+--- !u!114 &1990132654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990132645}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3b782ed3ed0b7041a454ddeb3e47b40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rifleIdleUpSprites:
+  - {fileID: 2267477378340780965, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -6789890011272137261, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -4834141495496830334, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -4225493649867253650, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  rifleIdleUpLeftSprites:
+  - {fileID: -2975672393527609675, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -3498890383416610004, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 3351964043018084636, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 7349150901390045420, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  rifleIdleLeftSprites:
+  - {fileID: -6375934132901211920, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -5114959549797689703, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -1685850276335532075, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 5651637545478906812, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  rifleIdleDownLeftSprites:
+  - {fileID: -6489741864015504994, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 4328616786455726355, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 5530513427753793928, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -655299157068202046, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  rifleIdleDownSprites:
+  - {fileID: 8033130972678592395, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 641560994526442769, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 1520583279330261701, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -2641216139947705255, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  rifleIdleDownRightSprites:
+  - {fileID: 4351303809610324193, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -8180914340151087932, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -6114321320251155308, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 5988795026074780120, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  rifleIdleRightSprites:
+  - {fileID: 7208217548425941564, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 1921150396509176721, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -3233558999691916997, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -5087402977654101334, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  rifleIdleUpRightSprites:
+  - {fileID: 2394787633273804851, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -151176442992182743, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -170565977726911856, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 8934731347395643695, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  shipTransform: {fileID: 190124698}
+  framesPerSecond: 4
+--- !u!114 &1990132655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990132645}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62da73594f35ac9438c01cb8f597ae6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rifleAttackUpSprites:
+  - {fileID: -4747358855650479908, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 505237832733485816, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 4643838744276147381, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  rifleAttackUpLeftSprites:
+  - {fileID: 8807292880328031553, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: -693181387194256265, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: -8149321869698251359, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  rifleAttackLeftSprites:
+  - {fileID: 6613774906872489109, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 5393366238902972632, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: -6393660093084264941, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  rifleAttackDownLeftSprites:
+  - {fileID: -8525742762199774970, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 1434514678970180291, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: -4189045344086648965, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  rifleAttackDownSprites:
+  - {fileID: -1888165234047091106, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 1709633120727186112, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 4266189104069437780, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  rifleAttackDownRightSprites:
+  - {fileID: -8997385909814582409, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 2975479647308962852, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: -4949785302973501987, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  rifleAttackRightSprites:
+  - {fileID: 789241109742483850, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 5989005106288918460, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: -2743254769178626626, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  rifleAttackUpRightSprites:
+  - {fileID: -8053591749611751940, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 1563082367922598681, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  - {fileID: 4866089355381938436, guid: 3fdbef57073aef94c9041064bebe5f2b, type: 3}
+  shipTransform: {fileID: 190124698}
+  framesPerSecond: 8
 --- !u!1 &2057956303
 GameObject:
   m_ObjectHideFlags: 0
