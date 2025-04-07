@@ -802,6 +802,10 @@ MonoBehaviour:
   selectShotgunImage: {fileID: 983923952}
   selectRifleImage: {fileID: 153490820}
   selectDefenseOrbImage: {fileID: 1751388433}
+  pistolIdleScript: {fileID: 1990132652}
+  shotgunIdleScript: {fileID: 1990132653}
+  rifleIdleScript: {fileID: 0}
+  orbsIdleScript: {fileID: 0}
 --- !u!50 &190124700
 Rigidbody2D:
   serializedVersion: 5
@@ -988,7 +992,7 @@ MonoBehaviour:
   reloadIndicator: {fileID: 1702291359}
   currentAmmo: 0
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  shotgunIdleScript: {fileID: 1990132648}
+  shotgunIdleScript: {fileID: 0}
   shotgunAttackScript: {fileID: 1990132650}
   shotgunAttackAnimationDuration: 0.2
 --- !u!114 &190124707
@@ -6244,6 +6248,8 @@ GameObject:
   - component: {fileID: 1990132649}
   - component: {fileID: 1990132650}
   - component: {fileID: 1990132651}
+  - component: {fileID: 1990132652}
+  - component: {fileID: 1990132653}
   m_Layer: 8
   m_Name: Character
   m_TagString: Untagged
@@ -6522,6 +6528,114 @@ MonoBehaviour:
   - {fileID: -718356854204191170, guid: c3317ba360b35564a90285d91cdc53e5, type: 3}
   shipTransform: {fileID: 190124698}
   framesPerSecond: 16
+--- !u!114 &1990132652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990132645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc44dd7251dbc94687636e9dd662395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistolIdleUpSprites:
+  - {fileID: 5960844483825745430, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -9095035624182069391, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 6338147874653419279, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 1181164884431089472, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  pistolIdleUpLeftSprites:
+  - {fileID: -6456299553658707018, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 1864893907593604266, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -1030489689449357134, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -960153847509598939, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  pistolIdleLeftSprites:
+  - {fileID: -3777758055669498281, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 7831567188524198360, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 7230460453681236381, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 1003343984770194298, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  pistolIdleDownLeftSprites:
+  - {fileID: 3832448389795060572, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 1735445458672148518, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -4205293108663785824, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 4700656882658419981, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  pistolIdleDownSprites:
+  - {fileID: 2015178020077984733, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 1093005561971850533, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -6755271079262687900, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 6029219416352409167, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  pistolIdleDownRightSprites:
+  - {fileID: 5337577070501577720, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -2612904755597318521, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 4505448486673378720, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -93948548897979081, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  pistolIdleRightSprites:
+  - {fileID: -8949463711418039779, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 9085524684638042691, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 3654693614090308704, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -3537596336586908911, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  pistolIdleUpRightSprites:
+  - {fileID: -300578958084545682, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: 6241109825486851438, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -5737547632048829121, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  - {fileID: -750793338884915799, guid: 1895d92227bee3643a8c45e31439887f, type: 3}
+  shipTransform: {fileID: 190124698}
+  framesPerSecond: 4
+--- !u!114 &1990132653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990132645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e432a3824eab7cb498dbd16ae3353726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shotgunIdleUpSprites:
+  - {fileID: 1778945538, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 1156937378, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 1546634860, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -834930725, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shotgunIdleUpLeftSprites:
+  - {fileID: 1684248355, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 839979352, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -1447271594, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -499654516, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shotgunIdleLeftSprites:
+  - {fileID: 1565018723, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 923038491, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -88392662, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -1536411590, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shotgunIdleDownLeftSprites:
+  - {fileID: 1680458942, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 1021705018, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -954932246, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -8368168, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shotgunIdleDownSprites:
+  - {fileID: -1086586210, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -1767903149, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 450808844, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 396906800, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shotgunIdleDownRightSprites:
+  - {fileID: 765067465, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -1188953218, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 287157883, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -612130251, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shotgunIdleRightSprites:
+  - {fileID: -413219905, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 1548544021, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 1157086422, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -400751047, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shotgunIdleUpRightSprites:
+  - {fileID: 1040672961, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: -198260674, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 692828916, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  - {fileID: 651003147, guid: 428a0f1f90af9ea4e8cc56b3b31dfaca, type: 3}
+  shipTransform: {fileID: 190124698}
+  framesPerSecond: 4
 --- !u!1 &2057956303
 GameObject:
   m_ObjectHideFlags: 0

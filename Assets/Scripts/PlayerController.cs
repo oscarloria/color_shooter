@@ -8,19 +8,19 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     // Referencias a los componentes especializados adjuntos al jugador
-    private PlayerMovement playerMovement;     // Controla la rotación del jugador
-    private PlayerShooting playerShooting;       // Disparo de pistola
-    private ShotgunShooting shotgunShooting;     // Disparo de escopeta
-    private RifleShooting rifleShooting;         // Disparo del rifle automático
-    private DefenseOrbShooting defenseOrbShooting; // Nuevo: Disparo de orbes de defensa
-    private SlowMotion slowMotion;               // Controla la cámara lenta
+    private PlayerMovement playerMovement;     
+    private PlayerShooting playerShooting;     
+    private ShotgunShooting shotgunShooting;   
+    private RifleShooting rifleShooting;       
+    private DefenseOrbShooting defenseOrbShooting; 
+    private SlowMotion slowMotion;           
 
     // --- OBJETOS DE LA UI PARA INDICAR ARMA SELECCIONADA ---
     [Header("UI de selección de arma")]
-    public GameObject selectPistolImage;       // UI para la pistola
-    public GameObject selectShotgunImage;      // UI para la escopeta
-    public GameObject selectRifleImage;        // UI para el rifle
-    public GameObject selectDefenseOrbImage;   // Nuevo: UI para el orbe de defensa
+    public GameObject selectPistolImage;     
+    public GameObject selectShotgunImage;    
+    public GameObject selectRifleImage;      
+    public GameObject selectDefenseOrbImage; 
 
     // Lógica de armas:
     // 1 => Pistola
@@ -29,25 +29,36 @@ public class PlayerController : MonoBehaviour
     // 4 => Orbe de Defensa
     private int currentWeapon = 1;
 
+    // NUEVO (Idle Scripts):
+    [Header("Scripts de Idle en 8 direcciones (uno por arma)")]
+    public ShipBodyPistolIdle8Directions pistolIdleScript;
+    public ShipBodyShotgunIdle8Directions shotgunIdleScript;
+    public ShipBodyRifleIdle8Directions rifleIdleScript;
+    public ShipBodyOrbsIdle8Directions orbsIdleScript;
+
     void Awake()
     {
-        // Obtener referencias a los componentes adjuntos al jugador
+        // Obtener referencias a los componentes
         playerMovement = GetComponent<PlayerMovement>();
         playerShooting = GetComponent<PlayerShooting>();
         shotgunShooting = GetComponent<ShotgunShooting>();
         rifleShooting = GetComponent<RifleShooting>();
-        defenseOrbShooting = GetComponent<DefenseOrbShooting>(); // Nuevo
+        defenseOrbShooting = GetComponent<DefenseOrbShooting>();
         slowMotion = GetComponent<SlowMotion>();
     }
 
     void Start()
     {
-        // Actualizamos la UI al inicio (arma 1: pistola)
+        // Actualizar la UI al inicio (arma 1: pistola)
         UpdateWeaponUI();
 
         // Ocultar y bloquear el cursor en pantalla
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        // NUEVO: Asegurar que IdleScript de pistola esté activo,
+        // y los demás idle scripts apagados, al empezar.
+        EnableIdleForCurrentWeapon();
     }
 
     void Update()
@@ -241,6 +252,36 @@ public class PlayerController : MonoBehaviour
                 break;
             case 4:
                 if (selectDefenseOrbImage != null) selectDefenseOrbImage.SetActive(true);
+                break;
+        }
+
+        // NUEVO: Cada vez que cambiamos de arma, habilitamos/deshabilitamos Idle
+        EnableIdleForCurrentWeapon();
+    }
+
+    // NUEVO: Habilita el IdleScript del arma actual y deshabilita los otros.
+    private void EnableIdleForCurrentWeapon()
+    {
+        // 1) Desactivar todos
+        if (pistolIdleScript   != null) pistolIdleScript.enabled   = false;
+        if (shotgunIdleScript  != null) shotgunIdleScript.enabled  = false;
+        if (rifleIdleScript    != null) rifleIdleScript.enabled    = false;
+        if (orbsIdleScript     != null) orbsIdleScript.enabled     = false;
+
+        // 2) Encender solo el del arma actual
+        switch (currentWeapon)
+        {
+            case 1:
+                if (pistolIdleScript != null) pistolIdleScript.enabled = true;
+                break;
+            case 2:
+                if (shotgunIdleScript != null) shotgunIdleScript.enabled = true;
+                break;
+            case 3:
+                if (rifleIdleScript != null) rifleIdleScript.enabled = true;
+                break;
+            case 4:
+                if (orbsIdleScript != null) orbsIdleScript.enabled = true;
                 break;
         }
     }

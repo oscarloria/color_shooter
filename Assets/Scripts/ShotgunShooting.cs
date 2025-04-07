@@ -12,7 +12,7 @@ using UnityEngine.InputSystem; // Necesario para usar Gamepad.current
 /// y el resto se distribuya simétricamente alrededor de ese ángulo.
 ///
 /// NUEVO: Referencias a "Idle" y "Attack" para animaciones 8directions,
-/// al igual que en PlayerShooting.
+/// al igual que en PlayerShooting. (Corregido para usar ShipBodyShotgunIdle8Directions)
 /// </summary>
 public class ShotgunShooting : MonoBehaviour
 {
@@ -49,7 +49,8 @@ public class ShotgunShooting : MonoBehaviour
 
     // ----------------- NUEVO: Manejo de animaciones IDLE/ATTACK -----------------
     [Header("Animaciones en 8 direcciones (Shotgun)")]
-    public ShipBody8Directions shotgunIdleScript;           // Script de Idle en 8 direcciones
+    // CORREGIDO: Referencia al script de idle ESPECÍFICO para la escopeta
+    public ShipBodyShotgunIdle8Directions shotgunIdleScript;           
     public ShipBodyShotgunAttack8Directions shotgunAttackScript;   // Script de Attack en 8 direcciones
     public float shotgunAttackAnimationDuration = 0.5f;     // Duración anim de ataque (escopeta)
     private bool isPlayingShotgunAttackAnim = false;
