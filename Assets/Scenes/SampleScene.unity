@@ -927,8 +927,8 @@ MonoBehaviour:
   scaleMultiplier: 1.1
   scaleDuration: 0.1
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  ammoText: {fileID: 0}
-  reloadIndicator: {fileID: 0}
+  ammoText: {fileID: 721255408}
+  reloadIndicator: {fileID: 1111079481}
   idleScript: {fileID: 1990132652}
   attackScript: {fileID: 1990132649}
   attackAnimationDuration: 0.4
@@ -6549,45 +6549,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rifleIdleUpSprites:
-  - {fileID: 2267477378340780965, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -6789890011272137261, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -4834141495496830334, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -4225493649867253650, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 3157244957673401073, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -7698592337008132045, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 2190941615141619767, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 1194479028987821535, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   rifleIdleUpLeftSprites:
-  - {fileID: -2975672393527609675, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -3498890383416610004, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 3351964043018084636, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 7349150901390045420, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -4013064208316727712, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 6596751675190667844, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 8087503938771627751, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -2026165294924417868, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   rifleIdleLeftSprites:
-  - {fileID: -6375934132901211920, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -5114959549797689703, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -1685850276335532075, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 5651637545478906812, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 5234591605120638955, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -2258845019367588597, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 1013531779742528078, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -6666274571259065924, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   rifleIdleDownLeftSprites:
-  - {fileID: -6489741864015504994, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 4328616786455726355, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 5530513427753793928, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -655299157068202046, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -1074376902567783765, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -3358897297927949620, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 4058640816501355213, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 9199159065234036235, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   rifleIdleDownSprites:
-  - {fileID: 8033130972678592395, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 641560994526442769, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 1520583279330261701, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -2641216139947705255, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -4624546358344373992, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 7283059408449675809, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -8510397631919869543, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -3849595253723389496, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   rifleIdleDownRightSprites:
-  - {fileID: 4351303809610324193, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -8180914340151087932, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -6114321320251155308, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 5988795026074780120, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: -71837586040287676, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -2268626255720439265, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 5499946865709849862, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -2944090480377959830, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   rifleIdleRightSprites:
-  - {fileID: 7208217548425941564, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 1921150396509176721, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -3233558999691916997, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -5087402977654101334, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 4882563398580341281, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -354960362240027327, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 618121625174853976, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 7205629508440552891, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   rifleIdleUpRightSprites:
-  - {fileID: 2394787633273804851, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -151176442992182743, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: -170565977726911856, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
-  - {fileID: 8934731347395643695, guid: 3a5e464ac1254c846b3cc0e6885e5ebb, type: 3}
+  - {fileID: 2099006838060467932, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -1977106450205037662, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: -3235230255616082403, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
+  - {fileID: 867852281433081857, guid: 9f0d4cbfb71251546889a3e143b038e5, type: 3}
   shipTransform: {fileID: 190124698}
   framesPerSecond: 4
 --- !u!114 &1990132655
