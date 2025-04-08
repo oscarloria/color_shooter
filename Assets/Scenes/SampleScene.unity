@@ -1047,6 +1047,9 @@ MonoBehaviour:
   reloadIndicator: {fileID: 487839296}
   currentAmmo: 0
   isReloading: 0
+  orbsIdleScript: {fileID: 1990132656}
+  orbsAttackScript: {fileID: 1990132657}
+  orbsAttackAnimationDuration: 0.5
 --- !u!1 &357621890
 GameObject:
   m_ObjectHideFlags: 0
@@ -6251,6 +6254,7 @@ GameObject:
   - component: {fileID: 1990132654}
   - component: {fileID: 1990132655}
   - component: {fileID: 1990132656}
+  - component: {fileID: 1990132657}
   m_Layer: 8
   m_Name: Character
   m_TagString: Untagged
@@ -6691,6 +6695,60 @@ MonoBehaviour:
   - {fileID: 6801273805675501504, guid: 87ef42cfdeabc3746b8ca40225966298, type: 3}
   shipTransform: {fileID: 190124698}
   framesPerSecond: 4
+--- !u!114 &1990132657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990132645}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c3206080de7c1f48b91dcde914412ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbsAttackUpSprites:
+  - {fileID: -2298326635420143002, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 5377116191663516672, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -8604843885197581235, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 4923172334694337954, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  orbsAttackUpLeftSprites:
+  - {fileID: -8089769888713922393, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 1473106259586466151, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 70773186766261442, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 7471144909600272119, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  orbsAttackLeftSprites:
+  - {fileID: -7480977981342916510, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -4000459021234357113, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 3950644666673480308, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -5676923625944548856, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  orbsAttackDownLeftSprites:
+  - {fileID: 5708875229934265498, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 3719819236779326477, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -2260217589550135105, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 6604250217297225061, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  orbsAttackDownSprites:
+  - {fileID: -2545047244099491936, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -618754414448741371, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 7315399621198052842, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -518990158290811152, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  orbsAttackDownRightSprites:
+  - {fileID: 3884644071447055066, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 562180191218715091, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -8146789811743179090, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 5444747111255858433, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  orbsAttackRightSprites:
+  - {fileID: -4922726172643048944, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 6674722077182346470, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -8810069252870284763, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -6219673407640210461, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  orbsAttackUpRightSprites:
+  - {fileID: 4531402703785794173, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: -945428768838539778, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 8221399966176979839, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  - {fileID: 7230257985578817136, guid: 7e9fc160a95c3fa49a5628ade8db96f6, type: 3}
+  shipTransform: {fileID: 190124698}
+  framesPerSecond: 6
 --- !u!1 &2057956303
 GameObject:
   m_ObjectHideFlags: 0

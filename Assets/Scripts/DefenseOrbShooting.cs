@@ -6,33 +6,44 @@ public class DefenseOrbShooting : MonoBehaviour
 {
     [Header("Configuración del Orbe de Defensa")]
     public GameObject defenseOrbPrefab; // Prefab del orbe de defensa (debe tener el script DefenseOrb)
-    public int magazineSize = 4;          // Número de orbes disponibles por carga
-    public float reloadTime = 2f;         // Tiempo de recarga para los orbes
-    public int orbDurability = 3;         // Durabilidad inicial de cada orbe (golpes que soporta)
-    public float orbitRadius = 2f;        // Radio de la órbita alrededor del jugador
-    public float orbitSpeed = 90f;        // Velocidad angular en grados/segundo
+    public int magazineSize = 4;       // Número de orbes disponibles por carga
+    public float reloadTime = 2f;      // Tiempo de recarga de los orbes
+    public int orbDurability = 3;      // Durabilidad inicial de cada orbe
+    public float orbitRadius = 2f;     // Radio de la órbita
+    public float orbitSpeed = 90f;     // Velocidad angular en grados/segundo
 
     [Header("Disparo")]
-    public float fireRate = 0.2f;         // Tiempo mínimo entre disparos de orbes
+    public float fireRate = 0.2f;      // Tiempo mínimo entre disparos de orbes
 
     [Header("Sistema de Color")]
-    public Color currentColor = Color.white; // Color asignado al orbe (se actualiza con WASD)
+    public Color currentColor = Color.white; // Color del orbe (se actualiza con WASD)
 
     [Header("UI")]
-    public TextMeshProUGUI ammoText;          // Texto que muestra la munición del orbe
-    public WeaponReloadIndicator reloadIndicator;  // Indicador radial de recarga
+    public TextMeshProUGUI ammoText;   // Texto que muestra la munición
+    public WeaponReloadIndicator reloadIndicator; // Indicador radial de recarga
 
-    // Variables internas accesibles para PlayerController
+    // Variables internas
     public int currentAmmo;
     public bool isReloading = false;
     private float nextFireTime = 0f;
     private float lastShotTime = 0f;
+
+    // ----------------- NUEVO: Manejo de Idle y Attack (Orbs) en 8 direcciones -----------------
+    [Header("Animaciones en 8 direcciones (Orbes)")]
+    public ShipBodyOrbsIdle8Directions orbsIdleScript;       // Script Idle (orbes)
+    public ShipBodyOrbsAttack8Directions orbsAttackScript;   // Script Attack (orbes)
+    public float orbsAttackAnimationDuration = 0.5f;         // Duración del ataque animado
+    private bool isPlayingOrbsAttackAnim = false;
 
     void Start()
     {
         currentAmmo = magazineSize;
         lastShotTime = Time.time;
         UpdateAmmoText();
+
+        // No habilitamos orbsIdleScript ni orbsAttackScript aquí,
+        // PlayerController se encarga de la Idle si currentWeapon=4,
+        // y la corrutina PlayOrbsAttackAnimation() activará Attack.
     }
 
     /// <summary>
@@ -40,34 +51,30 @@ public class DefenseOrbShooting : MonoBehaviour
     /// </summary>
     public void ShootOrb()
     {
-        // No disparar si no se ha seleccionado un color.
+        // No disparar si no hay color, se está recargando, sin munición, o cooldown
         if (currentColor == Color.white) return;
-        if (isReloading || currentAmmo <= 0 || Time.time < nextFireTime)
-            return;
+        if (isReloading || currentAmmo <= 0 || Time.time < nextFireTime) return;
 
-        // Calcular la posición de spawn basándose en la posición del mouse.
-        // Convertir la posición del mouse (screen space) a world space.
+        // Calcular la posición de spawn basándonos en el mouse
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouseWorldPos.z = 0f; // Asegurarse de que está en el plano 2D.
+        mouseWorldPos.z = 0f;
         Vector3 direction = (mouseWorldPos - transform.position).normalized;
-        // Calcular el ángulo en grados a partir de la dirección.
         float newAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         lastShotTime = Time.time;
 
-        // Calcular la posición de spawn sobre la circunferencia de radio orbitRadius.
+        // Posición de spawn en la circunferencia
         Vector3 spawnDirection = Quaternion.Euler(0, 0, newAngle) * Vector3.up;
         Vector3 spawnPosition = transform.position + spawnDirection.normalized * orbitRadius;
 
-        // Instanciar el orbe (como objeto independiente para evitar que la rotación del jugador lo afecte)
+        // Instanciar orbe
         GameObject orbObj = Instantiate(defenseOrbPrefab, spawnPosition, Quaternion.identity);
         DefenseOrb newOrb = orbObj.GetComponent<DefenseOrb>();
         if (newOrb != null)
         {
             newOrb.currentAngle = newAngle;
             newOrb.orbitRadius = orbitRadius;
-            // Para que los orbes sigan girando en sentido clockwise, se asigna un orbitSpeed negativo.
-            newOrb.orbitSpeed = -orbitSpeed;
+            newOrb.orbitSpeed = -orbitSpeed; // clockwise
             newOrb.durability = orbDurability;
             newOrb.orbColor = currentColor;
         }
@@ -75,6 +82,9 @@ public class DefenseOrbShooting : MonoBehaviour
         currentAmmo--;
         nextFireTime = Time.time + fireRate;
         UpdateAmmoText();
+
+        // NUEVO: Activar la animación de ataque
+        StartCoroutine(PlayOrbsAttackAnimation());
     }
 
     /// <summary>
@@ -105,6 +115,52 @@ public class DefenseOrbShooting : MonoBehaviour
 
         if (reloadIndicator != null)
             reloadIndicator.ResetIndicator();
+    }
+
+    /// <summary>
+    /// Corrutina que desactiva orbsIdleScript y activa orbsAttackScript 
+    /// durante "orbsAttackAnimationDuration", luego vuelve al idle.
+    /// </summary>
+    IEnumerator PlayOrbsAttackAnimation()
+    {
+        if (isPlayingOrbsAttackAnim) yield break; // Evitar solapar animaciones
+
+        isPlayingOrbsAttackAnim = true;
+        Debug.Log("[DefenseOrbShooting] Orbs Attack => Activando anim de ataque.");
+
+        // Desactivar Idle
+        if (orbsIdleScript != null)
+        {
+            orbsIdleScript.enabled = false;
+            Debug.Log("[DefenseOrbShooting] Idle Orbes DESACTIVADO.");
+        }
+
+        // Activar Attack
+        if (orbsAttackScript != null)
+        {
+            orbsAttackScript.enabled = true;
+            Debug.Log("[DefenseOrbShooting] Attack Orbes ACTIVADO.");
+        }
+
+        // Esperar la duración
+        yield return new WaitForSeconds(orbsAttackAnimationDuration);
+
+        // Desactivar Attack
+        if (orbsAttackScript != null)
+        {
+            orbsAttackScript.enabled = false;
+            Debug.Log("[DefenseOrbShooting] Attack Orbes DESACTIVADO.");
+        }
+
+        // Reactivar Idle
+        if (orbsIdleScript != null)
+        {
+            orbsIdleScript.enabled = true;
+            Debug.Log("[DefenseOrbShooting] Idle Orbes REACTIVADO.");
+        }
+
+        isPlayingOrbsAttackAnim = false;
+        Debug.Log("[DefenseOrbShooting] Orbs Attack => Anim finalizada.");
     }
 
     /// <summary>
