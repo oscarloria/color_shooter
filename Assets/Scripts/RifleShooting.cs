@@ -2,41 +2,34 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 
-/// <summary>
-/// Maneja el disparo automático (rifle). Admite distintos prefabs de proyectil
-/// según el color, y asigna "projectileColor" en Projectile.cs para la mecánica
-/// de coincidencia con enemigos. Incluye animaciones Idle/Attack en 8 direcciones.
-/// </summary>
 public class RifleShooting : MonoBehaviour
 {
     [Header("Configuración del Rifle Automático")]
-    [Tooltip("Prefab de proyectil blanco (opcional, fallback).")]
-    public GameObject projectilePrefab;  // Fallback si no coincide color
+    [Tooltip("Prefab de proyectil fallback (blanco) si no coincide color.")]
+    public GameObject projectilePrefab;  
 
     [Header("Prefabs de proyectil para cada color (Rifle)")]
-    // NUEVO: Asignar en el Inspector un prefab de color nativo (rojo, azul, etc.)
     public GameObject projectileRedPrefab;
     public GameObject projectileBluePrefab;
     public GameObject projectileGreenPrefab;
     public GameObject projectileYellowPrefab;
 
     public float projectileSpeed = 20f;
-    public float fireRate = 0.1f;      // 0.1 => 10 disparos/seg
-    public float reloadTime = 2f;      // Tiempo de recarga
-    public int magazineSize = 30;      // Balas por cargador
+    public float fireRate = 0.1f;   // 0.1 => 10 disparos/seg
+    public float reloadTime = 2f;
+    public int magazineSize = 30;   
 
     [Header("Dispersion / Zoom")]
     public float normalDispersionAngle = 5f;
     public float zoomedDispersionAngle = 2f;
 
-    // Internas
     [HideInInspector] public int currentAmmo;
     [HideInInspector] public bool isReloading = false;
 
     private CameraZoom cameraZoom;
-    private bool isFiring = false;     // Disparo continuo (mouseDown)
-    private bool canShoot = true;      // Control de fireRate
-    private float nextFireTime = 0f;   // Para cadencia de disparo
+    private bool isFiring = false;   
+    private bool canShoot = true;    
+    private float nextFireTime = 0f; 
 
     [Header("Efectos")]
     public float scaleMultiplier = 1.05f;
@@ -46,28 +39,24 @@ public class RifleShooting : MonoBehaviour
     public TextMeshProUGUI ammoText;   
     public WeaponReloadIndicator reloadIndicator;
 
-    // ----------------- Sistema de color -----------------
     public Color currentColor = Color.white;
-    private KeyCode lastPressedKey = KeyCode.None; 
+    private KeyCode lastPressedKey = KeyCode.None;
 
-    // Para asegurar que no se superpongan múltiples efectos de escala
     private Coroutine scaleEffectCoroutine;
 
     [Header("Animaciones en 8 direcciones (Rifle)")]
-    public ShipBodyRifleIdle8Directions rifleIdleScript;          
-    public ShipBodyRifleAttack8Directions rifleAttackScript;      
-    private bool rifleAttackActive = false;                       // si Attack está ON
+    public ShipBodyRifleIdle8Directions rifleIdleScript;
+    public ShipBodyRifleAttack8Directions rifleAttackScript;
+    private bool rifleAttackActive = false;
 
     void Start()
     {
         currentAmmo = magazineSize;
         UpdateAmmoText();
 
-        // Obtener referencia al Zoom
         cameraZoom = FindObjectOfType<CameraZoom>();
 
-        // Dejamos que el PlayerController maneje Idle/Attack
-        // No forzamos nada aquí para no chocar con PlayerController
+        Debug.Log("[RifleShooting] Start => magazineSize="+magazineSize+", reloadTime="+reloadTime);
     }
 
     void Update()
@@ -76,7 +65,7 @@ public class RifleShooting : MonoBehaviour
         UpdateCurrentColor();
 
         // Disparo continuo si isFiring
-        if (isFiring) 
+        if (isFiring)
         {
             DisparoContinuo();
         }
@@ -85,10 +74,6 @@ public class RifleShooting : MonoBehaviour
         UpdateAmmoText();
     }
 
-    /// <summary>
-    /// Llamado repetidamente mientras isFiring==true (mouseButtonDown en PlayerController).
-    /// Respeta el fireRate y llama ShootOneBullet().
-    /// </summary>
     private void DisparoContinuo()
     {
         if (Time.time >= nextFireTime && canShoot)
@@ -98,25 +83,22 @@ public class RifleShooting : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Dispara una sola bala, con dispersión y color. Se llama en DisparoContinuo().
-    /// </summary>
     private void ShootOneBullet()
     {
-        // Si color es blanco, recargando o sin munición => no dispara
+        // Verificación de color, recarga, munición
         if (currentColor == Color.white || isReloading || currentAmmo <= 0) return;
 
         currentAmmo--;
 
-        // Dispersión
-        float dispersionAngle = (cameraZoom != null && cameraZoom.IsZoomedIn)
-            ? zoomedDispersionAngle
-            : normalDispersionAngle;
+        // Dispersión (normal vs zoomed)
+        float dispersionAngle = (cameraZoom != null && cameraZoom.IsZoomedIn) 
+                                ? zoomedDispersionAngle 
+                                : normalDispersionAngle;
         float randomAngle = Random.Range(-dispersionAngle / 2f, dispersionAngle / 2f);
 
         Quaternion projectileRotation = transform.rotation * Quaternion.Euler(0, 0, randomAngle);
 
-        // ---------------------- NUEVO: Elegir prefab según color ----------------------
+        // Seleccionar prefab según color
         GameObject chosenPrefab = null;
         if      (currentColor == Color.red)    chosenPrefab = projectileRedPrefab;
         else if (currentColor == Color.blue)   chosenPrefab = projectileBluePrefab;
@@ -125,11 +107,11 @@ public class RifleShooting : MonoBehaviour
 
         if (chosenPrefab == null)
         {
-            // fallback
+            Debug.LogWarning("[RifleShooting] chosenPrefab es null => usando fallback (projectilePrefab).");
             chosenPrefab = projectilePrefab;
         }
 
-        // Instanciar el proyectil
+        // Instanciar proyectil
         GameObject projectile = Instantiate(chosenPrefab, transform.position, projectileRotation);
 
         // Asignar velocidad
@@ -139,13 +121,12 @@ public class RifleShooting : MonoBehaviour
             rb.linearVelocity = projectile.transform.up * projectileSpeed;
         }
 
-        // *** Asignar color lógico en Projectile.cs para colisiones con enemigos
+        // Asignar color lógico en Projectile
         Projectile proj = projectile.GetComponent<Projectile>();
         if (proj != null)
         {
-            proj.projectileColor = currentColor; 
+            proj.projectileColor = currentColor;
         }
-        // -----------------------------------------------------------------------------
 
         // Efecto de escala
         if (scaleEffectCoroutine != null)
@@ -169,23 +150,18 @@ public class RifleShooting : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Corrutina para recargar el rifle.
-    /// </summary>
     public IEnumerator Reload()
     {
         if (currentAmmo == magazineSize) yield break;
 
-        Debug.Log("[RifleShooting] Reload => Iniciando recarga.");
+        Debug.Log("[RifleShooting] => Iniciando recarga.");
 
-        // Forzar detener el disparo continuo
-        StopFiring();
+        StopFiring(); // Forzar detener disparo continuo
 
         isReloading = true;
         UpdateAmmoText();
 
-        // Reiniciar el indicador radial
-        if (reloadIndicator != null) 
+        if (reloadIndicator != null)
             reloadIndicator.ResetIndicator();
 
         float reloadTimer = 0f;
@@ -201,30 +177,20 @@ public class RifleShooting : MonoBehaviour
         isReloading = false;
         UpdateAmmoText();
 
-        if (reloadIndicator != null) 
+        if (reloadIndicator != null)
             reloadIndicator.ResetIndicator();
     }
 
-    /// <summary>
-    /// Actualiza la UI de munición.
-    /// </summary>
     private void UpdateAmmoText()
     {
         if (ammoText == null) return;
 
         if (isReloading)
-        {
             ammoText.text = "Rifle: RELOADING";
-        }
         else
-        {
             ammoText.text = $"Rifle: {currentAmmo}/{magazineSize}";
-        }
     }
 
-    /// <summary>
-    /// Efecto de escala al disparar.
-    /// </summary>
     IEnumerator ScaleEffect()
     {
         Vector3 originalScale = Vector3.one;
@@ -232,7 +198,6 @@ public class RifleShooting : MonoBehaviour
         float elapsedTime = 0f;
         float halfDuration = scaleDuration / 2f;
 
-        // Escalar hacia arriba
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -244,7 +209,6 @@ public class RifleShooting : MonoBehaviour
         transform.localScale = targetScale;
 
         elapsedTime = 0f;
-        // Escalar hacia abajo
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -257,7 +221,7 @@ public class RifleShooting : MonoBehaviour
     }
 
     // -----------------------------------------------------------
-    // LÓGICA DE COLOR (WASD).
+    // LÓGICA DE COLOR (WASD). 
     // -----------------------------------------------------------
     public void UpdateCurrentColor()
     {
@@ -335,10 +299,7 @@ public class RifleShooting : MonoBehaviour
         if (sr != null) sr.color = currentColor;
     }
 
-    /// <summary>
-    /// Inicia el disparo automático (mantener mouseDown).
-    /// Activa anim de ataque y desactiva la idle (rifle).
-    /// </summary>
+    // NUEVO => Si color es blanco, no iniciamos Attack
     public void StartFiring()
     {
         if (isReloading)
@@ -346,11 +307,17 @@ public class RifleShooting : MonoBehaviour
             Debug.Log("[RifleShooting] StartFiring => recargando, ignoramos.");
             return;
         }
+        // Chequeamos color
+        if (currentColor == Color.white)
+        {
+            Debug.Log("[RifleShooting] StartFiring => color=WHITE => no activa Attack ni disparo.");
+            return;
+        }
+
         Debug.Log("[RifleShooting] StartFiring => Disparo automático rifle ON");
         isFiring = true;
         nextFireTime = Time.time;
 
-        // Activar anim de ataque
         if (!rifleAttackActive)
         {
             rifleAttackActive = true;
@@ -359,16 +326,11 @@ public class RifleShooting : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Detiene el disparo automático (mouseUp).
-    /// Reactiva la idle del rifle y apaga el script Attack.
-    /// </summary>
     public void StopFiring()
     {
         Debug.Log("[RifleShooting] StopFiring => Disparo automático rifle OFF");
         isFiring = false;
 
-        // Volver a Idle
         if (rifleAttackActive)
         {
             rifleAttackActive = false;
