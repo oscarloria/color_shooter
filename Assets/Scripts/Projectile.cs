@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public Color projectileColor; // Color del proyectil
+    public Color projectileColor; // Color “lógico” del proyectil (para comparar con enemigos)
     public float lifetime = 5f;   // Tiempo antes de que el proyectil se destruya
     public float minSpeed = 1f;   // Velocidad mínima antes de destruir el proyectil
 
@@ -12,22 +12,30 @@ public class Projectile : MonoBehaviour
 
     void Start()
     {
+        // Obtener el spriteRenderer
         spriteRenderer = GetComponent<SpriteRenderer>();
-        projectileColor = spriteRenderer.color;
+
+        // (OPCIONAL) Sincronizar apariencia con projectileColor
+        // spriteRenderer.color = projectileColor;
+
+        // Configurar el temporizador de vida
         lifeTimer = lifetime;
 
-        rb = GetComponent<Rigidbody2D>(); // Obtener referencia al Rigidbody2D
+        // Obtener el Rigidbody2D
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
+        // Decrementar lifetime
         lifeTimer -= Time.deltaTime;
         if (lifeTimer <= 0f)
         {
             Destroy(gameObject);
+            return;
         }
 
-        // Verificar si la velocidad es menor que la mínima
+        // Verificar velocidad mínima
         if (rb != null && rb.linearVelocity.magnitude < minSpeed)
         {
             Destroy(gameObject);

@@ -4,35 +4,43 @@ using TMPro;
 
 public class DefenseOrbShooting : MonoBehaviour
 {
-    [Header("Configuración del Orbe de Defensa")]
-    public GameObject defenseOrbPrefab; // Prefab del orbe de defensa (debe tener el script DefenseOrb)
-    public int magazineSize = 4;       // Número de orbes disponibles por carga
-    public float reloadTime = 2f;      // Tiempo de recarga de los orbes
-    public int orbDurability = 3;      // Durabilidad inicial de cada orbe
-    public float orbitRadius = 2f;     // Radio de la órbita
-    public float orbitSpeed = 90f;     // Velocidad angular en grados/segundo
+    [Header("Orbe de Defensa (Fallback Blanco)")]
+    public GameObject defenseOrbPrefab; // Prefab fallback (blanco) con DefenseOrb
+
+    [Header("Prefabs de Orbes de Color (cada uno debe tener 'DefenseOrb')")]
+    public GameObject orbRedPrefab;
+    public GameObject orbBluePrefab;
+    public GameObject orbGreenPrefab;
+    public GameObject orbYellowPrefab;
+
+    [Header("Configuración del Orbe")]
+    public int magazineSize = 4;
+    public float reloadTime = 2f;
+    public int orbDurability = 3;
+    public float orbitRadius = 2f;
+    public float orbitSpeed = 90f;
 
     [Header("Disparo")]
-    public float fireRate = 0.2f;      // Tiempo mínimo entre disparos de orbes
+    public float fireRate = 0.2f; 
 
-    [Header("Sistema de Color")]
-    public Color currentColor = Color.white; // Color del orbe (se actualiza con WASD)
+    [Header("Color del Orbe (WASD)")]
+    public Color currentColor = Color.white;
 
     [Header("UI")]
-    public TextMeshProUGUI ammoText;   // Texto que muestra la munición
-    public WeaponReloadIndicator reloadIndicator; // Indicador radial de recarga
+    public TextMeshProUGUI ammoText;
+    public WeaponReloadIndicator reloadIndicator;
 
-    // Variables internas
+    // Internas
     public int currentAmmo;
     public bool isReloading = false;
     private float nextFireTime = 0f;
     private float lastShotTime = 0f;
 
-    // ----------------- NUEVO: Manejo de Idle y Attack (Orbs) en 8 direcciones -----------------
+    // ----------------- Animaciones (Idle/Attack) en 8 direcciones (Orbes) -----------------
     [Header("Animaciones en 8 direcciones (Orbes)")]
-    public ShipBodyOrbsIdle8Directions orbsIdleScript;       // Script Idle (orbes)
-    public ShipBodyOrbsAttack8Directions orbsAttackScript;   // Script Attack (orbes)
-    public float orbsAttackAnimationDuration = 0.5f;         // Duración del ataque animado
+    public ShipBodyOrbsIdle8Directions orbsIdleScript;     
+    public ShipBodyOrbsAttack8Directions orbsAttackScript;
+    public float orbsAttackAnimationDuration = 0.5f;
     private bool isPlayingOrbsAttackAnim = false;
 
     void Start()
@@ -40,55 +48,88 @@ public class DefenseOrbShooting : MonoBehaviour
         currentAmmo = magazineSize;
         lastShotTime = Time.time;
         UpdateAmmoText();
-
-        // No habilitamos orbsIdleScript ni orbsAttackScript aquí,
-        // PlayerController se encarga de la Idle si currentWeapon=4,
-        // y la corrutina PlayOrbsAttackAnimation() activará Attack.
     }
 
     /// <summary>
-    /// Dispara un orbe de defensa. No dispara si currentColor es blanco.
+    /// Dispara un orbe de defensa. Usa un prefab distinto según currentColor.
+    /// El prefab debe tener 'DefenseOrb' para orbitar alrededor del jugador.
     /// </summary>
     public void ShootOrb()
     {
-        // No disparar si no hay color, se está recargando, sin munición, o cooldown
-        if (currentColor == Color.white) return;
-        if (isReloading || currentAmmo <= 0 || Time.time < nextFireTime) return;
+        // 1) Chequeos
+        if (currentColor == Color.white) 
+        {
+            Debug.LogWarning("[DefenseOrbShooting] currentColor=WHITE => no dispara orbe.");
+            return;
+        }
+        if (isReloading || currentAmmo <= 0) 
+        {
+            Debug.LogWarning("[DefenseOrbShooting] Reloading o sin munición => no dispara.");
+            return;
+        }
+        if (Time.time < nextFireTime)
+        {
+            Debug.LogWarning("[DefenseOrbShooting] FireRate => Bloqueado. nextFireTime="+nextFireTime);
+            return;
+        }
 
-        // Calcular la posición de spawn basándonos en el mouse
+        // 2) Calcular posición
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0f;
         Vector3 direction = (mouseWorldPos - transform.position).normalized;
         float newAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
         lastShotTime = Time.time;
 
-        // Posición de spawn en la circunferencia
         Vector3 spawnDirection = Quaternion.Euler(0, 0, newAngle) * Vector3.up;
         Vector3 spawnPosition = transform.position + spawnDirection.normalized * orbitRadius;
 
-        // Instanciar orbe
-        GameObject orbObj = Instantiate(defenseOrbPrefab, spawnPosition, Quaternion.identity);
+        // 3) Elegir prefab según color
+        GameObject chosenPrefab = null;
+        if      (currentColor == Color.red)    chosenPrefab = orbRedPrefab;
+        else if (currentColor == Color.blue)   chosenPrefab = orbBluePrefab;
+        else if (currentColor == Color.green)  chosenPrefab = orbGreenPrefab;
+        else if (currentColor == Color.yellow) chosenPrefab = orbYellowPrefab;
+
+        if (chosenPrefab == null)
+        {
+            Debug.LogWarning("[DefenseOrbShooting] chosenPrefab es null => usando fallback 'defenseOrbPrefab'.");
+            chosenPrefab = defenseOrbPrefab;
+        }
+
+        Debug.Log("[DefenseOrbShooting] Instanciando Orbe color="+currentColor+" => "+chosenPrefab.name);
+
+        // 4) Instanciar orbe
+        GameObject orbObj = Instantiate(chosenPrefab, spawnPosition, Quaternion.identity);
+
+        // 5) Configurar 'DefenseOrb'
         DefenseOrb newOrb = orbObj.GetComponent<DefenseOrb>();
         if (newOrb != null)
         {
             newOrb.currentAngle = newAngle;
             newOrb.orbitRadius = orbitRadius;
-            newOrb.orbitSpeed = -orbitSpeed; // clockwise
+            // El orbe gira en sentido horario => -orbitSpeed
+            newOrb.orbitSpeed = -orbitSpeed;
             newOrb.durability = orbDurability;
             newOrb.orbColor = currentColor;
+
+            Debug.Log("[DefenseOrbShooting] Orbe => DefenseOrb asignado con color="+currentColor);
+        }
+        else
+        {
+            Debug.LogWarning("[DefenseOrbShooting] El prefab no tiene 'DefenseOrb'. No orbitará.");
         }
 
+        // 6) Consumir munición y cooldown
         currentAmmo--;
         nextFireTime = Time.time + fireRate;
         UpdateAmmoText();
 
-        // NUEVO: Activar la animación de ataque
+        // 7) Activar anim de ataque
         StartCoroutine(PlayOrbsAttackAnimation());
     }
 
     /// <summary>
-    /// Corrutina para recargar los orbes de defensa, actualizando el indicador radial.
+    /// Recarga orbes de defensa, con indicador radial.
     /// </summary>
     public IEnumerator Reload()
     {
@@ -117,13 +158,9 @@ public class DefenseOrbShooting : MonoBehaviour
             reloadIndicator.ResetIndicator();
     }
 
-    /// <summary>
-    /// Corrutina que desactiva orbsIdleScript y activa orbsAttackScript 
-    /// durante "orbsAttackAnimationDuration", luego vuelve al idle.
-    /// </summary>
     IEnumerator PlayOrbsAttackAnimation()
     {
-        if (isPlayingOrbsAttackAnim) yield break; // Evitar solapar animaciones
+        if (isPlayingOrbsAttackAnim) yield break;
 
         isPlayingOrbsAttackAnim = true;
         Debug.Log("[DefenseOrbShooting] Orbs Attack => Activando anim de ataque.");
@@ -142,7 +179,6 @@ public class DefenseOrbShooting : MonoBehaviour
             Debug.Log("[DefenseOrbShooting] Attack Orbes ACTIVADO.");
         }
 
-        // Esperar la duración
         yield return new WaitForSeconds(orbsAttackAnimationDuration);
 
         // Desactivar Attack
@@ -163,22 +199,14 @@ public class DefenseOrbShooting : MonoBehaviour
         Debug.Log("[DefenseOrbShooting] Orbs Attack => Anim finalizada.");
     }
 
-    /// <summary>
-    /// Actualiza el texto de la munición en la UI.
-    /// </summary>
     private void UpdateAmmoText()
     {
         if (ammoText == null) return;
-        if (isReloading)
-            ammoText.text = "Orbe: RELOADING";
-        else
-            ammoText.text = $"Orbe: {currentAmmo}/{magazineSize}";
+        ammoText.text = isReloading
+            ? "Orbe: RELOADING"
+            : $"Orbe: {currentAmmo}/{magazineSize}";
     }
 
-    /// <summary>
-    /// Actualiza el color asignado a los orbes basándose en la entrada WASD.
-    /// Si no se mantiene ninguna tecla WASD, se asigna Color.white.
-    /// </summary>
     public void UpdateCurrentColor()
     {
         if (Input.GetKeyDown(KeyCode.W))
@@ -190,8 +218,11 @@ public class DefenseOrbShooting : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.D))
             SetCurrentColor(Color.red);
 
-        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.A) &&
-            !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D))
+        // Si no se presiona W/A/S/D => color.white
+        if (!Input.GetKey(KeyCode.W) &&
+            !Input.GetKey(KeyCode.A) &&
+            !Input.GetKey(KeyCode.S) &&
+            !Input.GetKey(KeyCode.D))
         {
             SetCurrentColor(Color.white);
         }

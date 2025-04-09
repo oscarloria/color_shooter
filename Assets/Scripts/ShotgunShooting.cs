@@ -5,54 +5,51 @@ using UnityEngine.InputSystem; // Necesario para usar Gamepad.current
 
 /// <summary>
 /// Maneja el disparo y la recarga de la escopeta (spread shot).
-/// Se integra con el sistema de color y el zoom igual que la pistola.
-///
-/// Se ha modificado la lógica de dispersion de pellets para que
-/// haya un tiro central (cuando pelletsPerShot es impar)
-/// y el resto se distribuya simétricamente alrededor de ese ángulo.
-///
-/// NUEVO: Referencias a "Idle" y "Attack" para animaciones 8directions,
-/// al igual que en PlayerShooting. (Corregido para usar ShipBodyShotgunIdle8Directions)
+/// Admite distintos prefabs de proyectil según el color,
+/// asigna 'projectileColor' en Projectile.cs para que la comparación con enemyColor funcione.
 /// </summary>
 public class ShotgunShooting : MonoBehaviour
 {
-    // -------------- Variables de Configuración --------------
-    [Header("Configuración de la Escopeta (Spread Shot)")]
-    public GameObject projectilePrefab;       // Prefab del proyectil
-    public float projectileSpeed = 20f;       // Velocidad de los proyectiles
-    public float fireRate = 0.5f;             // Tiempo mínimo entre disparos
+    [Header("Prefab de proyectil fallback (blanco)")]
+    public GameObject projectilePrefab;         
 
-    public float normalSpreadAngle = 80f;     // Ángulo de dispersión sin zoom
-    public float zoomedSpreadAngle = 50f;     // Ángulo de dispersión con zoom
-    public int pelletsPerShot = 5;            // Número de proyectiles disparados simultáneamente
+    [Header("Prefabs de proyectil para cada color (Shotgun)")]
+    public GameObject projectileRedPrefab;
+    public GameObject projectileBluePrefab;
+    public GameObject projectileGreenPrefab;
+    public GameObject projectileYellowPrefab;
 
-    public int magazineSize = 8;              // Cantidad de cartuchos
-    public float reloadTime = 60f;            // Tiempo de recarga en segundos
-    [HideInInspector] public bool isReloading = false; // Estado de recarga
+    public float projectileSpeed = 20f;       
+    public float fireRate = 0.5f;            
+
+    public float normalSpreadAngle = 80f;    
+    public float zoomedSpreadAngle = 50f;    
+    public int pelletsPerShot = 5;           
+
+    public int magazineSize = 8;             
+    public float reloadTime = 60f;           
+    [HideInInspector] public bool isReloading = false;
 
     [Header("Efectos")]
-    public float scaleMultiplier = 1.2f;      // Escala para feedback visual
+    public float scaleMultiplier = 1.2f;
     public float scaleDuration = 0.15f;
 
     [Header("UI")]
-    public TextMeshProUGUI ammoText;          // Texto para mostrar la munición en la UI (escopeta)
-    public WeaponReloadIndicator reloadIndicator; // Indicador radial de recarga
+    public TextMeshProUGUI ammoText;          
+    public WeaponReloadIndicator reloadIndicator; 
 
-    // -------------- Variables Internas --------------
-    [HideInInspector] public int currentAmmo;  // Cartuchos actuales
-    private CameraZoom cameraZoom;             // Referencia al Zoom (para saber si está activo)
-    private bool canShoot = true;             // Control de fireRate
+    [HideInInspector] public int currentAmmo;
+    private CameraZoom cameraZoom;            
+    private bool canShoot = true;            
 
     // ----------------- Sistema de color -----------------
-    public Color currentColor = Color.white;   // Color asignado a los proyectiles
+    public Color currentColor = Color.white; 
     private KeyCode lastPressedKey = KeyCode.None;
 
-    // ----------------- NUEVO: Manejo de animaciones IDLE/ATTACK -----------------
     [Header("Animaciones en 8 direcciones (Shotgun)")]
-    // CORREGIDO: Referencia al script de idle ESPECÍFICO para la escopeta
-    public ShipBodyShotgunIdle8Directions shotgunIdleScript;           
-    public ShipBodyShotgunAttack8Directions shotgunAttackScript;   // Script de Attack en 8 direcciones
-    public float shotgunAttackAnimationDuration = 0.5f;     // Duración anim de ataque (escopeta)
+    public ShipBodyShotgunIdle8Directions shotgunIdleScript;     
+    public ShipBodyShotgunAttack8Directions shotgunAttackScript; 
+    public float shotgunAttackAnimationDuration = 0.5f;          
     private bool isPlayingShotgunAttackAnim = false;
 
     void Start()
@@ -60,97 +57,97 @@ public class ShotgunShooting : MonoBehaviour
         currentAmmo = magazineSize;
         UpdateAmmoText();
 
-        // Buscar el script de Zoom si está en la escena
         cameraZoom = FindObjectOfType<CameraZoom>();
-
-        // Asegurar que Idle esté activo y Attack desactivado al inicio
-      //  if (shotgunIdleScript != null)  shotgunIdleScript.enabled = true;
-       // if (shotgunAttackScript != null) shotgunAttackScript.enabled = false;
     }
 
     void Update()
     {
-        // Actualizar la UI en todo momento (por si necesitamos refrescar)
         UpdateAmmoText();
-
-        // Llamamos al método que revisa la lógica de color (teclado + gamepad)
         UpdateCurrentColor();
     }
 
     /// <summary>
-    /// Dispara el spread shot (si hay cartuchos y no se está recargando).
-    /// Se distribuyen los pellets de forma simétrica.
+    /// Dispara un spread shot (pelletsPerShot proyectiles) 
+    /// con distintos prefabs (rojo, azul, verde, amarillo) según currentColor.
     /// </summary>
     public void Shoot()
     {
-        // No dispara si no hay color, está recargando o sin munición o cooldown
+        // No dispara si color es blanco, recargando, sin munición o cooldown
         if (currentColor == Color.white || isReloading || currentAmmo <= 0 || !canShoot) return;
 
-        // Disminuir munición
         currentAmmo--;
         UpdateAmmoText();
 
-        // Determinar ángulo total de dispersión
+        // Ángulo total (zoom vs normal)
         float totalSpread = (cameraZoom != null && cameraZoom.IsZoomedIn)
             ? zoomedSpreadAngle
             : normalSpreadAngle;
 
-        // Calcular los ángulos equidistantes en [-totalSpread/2 .. +totalSpread/2]
         float angleStep = (pelletsPerShot > 1)
             ? totalSpread / (pelletsPerShot - 1)
             : 0f;
+        float startAngle = -totalSpread * 0.5f;
 
-        float startAngle = -totalSpread * 0.5f; // ángulo inicial (izquierda)
-
-        // Disparar "pelletsPerShot" proyectiles
         for (int i = 0; i < pelletsPerShot; i++)
         {
             float currentAngle = startAngle + angleStep * i;
-
-            // Rotación base de la escopeta
             Quaternion baseRotation = transform.rotation;
-            // Aplicar el offset de "currentAngle" en Z
             Quaternion pelletRotation = baseRotation * Quaternion.Euler(0, 0, currentAngle);
 
-            // Instanciar el proyectil
-            GameObject projectile = Instantiate(projectilePrefab, transform.position, pelletRotation);
-            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            // Seleccionar el prefab según el color
+            GameObject chosenPrefab = null;
+            if      (currentColor == Color.red)    chosenPrefab = projectileRedPrefab;
+            else if (currentColor == Color.blue)   chosenPrefab = projectileBluePrefab;
+            else if (currentColor == Color.green)  chosenPrefab = projectileGreenPrefab;
+            else if (currentColor == Color.yellow) chosenPrefab = projectileYellowPrefab;
+
+            if (chosenPrefab == null)
+            {
+                // Fallback si no hay prefab
+                chosenPrefab = projectilePrefab;
+            }
+
+            // Instanciar
+            GameObject projectile = Instantiate(chosenPrefab, transform.position, pelletRotation);
 
             // Asignar velocidad
-            rb.linearVelocity = projectile.transform.up * projectileSpeed;
-
-            // Asignar color
-            SpriteRenderer projSpriteRenderer = projectile.GetComponent<SpriteRenderer>();
-            if (projSpriteRenderer != null)
+            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            if (rb != null)
             {
-                projSpriteRenderer.color = currentColor;
+                rb.linearVelocity = projectile.transform.up * projectileSpeed;
+            }
+
+            // MUY IMPORTANTE => Asignar projectileColor en Projectile.cs
+            Projectile proj = projectile.GetComponent<Projectile>();
+            if (proj != null)
+            {
+                proj.projectileColor = currentColor;  // <---- CLAVE
             }
         }
 
-        // Efecto visual (retroceso de cámara, escala, etc.)
+        // Efecto de escala
         StartCoroutine(ScaleEffect());
+
+        // Retroceso de cámara
         if (CameraShake.Instance != null)
         {
-            Vector3 recoilDirection = -transform.up; // opuesto a la dirección de disparo
+            Vector3 recoilDirection = -transform.up; 
             CameraShake.Instance.RecoilCamera(recoilDirection);
         }
 
         // Control de fireRate
         StartCoroutine(FireRateCooldown());
 
-        // ADICIÓN: Activar la animación de ataque (Shotgun)
+        // Animación de ataque
         StartCoroutine(PlayShotgunAttackAnimation());
 
-        // Verificar recarga
+        // Si se quedó sin munición, recargar
         if (currentAmmo <= 0 && !isReloading)
         {
             StartCoroutine(Reload());
         }
     }
 
-    /// <summary>
-    /// Corrutina para controlar el cooldown entre disparos (fireRate).
-    /// </summary>
     IEnumerator FireRateCooldown()
     {
         canShoot = false;
@@ -158,9 +155,6 @@ public class ShotgunShooting : MonoBehaviour
         canShoot = true;
     }
 
-    /// <summary>
-    /// Corrutina para recargar la escopeta, actualizando el indicador radial.
-    /// </summary>
     public IEnumerator Reload()
     {
         if (currentAmmo == magazineSize) yield break;
@@ -188,26 +182,15 @@ public class ShotgunShooting : MonoBehaviour
             reloadIndicator.ResetIndicator();
     }
 
-    /// <summary>
-    /// Actualiza el texto de la munición en la interfaz.
-    /// </summary>
     void UpdateAmmoText()
     {
         if (ammoText == null) return;
-
         if (isReloading)
-        {
             ammoText.text = "Escopeta: RELOADING";
-        }
         else
-        {
             ammoText.text = $"Escopeta: {currentAmmo}/{magazineSize}";
-        }
     }
 
-    /// <summary>
-    /// Efecto visual de escala (similar a lo que tiene la pistola).
-    /// </summary>
     IEnumerator ScaleEffect()
     {
         Vector3 originalScale = transform.localScale;
@@ -216,7 +199,6 @@ public class ShotgunShooting : MonoBehaviour
         float elapsedTime = 0f;
         float halfDuration = scaleDuration / 2f;
 
-        // Escalar hacia arriba
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -228,7 +210,6 @@ public class ShotgunShooting : MonoBehaviour
         transform.localScale = targetScale;
 
         elapsedTime = 0f;
-        // Escalar hacia abajo
         while (elapsedTime < halfDuration)
         {
             float t = elapsedTime / halfDuration;
@@ -241,11 +222,11 @@ public class ShotgunShooting : MonoBehaviour
     }
 
     // ------------------------------------------------------------------
-    // LÓGICA PARA COLOR (similar a PlayerShooting)
+    // Actualizar color (igual a PlayerShooting)
     // ------------------------------------------------------------------
     public void UpdateCurrentColor()
     {
-        // 1) TECLADO (WASD)
+        // Teclado
         if (Input.GetKeyDown(KeyCode.W))
         {
             SetCurrentColor(Color.yellow);
@@ -273,7 +254,7 @@ public class ShotgunShooting : MonoBehaviour
             SetCurrentColorByKey(newKey);
         }
 
-        // 2) GAMEPAD (STICK IZQUIERDO)
+        // Gamepad
         Gamepad gp = Gamepad.current;
         if (gp != null)
         {
@@ -289,22 +270,10 @@ public class ShotgunShooting : MonoBehaviour
             }
             else
             {
-                if (leftStick.y > threshold)
-                {
-                    SetCurrentColor(Color.yellow);
-                }
-                else if (leftStick.y < -threshold)
-                {
-                    SetCurrentColor(Color.green);
-                }
-                else if (leftStick.x > threshold)
-                {
-                    SetCurrentColor(Color.red);
-                }
-                else if (leftStick.x < -threshold)
-                {
-                    SetCurrentColor(Color.blue);
-                }
+                if (leftStick.y > threshold)       SetCurrentColor(Color.yellow);
+                else if (leftStick.y < -threshold)SetCurrentColor(Color.green);
+                else if (leftStick.x > threshold) SetCurrentColor(Color.red);
+                else if (leftStick.x < -threshold)SetCurrentColor(Color.blue);
             }
         }
     }
@@ -330,54 +299,37 @@ public class ShotgunShooting : MonoBehaviour
     {
         switch (key)
         {
-            case KeyCode.W:
-                SetCurrentColor(Color.yellow);
-                break;
-            case KeyCode.A:
-                SetCurrentColor(Color.blue);
-                break;
-            case KeyCode.S:
-                SetCurrentColor(Color.green);
-                break;
-            case KeyCode.D:
-                SetCurrentColor(Color.red);
-                break;
-            default:
-                SetCurrentColor(Color.white);
-                break;
+            case KeyCode.W: SetCurrentColor(Color.yellow); break;
+            case KeyCode.A: SetCurrentColor(Color.blue);   break;
+            case KeyCode.S: SetCurrentColor(Color.green);  break;
+            case KeyCode.D: SetCurrentColor(Color.red);    break;
+            default:        SetCurrentColor(Color.white);  break;
         }
     }
 
     void SetCurrentColor(Color color)
     {
         currentColor = color;
-        // (Opcional) cambiar color del sprite base, similar a PlayerShooting
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            sr.color = currentColor;
-        }
+        if (sr != null) sr.color = currentColor;
     }
 
-    // -------------------- DISPARO de ATAQUE Shotgun (Animación) --------------------
     IEnumerator PlayShotgunAttackAnimation()
     {
-        if (isPlayingShotgunAttackAnim) yield break;  // evitar solapamiento
+        if (isPlayingShotgunAttackAnim) yield break;
 
         isPlayingShotgunAttackAnim = true;
+        Debug.Log("[ShotgunShooting] Attack anim => Activada.");
 
-        // Desactivar Idle
         if (shotgunIdleScript != null) shotgunIdleScript.enabled = false;
-        // Activar Attack
         if (shotgunAttackScript != null) shotgunAttackScript.enabled = true;
 
         yield return new WaitForSeconds(shotgunAttackAnimationDuration);
 
-        // Desactivar Attack
         if (shotgunAttackScript != null) shotgunAttackScript.enabled = false;
-        // Reactivar Idle
         if (shotgunIdleScript != null) shotgunIdleScript.enabled = true;
 
         isPlayingShotgunAttackAnim = false;
+        Debug.Log("[ShotgunShooting] Attack anim => Finalizada.");
     }
 }

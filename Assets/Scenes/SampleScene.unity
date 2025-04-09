@@ -914,6 +914,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+  projectileRedPrefab: {fileID: 2203355048753982760, guid: 6d8847c78c329d740afe21d9fc4c9fa6, type: 3}
+  projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
+  projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
+  projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
   projectileSpeed: 20
   fireRate: 0.1
   normalDispersionAngle: 5
@@ -978,6 +982,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+  projectileRedPrefab: {fileID: 2203355048753982760, guid: 6d8847c78c329d740afe21d9fc4c9fa6, type: 3}
+  projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
+  projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
+  projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
   projectileSpeed: 20
   fireRate: 0.5
   normalSpreadAngle: 80
@@ -1008,6 +1016,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+  projectileRedPrefab: {fileID: 2203355048753982760, guid: 6d8847c78c329d740afe21d9fc4c9fa6, type: 3}
+  projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
+  projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
+  projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
   projectileSpeed: 20
   fireRate: 0.1
   reloadTime: 2
@@ -1036,9 +1048,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
+  orbRedPrefab: {fileID: 8761027228820180195, guid: 541a02deaf49c7f43b94699cf596f028, type: 3}
+  orbBluePrefab: {fileID: 891356574096535295, guid: a8861ed611061c44c8662a5aaff2f98b, type: 3}
+  orbGreenPrefab: {fileID: 2853280976770763188, guid: fb836b98543cdaa4e9eee39b3afa0106, type: 3}
+  orbYellowPrefab: {fileID: 762703272396682664, guid: 56efabb868058bc469b74d6f7959c10f, type: 3}
   magazineSize: 100
   reloadTime: 2
-  orbDurability: 500
+  orbDurability: 1
   orbitRadius: 2
   orbitSpeed: 90
   fireRate: 0.2
