@@ -8,19 +8,19 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     // Referencias a los componentes especializados adjuntos al jugador
-    private PlayerMovement playerMovement;     
-    private PlayerShooting playerShooting;     
-    private ShotgunShooting shotgunShooting;   
-    private RifleShooting rifleShooting;       
-    private DefenseOrbShooting defenseOrbShooting; 
-    private SlowMotion slowMotion;           
+    private PlayerMovement playerMovement;
+    private PlayerShooting playerShooting;
+    private ShotgunShooting shotgunShooting;
+    private RifleShooting rifleShooting;
+    private DefenseOrbShooting defenseOrbShooting;
+    private SlowMotion slowMotion;
 
     // --- OBJETOS DE LA UI PARA INDICAR ARMA SELECCIONADA ---
     [Header("UI de selección de arma")]
-    public GameObject selectPistolImage;     
-    public GameObject selectShotgunImage;    
-    public GameObject selectRifleImage;      
-    public GameObject selectDefenseOrbImage; 
+    public GameObject selectPistolImage;
+    public GameObject selectShotgunImage;
+    public GameObject selectRifleImage;
+    public GameObject selectDefenseOrbImage;
 
     // Lógica de armas:
     // 1 => Pistola
@@ -216,18 +216,28 @@ public class PlayerController : MonoBehaviour
     // -------------------------------------------
     // LÓGICA PARA MOUSE SCROLL - CAMBIO DE ARMA
     // -------------------------------------------
-    private void HandleMouseScrollWeaponCycle()
+   private void HandleMouseScrollWeaponCycle()
+{
+    float scrollDelta = Input.GetAxis("Mouse ScrollWheel");
+
+    // Si la rueda se mueve hacia arriba => retroceder arma
+    if (scrollDelta > 0f)
     {
-        float scrollDelta = Input.GetAxis("Mouse ScrollWheel");
-        if (Mathf.Abs(scrollDelta) > 0f)
-        {
-            Debug.Log("Mouse Scroll detectado. Valor: " + scrollDelta);
-            currentWeapon++;
-            if (currentWeapon > 4) currentWeapon = 1;
-            Debug.Log("Cambio de arma vía scroll del mouse. Arma activa: " + currentWeapon);
-            UpdateWeaponUI();
-        }
+        currentWeapon--;
+        if (currentWeapon < 1) currentWeapon = 4;
+        Debug.Log("Rueda mouse HACIA ARRIBA => Arma:" + currentWeapon);
+        UpdateWeaponUI();
     }
+    // Si la rueda se mueve hacia abajo => avanzar arma
+    else if (scrollDelta < 0f)
+    {
+        currentWeapon++;
+        if (currentWeapon > 4) currentWeapon = 1;
+        Debug.Log("Rueda mouse HACIA ABAJO => Arma:" + currentWeapon);
+        UpdateWeaponUI();
+    }
+}
+
 
     // -------------------------------------------
     // MÉTODO PARA ACTUALIZAR LA UI DE ARMA ACTIVA
