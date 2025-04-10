@@ -994,11 +994,11 @@ MonoBehaviour:
   magazineSize: 8
   reloadTime: 1
   isReloading: 0
+  currentAmmo: 0
   scaleMultiplier: 1.2
   scaleDuration: 0.15
   ammoText: {fileID: 1044942143}
   reloadIndicator: {fileID: 1702291359}
-  currentAmmo: 0
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   shotgunIdleScript: {fileID: 1990132653}
   shotgunAttackScript: {fileID: 1990132650}
@@ -6001,7 +6001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1941573990
 MonoBehaviour:
   m_ObjectHideFlags: 0
