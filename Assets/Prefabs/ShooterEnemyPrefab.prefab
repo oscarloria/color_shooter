@@ -190,7 +190,7 @@ MonoBehaviour:
   explosionPrefab: {fileID: 0}
   shooterProjectilePrefab: {fileID: 0}
   projectileSpeed: 5
-  safeDistance: 8
+  safeDistance: 6.5
 --- !u!114 &6224656157374247566
 MonoBehaviour:
   m_ObjectHideFlags: 0

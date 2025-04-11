@@ -2,43 +2,44 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// ShooterEnemy se comporta siguiendo esta secuencia:
-/// 1) Entra a la vista moviéndose desde fuera de la cámara hasta posicionarse a safeDistance del jugador.
-/// 2) Apunta al jugador durante 3 segundos.
-/// 3) Dispara un proyectil hacia el jugador.
-/// 4) Se mueve lateralmente (dodging) para evitar contacto directo.
-/// Luego repite los pasos 2-4 hasta recibir 3 impactos efectivos.
-///
-/// Además, una vez que el enemigo está dentro de la vista del jugador, se limita su posición para que no salga de la pantalla.
-/// Se agrega feedback de daño (flash y shake) cuando recibe un impacto efectivo.
+/// ShooterEnemy simple: 
+/// 1) Se acerca al jugador hasta mantener una distancia 'safeDistance'.
+/// 2) Aiming durante 3s => dispara => Dodging lateral 1s => repite.
+/// No hay lógica de cámara/zoom. 
+/// Modificado: La dirección del Dodging es aleatoria la primera vez, luego alterna.
 /// </summary>
 public class ShooterEnemy : MonoBehaviour
 {
     [Header("Configuración del ShooterEnemy")]
     public Color enemyColor = Color.white;  // Color que define su vulnerabilidad y el color de sus proyectiles
-    public float speed = 2f;                // Velocidad de movimiento para reubicarse
+    public float speed = 2f;                // Velocidad de movimiento
     public int maxHealth = 3;               // Vida total (3 impactos efectivos)
     public GameObject explosionPrefab;      // Prefab de explosión al morir
 
     [Header("Disparo")]
     public GameObject shooterProjectilePrefab; // Prefab del proyectil que dispara
-    public float projectileSpeed = 5f;         // Velocidad de los proyectiles
+    public float projectileSpeed = 5f;        // Velocidad de los proyectiles
 
     [Header("Distancia Mínima")]
     public float safeDistance = 6f; // El enemigo se mantendrá a esta distancia del jugador
 
-    // Estados del ShooterEnemy
+    // Maquina de estados
     private enum ShooterState { Entering, Aiming, Shooting, Dodging }
     private ShooterState currentState;
 
-    private float stateTimer = 0f;    // Temporizador para cada estado
-    private Vector3 dodgeTarget;      // Posición objetivo para el movimiento lateral (dodging)
-
-    // Variables internas
+    // Timers e internals
+    private float stateTimer = 0f;  
+    private Vector3 dodgeTarget;
     private int currentHealth;
+
+    // ---- NUEVAS VARIABLES PARA EL DODGING ALTERNADO ----
+    private bool isFirstDodge = true; // Indica si es la primera vez que va a esquivar
+    private bool dodgeDirectionIsLeft; // Guarda la dirección del último (o próximo) esquive
+    // ---------------------------------------------------
+
+    // Referencias
     private Transform player;
     private SpriteRenderer spriteRenderer;
-    private CameraZoom cameraZoom;  // Referencia cacheada al CameraZoom
 
     void Start()
     {
@@ -51,18 +52,16 @@ public class ShooterEnemy : MonoBehaviour
             player = playerObj.transform;
         }
 
-        // Configurar el SpriteRenderer y asignar el color
+        // SpriteRenderer y color
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
             spriteRenderer.color = enemyColor;
         }
 
-        // Comenzamos en estado "Entering" para movernos dentro de la cámara
+        // Iniciar en "Entering": se mueve hacia el jugador hasta safeDistance
         currentState = ShooterState.Entering;
-
-        // Cachear la referencia al CameraZoom (se asume que hay uno en la escena)
-        cameraZoom = FindObjectOfType<CameraZoom>();
+        isFirstDodge = true; // Asegurarse de que la primera vez sea aleatorio al iniciar
     }
 
     void OnEnable()
@@ -71,6 +70,8 @@ public class ShooterEnemy : MonoBehaviour
         {
             EnemyManager.Instance.RegisterShooterEnemy(this);
         }
+        // Resetear el estado del dodge si el enemigo se reutiliza (por ejemplo, desde un pool)
+        isFirstDodge = true; 
     }
 
     void OnDisable()
@@ -83,25 +84,9 @@ public class ShooterEnemy : MonoBehaviour
 
     void Update()
     {
-        if (player == null)
-            return;
+        if (player == null) return;
 
-        bool isZoomActive = (cameraZoom != null && cameraZoom.IsZoomedIn);
-
-        // Solo aplicar la corrección de distancia si el Zoom NO está activo
-        if (!isZoomActive)
-        {
-            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-            if (distanceToPlayer < safeDistance * 0.8f)
-            {
-                Vector3 awayDir = (transform.position - player.position).normalized;
-                transform.position += awayDir * speed * Time.deltaTime;
-                // Mientras se corrige la distancia, se omite la máquina de estados.
-                return;
-            }
-        }
-
-        // Procesar la lógica según el estado actual
+        // Controlar la lógica según el estado
         switch (currentState)
         {
             case ShooterState.Entering:
@@ -117,32 +102,32 @@ public class ShooterEnemy : MonoBehaviour
                 ProcessDodgingState();
                 break;
         }
-
-        // Clampear la posición (margen) si no está en Entering y no hay Zoom
-        if (currentState != ShooterState.Entering && !isZoomActive)
-        {
-            transform.position = ClampToCameraView(transform.position);
-        }
     }
 
-    // Estado Entering: Se mueve hacia un punto a safeDistance del jugador hasta estar en cámara.
+    // 1) Estado Entering: se acerca al jugador hasta safeDistance
     private void ProcessEnteringState()
     {
-        Vector3 direction = (transform.position - player.position).normalized;
-        Vector3 targetPos = player.position + direction * safeDistance;
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+        // Calcular la distancia actual
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        AimAtPlayer();
-
-        // Una vez que el enemigo está dentro de la vista de la cámara, pasa a Aiming.
-        if (IsInView())
+        // Si todavía está más lejos que safeDistance, moverse
+        if (distanceToPlayer > safeDistance)
         {
+            // Moverse hacia el jugador
+            Vector3 direction = (player.position - transform.position).normalized;
+            transform.position += direction * speed * Time.deltaTime;
+
+            AimAtPlayer();
+        }
+        else
+        {
+            // Si ya está a safeDistance (o más cerca), pasa a Aiming
             currentState = ShooterState.Aiming;
-            stateTimer = 3f; // 3 segundos de apuntado
+            stateTimer = 3f;  
         }
     }
 
-    // Estado Aiming: Apunta al jugador durante 3 segundos.
+    // 2) Estado Aiming: se queda apuntando al jugador durante 3s
     private void ProcessAimingState()
     {
         AimAtPlayer();
@@ -153,116 +138,122 @@ public class ShooterEnemy : MonoBehaviour
         }
     }
 
-    // Estado Shooting: Dispara y pasa a Dodging.
+    // 3) Estado Shooting: dispara y pasa a Dodging (Lógica de dirección modificada)
     private void ProcessShootingState()
     {
         ShootProjectile();
 
-        // Calcular objetivo para movimiento lateral (dodging)
+        // Calcular vector perpendicular a la dirección del jugador
         Vector3 toPlayer = (player.position - transform.position).normalized;
-        Vector3 perpendicular = new Vector3(-toPlayer.y, toPlayer.x, 0f);
-        if (Random.value > 0.5f)
-            perpendicular = -perpendicular;
+        // Vector perpendicular base (por ejemplo, hacia la izquierda relativa)
+        Vector3 perpendicularLeft = new Vector3(-toPlayer.y, toPlayer.x, 0f); 
 
-        dodgeTarget = transform.position + perpendicular * 2f;
+        // ---- LÓGICA DE DIRECCIÓN MODIFICADA ----
+        if (isFirstDodge)
+        {
+            // La primera vez, elegir aleatoriamente
+            dodgeDirectionIsLeft = (Random.value < 0.5f); // 50% de probabilidad de ir a la izquierda
+            isFirstDodge = false; // Ya no será la primera vez en los próximos ciclos
+        }
+        else
+        {
+            // Las siguientes veces, alternar la dirección
+            dodgeDirectionIsLeft = !dodgeDirectionIsLeft; 
+        }
+        // -----------------------------------------
 
+        // Determinar el vector de dirección final basado en la decisión
+        Vector3 dodgeDirectionVector = dodgeDirectionIsLeft ? perpendicularLeft : -perpendicularLeft;
+
+        // Calcular el punto objetivo para el esquive
+        dodgeTarget = transform.position + dodgeDirectionVector * 2f; // Puedes ajustar el '2f' si quieres que esquive más o menos distancia
+
+        // Cambiar al estado de esquivar
         currentState = ShooterState.Dodging;
-        stateTimer = 1f;
+        stateTimer = 1f; // Moverse lateralmente por 1s
     }
 
-    // Estado Dodging: Se mueve lateralmente y luego regresa a Aiming.
+    // 4) Estado Dodging: moverse a dodgeTarget 1s, luego volver a Aiming
     private void ProcessDodgingState()
     {
         transform.position = Vector3.MoveTowards(transform.position, dodgeTarget, speed * Time.deltaTime);
         stateTimer -= Time.deltaTime;
         if (stateTimer <= 0f)
         {
+            // Después de 1s, regresa a Aiming 3s
             currentState = ShooterState.Aiming;
             stateTimer = 3f;
         }
     }
 
-    // Rota el enemigo para apuntar al jugador.
+    // Apunta al jugador
     private void AimAtPlayer()
     {
+        if (player == null) return; // Añadir chequeo por si el jugador es destruido
         Vector2 dir = (player.position - transform.position).normalized;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    // Dispara un proyectil hacia el jugador.
+    // Dispara un proyectil
     private void ShootProjectile()
     {
-        if (shooterProjectilePrefab == null)
-            return;
+        if (shooterProjectilePrefab == null) return;
+        if (player == null) return; // No disparar si no hay jugador
 
-        Debug.Log($"ShooterEnemy: disparando un proyectil de color {enemyColor} en t={Time.time} seg.");
+        Debug.Log($"[ShooterEnemy] Disparando proyectil color={enemyColor} t={Time.time}");
 
-        Vector3 spawnPos = transform.position + transform.up * 0.5f;
+        // Asegurarse de que apunta al jugador justo antes de disparar por si se movió durante Aiming
+        AimAtPlayer(); 
+
+        Vector3 spawnPos = transform.position + transform.up * 0.5f; // Sale un poco adelante del enemigo
         GameObject projObj = Instantiate(shooterProjectilePrefab, spawnPos, transform.rotation);
 
-        // Asignar color al SpriteRenderer
+        // Asignar color visual
         SpriteRenderer sr = projObj.GetComponent<SpriteRenderer>();
         if (sr != null)
         {
             sr.color = enemyColor;
         }
 
-        // Asignar color al script EnemyProjectile (para colisiones)
+        // Asignar color lógico
         EnemyProjectile enemyProj = projObj.GetComponent<EnemyProjectile>();
         if (enemyProj != null)
         {
             enemyProj.bulletColor = enemyColor;
         }
 
-        // Velocidad al proyectil
+        // Aplicar velocidad
         Rigidbody2D rb = projObj.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.linearVelocity = transform.up * projectileSpeed;
+            rb.linearVelocity = transform.up * projectileSpeed; // Usar velocity para movimiento constante
+        } else {
+            // Fallback si no hay Rigidbody2D (menos recomendado para proyectiles)
+            StartCoroutine(MoveProjectile(projObj.transform, transform.up, projectileSpeed));
         }
     }
 
-    // Retorna true si el ShooterEnemy está dentro de la vista principal de la cámara.
-    private bool IsInView()
-    {
-        if (Camera.main == null) return false;
-        Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
-        return (viewportPos.x >= 0 && viewportPos.x <= 1 &&
-                viewportPos.y >= 0 && viewportPos.y <= 1 &&
-                viewportPos.z > 0);
+    // Corutina simple para mover el proyectil si no tiene Rigidbody2D
+    private IEnumerator MoveProjectile(Transform projectileTransform, Vector3 direction, float speed) {
+        while (projectileTransform != null) {
+            projectileTransform.position += direction * speed * Time.deltaTime;
+            yield return null; // Esperar al siguiente frame
+        }
     }
 
-    /// <summary>
-    /// Limita la posición para que no salga de la vista de la cámara (con márgenes).
-    /// </summary>
-    private Vector3 ClampToCameraView(Vector3 pos)
-    {
-        Camera cam = Camera.main;
-        if (cam == null) return pos;
 
-        Vector3 viewportPos = cam.WorldToViewportPoint(pos);
-
-        float horizontalMargin = 0.2f;
-        float verticalMargin = 0.1f;
-
-        viewportPos.x = Mathf.Clamp(viewportPos.x, horizontalMargin, 1f - horizontalMargin);
-        viewportPos.y = Mathf.Clamp(viewportPos.y, verticalMargin, 1f - verticalMargin);
-
-        Vector3 clampedPos = cam.ViewportToWorldPoint(viewportPos);
-        clampedPos.z = pos.z;
-        return clampedPos;
-    }
-
+    // Colisiones con proyectiles / jugador
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Projectile"))
         {
             Projectile projectile = collision.collider.GetComponent<Projectile>();
-            if (projectile != null && projectile.projectileColor == enemyColor)
+            // Asegurarse que el proyectil existe y tiene el color correcto
+            if (projectile != null && projectile.projectileColor == enemyColor) 
             {
                 currentHealth--;
-                Destroy(collision.gameObject);
+                Destroy(collision.gameObject); // Destruir el proyectil del jugador
 
                 if (currentHealth <= 0)
                 {
@@ -270,64 +261,80 @@ public class ShooterEnemy : MonoBehaviour
                 }
                 else
                 {
+                    // Solo iniciar feedback si aún está vivo
                     StartCoroutine(DamageFeedback());
                 }
             }
+            // Opcional: Podrías añadir lógica si choca con un proyectil de color incorrecto (ej. rebota?)
         }
         else if (collision.collider.CompareTag("Player"))
         {
+            // Dañar al jugador
             PlayerHealth playerHealth = collision.collider.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage();
+                playerHealth.TakeDamage(); 
             }
 
+            // Efecto de cámara, si existe
             if (CameraShake.Instance != null)
             {
                 CameraShake.Instance.ShakeCamera();
             }
 
-            DestroyShooterEnemy();
+            // El enemigo se destruye al chocar con el jugador
+            DestroyShooterEnemy(); 
         }
     }
 
-    /// <summary>
-    /// Efecto visual de daño: flash y un pequeño shake del ShooterEnemy.
-    /// </summary>
+    // Efecto visual de daño: flash y pequeño "shake"
     private IEnumerator DamageFeedback()
     {
-        Color originalColor = spriteRenderer.color;
-        Color flashColor = Color.Lerp(enemyColor, Color.white, 0.5f);
-        spriteRenderer.color = flashColor;
+        if (spriteRenderer == null) yield break; // Salir si no hay renderer
 
+        Color originalColor = spriteRenderer.color; // Usar el color actual como base
+        Color flashColor = Color.white; // Flash blanco simple
+        
+        // Flash rápido
+        spriteRenderer.color = flashColor;
+        yield return new WaitForSeconds(0.05f); 
+        spriteRenderer.color = originalColor;
+        yield return new WaitForSeconds(0.05f);
+        spriteRenderer.color = flashColor;
+        yield return new WaitForSeconds(0.05f);
+        spriteRenderer.color = originalColor; // Volver al color original
+
+        // Pequeño shake (opcional, puedes quitarlo si interfiere mucho)
         Vector3 originalPosition = transform.position;
-        float shakeDuration = 0.2f;
+        float shakeDuration = 0.15f;
         float elapsedTime = 0f;
-        float magnitude = 0.5f;
+        float magnitude = 0.1f; // Reducir magnitud para que sea sutil
 
         while (elapsedTime < shakeDuration)
         {
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
-            transform.position = originalPosition + new Vector3(x, y, 0f);
+            // Asegurarse de no moverse en Z si es 2D
+            transform.position = originalPosition + new Vector3(x, y, 0f); 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        transform.position = originalPosition;
-        spriteRenderer.color = originalColor;
+        // Asegurarse de que vuelve exactamente a su posición
+        transform.position = originalPosition; 
     }
 
-    // -------------------------------------------------
-    // Manejo de la destrucción del ShooterEnemy
-    // -------------------------------------------------
+    // Destruir al ShooterEnemy
     private void DestroyShooterEnemy()
     {
+        // Evitar doble destrucción si ya se está destruyendo
+        if (!gameObject.activeSelf) return; 
+
         // Sumar score
         if (ScoreManager.Instance != null)
             ScoreManager.Instance.AddScore(150);
 
-        // Intentar soltar Lumi-Coins (Script EnemyCoinDrop)
+        // Soltar Lumi-Coins
         EnemyCoinDrop coinDrop = GetComponent<EnemyCoinDrop>();
         if (coinDrop != null)
         {
@@ -342,11 +349,14 @@ public class ShooterEnemy : MonoBehaviour
             if (ps != null)
             {
                 var main = ps.main;
-                main.startColor = enemyColor;
+                // Usar el color original del enemigo para la explosión
+                main.startColor = new ParticleSystem.MinMaxGradient(enemyColor); 
             }
+            // Opcional: Destruir el objeto de explosión después de un tiempo si no se autodestruye
+             // Destroy(explosion, ps != null ? ps.main.duration : 2f); 
         }
 
-        // Añadir slow motion
+        // Añadir slow motion (si existe el componente en el jugador)
         GameObject pObj = GameObject.FindGameObjectWithTag("Player");
         if (pObj != null)
         {
@@ -355,7 +365,9 @@ public class ShooterEnemy : MonoBehaviour
                 slow.AddSlowMotionCharge();
         }
 
-        // Destruir
-        Destroy(gameObject);
+        // Desactivar el objeto inmediatamente para que deje de interactuar
+        gameObject.SetActive(false); 
+        // Destruir el objeto después de un pequeño delay para asegurar que todo se ejecute
+        Destroy(gameObject, 0.1f); 
     }
 }
