@@ -153,7 +153,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8251635640791360112}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -171,7 +171,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 3
+  m_Constraints: 7
 --- !u!114 &4304230550574178984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,12 +185,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyColor: {r: 1, g: 1, b: 1, a: 1}
-  speed: 2
+  speed: 1
   maxHealth: 3
-  explosionPrefab: {fileID: 0}
-  shooterProjectilePrefab: {fileID: 0}
-  projectileSpeed: 5
-  safeDistance: 6.5
+  explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
+  shooterProjectilePrefab: {fileID: 3733679966772330407, guid: ebe9b3cd2a1f7f74c9b033b4abc5bf0f, type: 3}
+  projectileSpeed: 3
+  safeDistance: 7.5
+  waitTimeAfterShoot: 2
+  waitTimeAfterDodge: 2
+  dodgeDuration: 2
 --- !u!114 &6224656157374247566
 MonoBehaviour:
   m_ObjectHideFlags: 0

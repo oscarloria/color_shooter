@@ -2752,11 +2752,11 @@ MonoBehaviour:
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
   normalCount: 0
   tankCount: 0
-  shooterCount: 6
+  shooterCount: 2
   zzCount: 0
   spawnDistance: 30
   spawnInterval: 0.5
-  enemySpeed: 30
+  enemySpeed: 2
   enemyColors: []
 --- !u!4 &957692470
 Transform:
