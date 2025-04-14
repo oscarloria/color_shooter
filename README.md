@@ -69,7 +69,3 @@ Luminity es un juego de disparos 2D con vista cenital (top-down) para PC desarro
 ## Créditos
 
 * **Desarrollador:** Oscar Loria
-
----
-
-Este README proporciona una buena visión general del estado actual de Luminity. Puedes ajustarlo o añadir más detalles según lo necesites.
