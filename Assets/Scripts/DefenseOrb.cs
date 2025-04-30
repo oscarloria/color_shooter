@@ -1,111 +1,107 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Orbe que gira alrededor del jugador y destruye
+/// enemigos/proyectiles cuyo color lógico coincide.
+/// </summary>
+[RequireComponent(typeof(SpriteRenderer))]
 public class DefenseOrb : MonoBehaviour
 {
-    [Header("Configuración del Orbe")]
-    public Color orbColor = Color.white; // Color asignado desde DefenseOrbShooting
-    public int durability = 3;           // Durabilidad: golpes que soporta
+    /*──────────── Ajustes públicos ────────────*/
+    [Header("Lógica de color y durabilidad")]
+    public Color orbColor   = Color.white;   // color “lógico”
+    public int   durability = 3;             // golpes que soporta
 
-    [HideInInspector]
-    public float currentAngle = 0f;      // Ángulo actual en grados (inicializado en DefenseOrbShooting)
-    [HideInInspector]
-    public float orbitRadius = 2f;       // Radio de la órbita (configurable)
-    [HideInInspector]
-    public float orbitSpeed = 90f;       // Velocidad angular (grados/seg)
+    [Header("Movimiento orbital (set desde DefenseOrbShooting)")]
+    [HideInInspector] public float currentAngle = 0f;   // grados
+    [HideInInspector] public float orbitRadius  = 2f;
+    [HideInInspector] public float orbitSpeed   = 90f;  // °/seg
 
-    private Transform player;           // Referencia al jugador
-    private SpriteRenderer sr;
+    [Header("Visual")]
+    [Tooltip("Actívalo solo si tu sprite base es blanco y quieres teñirlo por código.")]
+    public bool tintSprite = false;
 
+    /*──────────── Propiedad pública ────────────*/
+    /// <summary>Referencia al jugador (para otros scripts).</summary>
+    public Transform Player => player;
+
+    /*──────────── privados ────────────*/
+    Transform      player;
+    SpriteRenderer sr;
+
+    /*──────────── Métodos Unity ────────────*/
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
+
+        // Tintar solo si el arte es blanco y lo deseas
+        if (tintSprite && sr != null)
             sr.color = orbColor;
 
-        // Buscar al jugador por su tag "Player"
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-            player = playerObj.transform;
+        // cachear jugador
+        GameObject obj = GameObject.FindGameObjectWithTag("Player");
+        if (obj != null)
+            player = obj.transform;
     }
 
     void Update()
     {
-        // Actualizar el ángulo de órbita
+        // Avanzar ángulo y orbitar
         currentAngle += orbitSpeed * Time.deltaTime;
+
         float rad = currentAngle * Mathf.Deg2Rad;
-        Vector3 orbitOffset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f) * orbitRadius;
+        Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f) * orbitRadius;
+
         if (player != null)
-        {
-            // Posicionar el orbe en función de la posición del jugador (sin depender de su rotación)
-            transform.position = player.position + orbitOffset;
-        }
+            transform.position = player.position + offset;
     }
 
-    // Manejo de colisiones usando triggers.
+    /*──────────── Colisiones ────────────*/
     void OnTriggerEnter2D(Collider2D other)
     {
-        bool inflictedDamage = false;
+        bool didDamage = false;
 
-        // Primero, verificar si colisiona con un EnemyProjectile.
-        EnemyProjectile enemyProj = other.GetComponent<EnemyProjectile>();
-        if (enemyProj != null)
+        // 1) Proyectiles enemigos
+        if (other.TryGetComponent(out EnemyProjectile eProj) && eProj.bulletColor == orbColor)
         {
-            if (enemyProj.bulletColor == orbColor)
-            {
-                Destroy(other.gameObject);
-                inflictedDamage = true;
-            }
+            Destroy(other.gameObject);
+            didDamage = true;
         }
 
-        // Si no se infligió daño por proyectil, buscar componentes de enemigo.
-        if (!inflictedDamage)
+        // 2) TankEnemy
+        if (!didDamage && other.GetComponentInParent<TankEnemy>() is TankEnemy tank && tank.enemyColor == orbColor)
         {
-            // Buscar TankEnemy
-            TankEnemy tank = other.GetComponentInParent<TankEnemy>();
-            if (tank != null && tank.enemyColor == orbColor)
-            {
-                tank.SendMessage("TakeDamage", 1, SendMessageOptions.DontRequireReceiver);
-                inflictedDamage = true;
-            }
+            tank.SendMessage("TakeDamage", 1, SendMessageOptions.DontRequireReceiver);
+            didDamage = true;
         }
-        if (!inflictedDamage)
+
+        // 3) ShooterEnemy
+        if (!didDamage && other.GetComponentInParent<ShooterEnemy>() is ShooterEnemy shooter && shooter.enemyColor == orbColor)
         {
-            // Buscar ShooterEnemy
-            ShooterEnemy shooter = other.GetComponentInParent<ShooterEnemy>();
-            if (shooter != null && shooter.enemyColor == orbColor)
-            {
-                shooter.SendMessage("DestroyShooterEnemy", SendMessageOptions.DontRequireReceiver);
-                inflictedDamage = true;
-            }
+            shooter.SendMessage("DestroyShooterEnemy", SendMessageOptions.DontRequireReceiver);
+            didDamage = true;
         }
-        if (!inflictedDamage)
+
+        // 4) EnemyZZ
+        if (!didDamage && other.GetComponentInParent<EnemyZZ>() is EnemyZZ zz && zz.enemyColor == orbColor)
         {
-            // Buscar EnemyZZ
-            EnemyZZ zz = other.GetComponentInParent<EnemyZZ>();
-            if (zz != null && zz.enemyColor == orbColor)
-            {
-                zz.SendMessage("DestroyEnemy", SendMessageOptions.DontRequireReceiver);
-                inflictedDamage = true;
-            }
+            zz.SendMessage("DestroyEnemy", SendMessageOptions.DontRequireReceiver);
+            didDamage = true;
         }
-        if (!inflictedDamage)
+
+        // 5) Enemy base
+        if (!didDamage && other.GetComponentInParent<Enemy>() is Enemy baseEnemy && baseEnemy.enemyColor == orbColor)
         {
-            // Buscar Enemy (base)
-            Enemy enemy = other.GetComponentInParent<Enemy>();
-            if (enemy != null && enemy.enemyColor == orbColor)
-            {
-                enemy.SendMessage("DestroyEnemy", SendMessageOptions.DontRequireReceiver);
-                inflictedDamage = true;
-            }
+            baseEnemy.SendMessage("DestroyEnemy", SendMessageOptions.DontRequireReceiver);
+            didDamage = true;
         }
-        
-        if (inflictedDamage)
-        {
+
+        if (didDamage)
             DecreaseDurability();
-        }
     }
 
+    /*──────────── Helpers ────────────*/
     void DecreaseDurability()
     {
         durability--;

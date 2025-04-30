@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &5351923413339272004
+--- !u!1001 &1461508013628716563
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
       propertyPath: m_Name
-      value: ProjectileRedPrefabOrb 1
+      value: ProjectileGreenPrefabOrb 1
       objectReference: {fileID: 0}
     - target: {fileID: 3863361944932000747, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
       propertyPath: m_Size.x
@@ -67,7 +67,7 @@ PrefabInstance:
     - target: {fileID: 3863361944932000747, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: b205b81c0b67a444c9a36c1ab6702922, type: 3}
+      objectReference: {fileID: -8677055240969258339, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
     - target: {fileID: 3863361944932000747, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
@@ -83,20 +83,23 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7848324447783969701}
+      addedObject: {fileID: 4974548708755438781}
+    - targetCorrespondingSourceObject: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2753274080947888971}
   m_SourcePrefab: {fileID: 100100000, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
---- !u!1 &8761027228820180195 stripped
+--- !u!1 &2853280976770763188 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
-  m_PrefabInstance: {fileID: 5351923413339272004}
+  m_PrefabInstance: {fileID: 1461508013628716563}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7848324447783969701
+--- !u!114 &4974548708755438781
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8761027228820180195}
+  m_GameObject: {fileID: 2853280976770763188}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c6fba140aab6d240965062a47f9283f, type: 3}
@@ -107,3 +110,27 @@ MonoBehaviour:
   currentAngle: 0
   orbitRadius: 2
   orbitSpeed: 90
+  tintSprite: 0
+--- !u!114 &-2753274080947888971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2853280976770763188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9079cf6d8ecb59b44b0c1b1ec16220a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: -8459234519241329869, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  - {fileID: -890583120758080278, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  - {fileID: 6863966240628734256, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  - {fileID: 920382671476465171, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  - {fileID: -5730392945471219356, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  - {fileID: -6778508894661051271, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  - {fileID: -2817848883476653156, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  - {fileID: -8677055240969258339, guid: 36b8a2cf94baffc4a8c5f41329c3a4c1, type: 3}
+  fps: 18
+  spriteOffset: 0

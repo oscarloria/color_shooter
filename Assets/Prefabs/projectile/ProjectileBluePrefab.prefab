@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6205446393864056226}
   - component: {fileID: 6827391892848874082}
   - component: {fileID: 5734509706062771559}
+  - component: {fileID: -3754387878549188218}
   m_Layer: 6
   m_Name: ProjectileBluePrefab
   m_TagString: Projectile
@@ -29,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 5349724598701198967}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.450468, y: 0.401852, z: 0}
-  m_LocalScale: {x: 0.52750915, y: 0.52750915, z: 2.6375458}
+  m_LocalPosition: {x: -2.609875, y: -3.4357846, z: 0}
+  m_LocalScale: {x: 0.49999997, y: 0.49999997, z: 2.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,7 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: 1300089767
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8c96535b8e1227644800273a6de20e30, type: 3}
+  m_Sprite: {fileID: 8020143640844766479, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -168,3 +169,48 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.65
+--- !u!114 &-3754387878549188218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5349724598701198967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b231a0b809f2c459b53ab3b7709cd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: 8020143640844766479, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -6251682230944352461, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -1259408508766424310, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -5962389079421231736, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 2788568348960109317, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 226702753830753226, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -7921052967969465774, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -1370661682523340017, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -8276262488406422588, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -5906973516983679737, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 5777552420452043588, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 1269540525142108225, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -2630129836624287915, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -7676219313036738927, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 6985626698306143173, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 4773514653529381359, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 6413020478584453356, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -6420534950463556919, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 8367830406354533065, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -4721245407534591264, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -2642393358525368334, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 182515998739034355, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 5390129371266227295, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 1111231892956182058, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 3042023047814558122, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -1297572194080285004, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -5351138903708955224, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: -5895191231709818157, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 4116411608050698257, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  - {fileID: 2696214034221626940, guid: f58846de9bd194542b25e771c2a7347b, type: 3}
+  fps: 30
+  spriteOffset: 0

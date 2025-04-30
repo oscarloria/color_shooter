@@ -1055,7 +1055,7 @@ MonoBehaviour:
   magazineSize: 100
   reloadTime: 2
   orbDurability: 1
-  orbitRadius: 2
+  orbitRadius: 3
   orbitSpeed: 90
   fireRate: 0.2
   currentColor: {r: 1, g: 1, b: 1, a: 1}
@@ -3388,7 +3388,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1150832583
 RectTransform:
   m_ObjectHideFlags: 0

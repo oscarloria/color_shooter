@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8760435229534222893}
   - component: {fileID: 8156785507161409005}
   - component: {fileID: 6924407309354148584}
+  - component: {fileID: 285867182887467863}
   m_Layer: 6
   m_Name: ProjectileYellowPrefab
   m_TagString: Projectile
@@ -29,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 7328332816361167352}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.631197, y: -3.2877731, z: 0}
-  m_LocalScale: {x: 0.5495503, y: 0.5495503, z: 2.7477517}
+  m_LocalPosition: {x: 3.270603, y: -3.5018575, z: 0}
+  m_LocalScale: {x: 0.49999997, y: 0.49999997, z: 2.5000002}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,7 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: 1300089767
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e01a95aaa0db7a646bdd1b93c8dfd252, type: 3}
+  m_Sprite: {fileID: 7603796749189880576, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -168,3 +169,48 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: -0.09, y: -0.06}
   m_Radius: 0.6439683
+--- !u!114 &285867182887467863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7328332816361167352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b231a0b809f2c459b53ab3b7709cd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: 7603796749189880576, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -4207271514381782739, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 4897591809520118714, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -8859172264416590909, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 370382172337755405, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -1939699861769740515, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 665194694587710287, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -3439181257201569580, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 2800363976251413438, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -7052884727837814370, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 7010932623915965613, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -6973347378537951996, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 2509899903616100946, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -8449458382627436230, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 4887749065903174891, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -7505722662871925408, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 1201146855608633072, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -4795171936804831945, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -7322459988848403240, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 6058586874620256273, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -7796514414507832115, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 1993832109847559048, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -3250117817160205767, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -7881123346693684446, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 2334367967611125924, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -3582867104950622350, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: -6185870390763966105, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 1176325779974649544, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 4853013410892365281, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  - {fileID: 8262341518781996717, guid: 41ccc765492ab7e49aa7468e6f81cdc0, type: 3}
+  fps: 30
+  spriteOffset: 0
