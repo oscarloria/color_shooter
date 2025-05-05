@@ -183,10 +183,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyColor: {r: 0, g: 0, b: 0, a: 0}
-  speed: 10.79
   minRotationSpeed: 500
   maxRotationSpeed: 1000
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
+  speed: 30
+  pauseDuration: 2
+  randomizeViewportMargin: 1
+  viewportMargin: 0.3
+  minRandomMargin: 0.1
+  maxRandomMargin: 0.3
   scoreValue: 100
 --- !u!114 &-8140715811978450840
 MonoBehaviour:
