@@ -1080,6 +1080,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterSpriteRenderer: {fileID: 1990132647}
+  normalOutlineThickness: 0.002
+  shootingOutlineThickness: 0.003
+  thicknessPulseDuration: 0.5
   playerController: {fileID: 190124699}
 --- !u!1 &357621890
 GameObject:
@@ -2765,7 +2768,7 @@ MonoBehaviour:
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
-  normalCount: 50
+  normalCount: 1
   tankCount: 0
   shooterCount: 0
   zzCount: 0
