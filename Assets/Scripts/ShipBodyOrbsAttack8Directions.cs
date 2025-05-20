@@ -29,14 +29,14 @@ CONFIGURACIÓN:
 public class ShipBodyOrbsAttack8Directions : MonoBehaviour
 {
     [Header("Sprites de ATAQUE (Orbs) en 8 direcciones")]
-    public Sprite[] orbsAttackUpSprites;         
-    public Sprite[] orbsAttackUpLeftSprites;     
-    public Sprite[] orbsAttackLeftSprites;       
-    public Sprite[] orbsAttackDownLeftSprites;   
-    public Sprite[] orbsAttackDownSprites;       
-    public Sprite[] orbsAttackDownRightSprites;  
-    public Sprite[] orbsAttackRightSprites;      
-    public Sprite[] orbsAttackUpRightSprites;    
+    public Sprite[] orbsAttackUpSprites;
+    public Sprite[] orbsAttackUpLeftSprites;
+    public Sprite[] orbsAttackLeftSprites;
+    public Sprite[] orbsAttackDownLeftSprites;
+    public Sprite[] orbsAttackDownSprites;
+    public Sprite[] orbsAttackDownRightSprites;
+    public Sprite[] orbsAttackRightSprites;
+    public Sprite[] orbsAttackUpRightSprites;
 
     [Header("Referencia al Ship que rota")]
     public Transform shipTransform;
@@ -53,7 +53,7 @@ public class ShipBodyOrbsAttack8Directions : MonoBehaviour
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
-        Debug.Log("[ShipBodyOrbsAttack8Directions] Awake => SpriteRenderer asignado.");
+        // Debug.Log("[ShipBodyOrbsAttack8Directions] Awake => SpriteRenderer asignado.");
     }
 
     void OnEnable()
@@ -61,19 +61,19 @@ public class ShipBodyOrbsAttack8Directions : MonoBehaviour
         // Al habilitar, reiniciar la anim
         animTimer = 0f;
         currentFrame = 0;
-        Debug.Log("[ShipBodyOrbsAttack8Directions] OnEnable => ATAQUE ORBS ACTIVADO. Reseteando frames.");
+        // Debug.Log("[ShipBodyOrbsAttack8Directions] OnEnable => ATAQUE ORBS ACTIVADO. Reseteando frames.");
     }
 
     void OnDisable()
     {
-        Debug.Log("[ShipBodyOrbsAttack8Directions] OnDisable => ATAQUE ORBS DESACTIVADO.");
+        // Debug.Log("[ShipBodyOrbsAttack8Directions] OnDisable => ATAQUE ORBS DESACTIVADO.");
     }
 
     void Update()
     {
         if (shipTransform == null)
         {
-            Debug.LogWarning("[ShipBodyOrbsAttack8Directions] shipTransform es null => no se puede animar Orbs Attack.");
+            // Debug.LogWarning("[ShipBodyOrbsAttack8Directions] shipTransform es null => no se puede animar Orbs Attack.");
             return;
         }
 
@@ -104,7 +104,7 @@ public class ShipBodyOrbsAttack8Directions : MonoBehaviour
             default: finalIndex = 0; break;
         }
 
-        Debug.Log($"[ShipBodyOrbsAttack8Directions] Update => angleZ={angleZ:F2}, rawIndex={rawIndex}, finalIndex={finalIndex}");
+        // Debug.Log($"[ShipBodyOrbsAttack8Directions] Update => angleZ={angleZ:F2}, rawIndex={rawIndex}, finalIndex={finalIndex}");
 
         // 4) Elegir array
         switch (finalIndex)
@@ -121,7 +121,7 @@ public class ShipBodyOrbsAttack8Directions : MonoBehaviour
 
         if (currentAnim == null || currentAnim.Length == 0)
         {
-            Debug.LogWarning("[ShipBodyOrbsAttack8Directions] currentAnim vacío => no se muestra nada.");
+            // Debug.LogWarning("[ShipBodyOrbsAttack8Directions] currentAnim vacío => no se muestra nada.");
             return;
         }
 
