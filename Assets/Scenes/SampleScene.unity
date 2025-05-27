@@ -2751,7 +2751,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &957692469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2769,9 +2769,9 @@ MonoBehaviour:
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
   normalCount: 1
-  tankCount: 0
-  shooterCount: 0
-  zzCount: 0
+  tankCount: 4
+  shooterCount: 5
+  zzCount: 7
   spawnDistance: 30
   spawnInterval: 0.5
   enemySpeed: 2
@@ -3988,9 +3988,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orbitRadiusX: 10
   orbitRadiusY: 8
-  orbitPeriod: 8
+  orbitPeriod: 24
   orbitClockwise: 1
-  selfRotationSpeed: 90
+  selfRotationSpeed: 40
   shootInterval: 4
   maxHP: 100
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}

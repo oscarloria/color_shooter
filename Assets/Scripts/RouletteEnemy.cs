@@ -17,7 +17,7 @@ public class RouletteEnemy : MonoBehaviour
     public float orbitPeriod  = 8f;             // seg para una vuelta
 
     [Tooltip("¿La órbita se recorre en sentido horario?")]
-    public bool orbitClockwise = false;         // ← NUEVO: marca para clockwise
+    public bool orbitClockwise = false;
 
     [Tooltip("Velocidad de giro sobre su propio eje (°/seg, signo + = CCW).")]
     public float selfRotationSpeed = 90f;
@@ -49,6 +49,9 @@ public class RouletteEnemy : MonoBehaviour
     SpriteRenderer sr;
     Rigidbody2D   rb;
 
+    Vector3       baseScale;           // ← escala original (para restaurar)
+    bool          feedbackRunning;     // ← evita acumulación
+
     /*──────────────────────  SET-UP  ─────────────────────────*/
     void Awake()
     {
@@ -64,6 +67,7 @@ public class RouletteEnemy : MonoBehaviour
     {
         currentHP  = maxHP;
         shootTimer = shootInterval;
+        baseScale  = transform.localScale;                  // guardar escala de fábrica
 
         if (rb) rb.bodyType = RigidbodyType2D.Kinematic;
     }
@@ -74,8 +78,8 @@ public class RouletteEnemy : MonoBehaviour
         if (!player) return;
 
         /* 1) ÓRBITA ELÍPTICA */
-        float directionSign = orbitClockwise ? -1f : 1f;
-        orbitAngle += directionSign * (2f * Mathf.PI / orbitPeriod) * Time.deltaTime;
+        float dir = orbitClockwise ? -1f : 1f;
+        orbitAngle += dir * (2f * Mathf.PI / orbitPeriod) * Time.deltaTime;
 
         Vector2 offset = new Vector2(
             Mathf.Cos(orbitAngle) * orbitRadiusX,
@@ -104,21 +108,25 @@ public class RouletteEnemy : MonoBehaviour
         if (dmg <= 0) return;
 
         currentHP = Mathf.Max(currentHP - dmg, 0);
-        StartCoroutine(DamageFeedback());
+
+        // Lanza feedback sólo si no está ejecutándose
+        if (!feedbackRunning)
+            StartCoroutine(DamageFeedback());
 
         if (currentHP == 0) Die();
     }
 
     IEnumerator DamageFeedback()
     {
-        if (sr == null) yield break;
+        feedbackRunning = true;
 
-        Color   origColor = sr.color;
-        Vector3 origScale = transform.localScale;
+        Color origColor = sr ? sr.color : Color.white;
 
-        sr.color             = Color.white;
-        transform.localScale = origScale * scalePopMultiplier;
+        /*—— Flash + Pop ——*/
+        if (sr) sr.color = Color.white;
+        transform.localScale = baseScale * scalePopMultiplier;
 
+        /*—— Shake sin alterar escala original ——*/
         float elapsed = 0f;
         while (elapsed < shakeDuration)
         {
@@ -136,8 +144,11 @@ public class RouletteEnemy : MonoBehaviour
 
         yield return new WaitForSeconds(flashTime);
 
-        sr.color             = origColor;
-        transform.localScale = origScale;
+        /*—— Restaurar ——*/
+        if (sr) sr.color = origColor;
+        transform.localScale = baseScale;
+
+        feedbackRunning = false;
     }
 
     void Die()
