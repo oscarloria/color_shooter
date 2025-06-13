@@ -1,115 +1,105 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Controlador de Opciones que maneja los reseteos de High Score, Lumi-Coins,
-/// y los valores de la pistola (cargador, tiempo de recarga y combo).
-/// </summary>
 public class OptionsController : MonoBehaviour
 {
-    // Claves de PlayerPrefs
-    private const string HIGH_SCORE_KEY         = "HighScore";
-    private const string PISTOL_MAGAZINE_KEY    = "PistolMagazineSize";
-    private const string PISTOL_RELOAD_KEY      = "PistolReloadTime";
-    private const string PISTOL_BOTH_LEVEL_KEY  = "PistolBothLevel"; // Para el combo
+    // --- Claves de PlayerPrefs para la Pistola ---
+    private const string HIGH_SCORE_KEY = "HighScore";
+    private const string PISTOL_MAGAZINE_KEY = "PistolMagazineSize";
+    private const string PISTOL_RELOAD_KEY = "PistolReloadTime";
+    private const string PISTOL_BOTH_LEVEL_KEY = "PistolBothLevel";
+    
+    // --- Claves de PlayerPrefs para la Escopeta ---
+    private const string SHOTGUN_PELLETS_KEY = "Shotgun_Pellets";
+    private const string SHOTGUN_MAG_KEY = "Shotgun_Magazine";
+    private const string SHOTGUN_RELOAD_KEY = "Shotgun_ReloadTime";
+    private const string SHOTGUN_LEVEL_KEY = "Shotgun_CombinedLevel";
 
-    /// <summary>
-    /// Se llama cuando el jugador presiona "Reset High Score".
-    /// Elimina la clave "HighScore" en PlayerPrefs y la guarda.
-    /// </summary>
+    // --- Métodos Generales y de High Score ---
+
     public void OnResetHighScoreClicked()
     {
         PlayerPrefs.DeleteKey(HIGH_SCORE_KEY);
         PlayerPrefs.Save();
-        Debug.Log("High Score borrado desde OptionsScene.");
+        Debug.Log("High Score borrado.");
     }
 
-    /// <summary>
-    /// Se llama cuando el jugador presiona el botón para regresar al menú principal.
-    /// </summary>
     public void OnBackToMainMenuClicked()
     {
         SceneManager.LoadScene("MainMenuScene");
     }
 
-    /// <summary>
-    /// Se llama cuando el jugador presiona "Reset Lumi Coins".
-    /// Llama a CoinManager para reiniciar la cantidad a 0.
-    /// </summary>
     public void OnResetLumiCoinsClicked()
     {
         CoinManager.ResetCoins();
-        Debug.Log("Lumi-Coins borradas desde OptionsScene.");
+        Debug.Log("Lumi-Coins borradas.");
     }
+    
+    // --- MÉTODOS DE PISTOLA RESTAURADOS ---
 
-    /// <summary>
-    /// Se llama cuando el jugador presiona "Reset Pistol".
-    /// Restablece la pistola a su valor por defecto de 4 proyectiles,
-    /// si no existe clave en PlayerPrefs, y actualiza PlayerShooting.
-    /// </summary>
     public void OnResetPistolClicked()
     {
         PlayerPrefs.DeleteKey(PISTOL_MAGAZINE_KEY);
         PlayerPrefs.Save();
-        Debug.Log("PistolMagazineSize borrada. Valor reseteado a 4 por defecto (en PlayerShooting).");
+        Debug.Log("PistolMagazineSize borrada. El valor se reseteará al por defecto.");
 
+        // Este código es opcional si quieres ver el cambio en una escena de pruebas,
+        // pero la lógica principal es que el valor se resetee la próxima vez que se inicie el juego.
         PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
         if (playerShooting != null)
         {
-            // Volver a 4 proyectiles
-            playerShooting.magazineSize = 4; 
-            playerShooting.currentAmmo = 4;
-            playerShooting.UpdateAmmoText();
-            Debug.Log("Pistola reiniciada a 4 balas en PlayerShooting.");
+            // Aquí deberíamos obtener el valor por defecto del script PlayerShooting
+            // En lugar de hardcodearlo, lo ideal es que PlayerShooting se encargue al iniciar.
+            Debug.Log("La pistola usará su valor de cargador por defecto la próxima vez.");
         }
     }
 
-    /// <summary>
-    /// Se llama cuando el jugador presiona "Reset Pistol Reload".
-    /// Restablece el tiempo de recarga a su valor por defecto de 6s,
-    /// si no existe clave en PlayerPrefs, y actualiza PlayerShooting.
-    /// </summary>
     public void OnResetPistolReloadClicked()
     {
         PlayerPrefs.DeleteKey(PISTOL_RELOAD_KEY);
         PlayerPrefs.Save();
-        Debug.Log("PistolReloadTime borrada. Valor reseteado a 6.0s por defecto (en PlayerShooting).");
-
-        PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
-        if (playerShooting != null)
-        {
-            playerShooting.reloadTime = 6f; 
-            Debug.Log("ReloadTime reiniciado a 6s en PlayerShooting.");
-        }
+        Debug.Log("PistolReloadTime borrada. El valor se reseteará al por defecto.");
     }
 
-    /// <summary>
-    /// Se llama cuando el jugador presiona "Reset Pistol Combo".
-    /// Restablece el combo de mejoras (PistolBothLevel) a 0 y 
-    /// limpia las claves de PistolMagazineSize y PistolReloadTime,
-    /// para volver a los valores iniciales (4 balas, 6s recarga).
-    /// </summary>
     public void OnResetPistolBothClicked()
     {
-        // Borrar nivel de mejoras del combo
         PlayerPrefs.DeleteKey(PISTOL_BOTH_LEVEL_KEY);
-
-        // Borrar las claves de magazine y reload
         PlayerPrefs.DeleteKey(PISTOL_MAGAZINE_KEY);
         PlayerPrefs.DeleteKey(PISTOL_RELOAD_KEY);
-
         PlayerPrefs.Save();
-        Debug.Log("Reset combo: PistolBothLevel, Magazine y Reload borrados. Volverá a 4 balas / 6s.");
+        Debug.Log("Todas las mejoras de Pistola reseteadas.");
+    }
+    
+    // --- MÉTODOS NUEVOS PARA LA ESCOPETA ---
 
-        // Actualizar PlayerShooting
-        PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
-        if (playerShooting != null)
-        {
-            playerShooting.magazineSize = 4;
-            playerShooting.currentAmmo = 4;
-            playerShooting.reloadTime = 6f;
-            playerShooting.UpdateAmmoText();
-            Debug.Log("Pistola (combo) reiniciada a 4 balas y 6s de recarga en PlayerShooting.");
-        }
+    public void OnResetShotgunPelletsClicked()
+    {
+        PlayerPrefs.DeleteKey(SHOTGUN_PELLETS_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Perdigones de Escopeta reseteada.");
+    }
+    
+    public void OnResetShotgunMagazineClicked()
+    {
+        PlayerPrefs.DeleteKey(SHOTGUN_MAG_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Cargador de Escopeta reseteada.");
+    }
+
+    public void OnResetShotgunReloadClicked()
+    {
+        PlayerPrefs.DeleteKey(SHOTGUN_RELOAD_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Recarga de Escopeta reseteada.");
+    }
+
+    public void OnResetShotgunAllClicked()
+    {
+        PlayerPrefs.DeleteKey(SHOTGUN_PELLETS_KEY);
+        PlayerPrefs.DeleteKey(SHOTGUN_MAG_KEY);
+        PlayerPrefs.DeleteKey(SHOTGUN_RELOAD_KEY);
+        PlayerPrefs.DeleteKey(SHOTGUN_LEVEL_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("TODAS las mejoras de la Escopeta han sido reseteadas.");
     }
 }

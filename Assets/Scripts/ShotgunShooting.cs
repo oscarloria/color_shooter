@@ -1,38 +1,43 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
-// Se eliminó: using UnityEngine.InputSystem; // Ya no es necesario para Gamepad.current
 
-/// <summary>
-/// Maneja el disparo y la recarga de la escopeta (spread shot).
-/// Admite distintos prefabs de proyectil según el color,
-/// asigna 'projectileColor' en Projectile.cs para que la comparación con enemyColor funcione.
-/// </summary>
 public class ShotgunShooting : MonoBehaviour
 {
-    [Header("Prefab de proyectil fallback (blanco)")]
-    public GameObject projectilePrefab;
-
-    [Header("Prefabs de proyectil para cada color (Shotgun)")]
+    [Header("Prefabs de proyectil")]
+    public GameObject projectilePrefab; // Fallback
     public GameObject projectileRedPrefab;
     public GameObject projectileBluePrefab;
     public GameObject projectileGreenPrefab;
     public GameObject projectileYellowPrefab;
 
+    [Header("Parámetros de Disparo")]
     public float projectileSpeed = 20f;
     public float fireRate = 0.5f;
 
-    [Header("Spread Shot")]
-    public float normalSpreadAngle = 80f;
+    [Header("Spread Shot - Valores por Defecto")]
+    [SerializeField] private int defaultPelletsPerShot = 5;
+    [SerializeField] private float defaultSpreadAngle = 80f;
     public float zoomedSpreadAngle = 50f;
-    public int pelletsPerShot = 5;
 
-    [Header("Munición y Recarga")]
-    public int magazineSize = 8;
-    public float reloadTime = 10f; 
+    [Header("Munición y Recarga - Valores por Defecto")]
+    [SerializeField] private int defaultMagazineSize = 8;
+    [SerializeField] private float defaultReloadTime = 10f;
+
+    // Variables que serán modificadas por las mejoras
+    [HideInInspector] public int pelletsPerShot;
+    [HideInInspector] public int magazineSize;
+    [HideInInspector] public float reloadTime;
+    
+    // Variables de estado
     [HideInInspector] public bool isReloading = false;
     [HideInInspector] public int currentAmmo;
-
+    
+    // Claves de PlayerPrefs para la Escopeta
+    private const string SHOTGUN_PELLETS_KEY = "Shotgun_Pellets";
+    private const string SHOTGUN_MAG_KEY = "Shotgun_Magazine";
+    private const string SHOTGUN_RELOAD_KEY = "Shotgun_ReloadTime";
+    
     [Header("Efectos")]
     public float scaleMultiplier = 1.2f;
     public float scaleDuration = 0.15f;
@@ -42,11 +47,10 @@ public class ShotgunShooting : MonoBehaviour
     public WeaponReloadIndicator reloadIndicator;
 
     private CameraZoom cameraZoom;
-    private bool canShoot = true; // Para controlar fireRate
-
-    // ----------------- Sistema de color -----------------
+    private bool canShoot = true;
+    
     public Color currentColor = Color.white;
-    private KeyCode lastPressedKey = KeyCode.None; // Guarda la última tecla WASD presionada
+    private KeyCode lastPressedKey = KeyCode.None;
 
     [Header("Animaciones en 8 direcciones (Shotgun)")]
     public ShipBodyShotgunIdle8Directions shotgunIdleScript;
@@ -56,184 +60,109 @@ public class ShotgunShooting : MonoBehaviour
 
     void Start()
     {
+        // Cargar mejoras desde PlayerPrefs o usar valores por defecto
+        pelletsPerShot = PlayerPrefs.GetInt(SHOTGUN_PELLETS_KEY, defaultPelletsPerShot);
+        magazineSize = PlayerPrefs.GetInt(SHOTGUN_MAG_KEY, defaultMagazineSize);
+        reloadTime = PlayerPrefs.GetFloat(SHOTGUN_RELOAD_KEY, defaultReloadTime);
+
         currentAmmo = magazineSize;
         UpdateAmmoText();
-
         cameraZoom = FindObjectOfType<CameraZoom>();
     }
 
     void Update()
     {
-        // Actualizar color y texto de munición cada frame
-        // Nota: UpdateAmmoText() se llama también desde Shoot() y Reload(),
-        // llamarlo aquí podría ser redundante si no cambia fuera de esas acciones.
-        // Considera quitarlo de Update() si no es estrictamente necesario.
-        // UpdateAmmoText(); // Comentado temporalmente para evaluación
         UpdateCurrentColor();
     }
 
-    /// <summary>
-    /// Dispara un spread shot (pelletsPerShot proyectiles)
-    /// con distintos prefabs (rojo, azul, verde, amarillo) según currentColor.
-    /// </summary>
     public void Shoot()
     {
-        // --- Comprobaciones antes de disparar ---
-        // 1. No disparar si el color es blanco
-        if (currentColor == Color.white) return;
-        // 2. No disparar si se está recargando
-        if (isReloading) return;
-        // 3. No disparar si no hay munición
-        if (currentAmmo <= 0)
+        if (currentColor == Color.white || isReloading || currentAmmo <= 0 || !canShoot)
         {
-            // Iniciar recarga si no hay munición y no se está recargando ya
-            if (!isReloading) StartCoroutine(Reload());
+            if (currentAmmo <= 0 && !isReloading) StartCoroutine(Reload());
             return;
         }
-        // 4. No disparar si el cooldown de fireRate está activo
-        if (!canShoot) return;
 
-        // --- Lógica del Disparo ---
-        currentAmmo--;    // Gastar una bala
-        UpdateAmmoText(); // Actualizar UI
+        currentAmmo--;
+        UpdateAmmoText();
 
-        // Determinar ángulo de dispersión (depende del zoom)
-        float totalSpread = (cameraZoom != null && cameraZoom.IsZoomedIn)
-            ? zoomedSpreadAngle
-            : normalSpreadAngle;
-
-        // Calcular ángulo entre perdigones
-        float angleStep = (pelletsPerShot > 1)
-            ? totalSpread / (pelletsPerShot - 1) // Evitar división por cero si solo hay 1 perdigón
-            : 0f;
-        // Calcular ángulo inicial para centrar la dispersión
+        float totalSpread = (cameraZoom != null && cameraZoom.IsZoomedIn) ? zoomedSpreadAngle : defaultSpreadAngle;
+        float angleStep = (pelletsPerShot > 1) ? totalSpread / (pelletsPerShot - 1) : 0f;
         float startAngle = -totalSpread * 0.5f;
 
-        // Instanciar cada perdigón
         for (int i = 0; i < pelletsPerShot; i++)
         {
-            // Calcular rotación para este perdigón
             float currentAngle = startAngle + angleStep * i;
-            Quaternion baseRotation = transform.rotation; // Rotación base del jugador
-            Quaternion pelletRotation = baseRotation * Quaternion.Euler(0, 0, currentAngle); // Aplicar ángulo de dispersión
-
-            // Seleccionar el prefab del proyectil según el color actual
+            Quaternion pelletRotation = transform.rotation * Quaternion.Euler(0, 0, currentAngle);
+            
             GameObject chosenPrefab = null;
-            if      (currentColor == Color.red)    chosenPrefab = projectileRedPrefab;
-            else if (currentColor == Color.blue)   chosenPrefab = projectileBluePrefab;
-            else if (currentColor == Color.green)  chosenPrefab = projectileGreenPrefab;
+            if (currentColor == Color.red) chosenPrefab = projectileRedPrefab;
+            else if (currentColor == Color.blue) chosenPrefab = projectileBluePrefab;
+            else if (currentColor == Color.green) chosenPrefab = projectileGreenPrefab;
             else if (currentColor == Color.yellow) chosenPrefab = projectileYellowPrefab;
+            if (chosenPrefab == null) chosenPrefab = projectilePrefab;
 
-            // Usar prefab de fallback si no hay uno específico para el color
-            if (chosenPrefab == null)
-            {
-                // Debug.LogWarning("[ShotgunShooting] No se encontró prefab para color " + currentColor + ". Usando fallback.");
-                chosenPrefab = projectilePrefab;
-            }
-
-            // Instanciar solo si tenemos un prefab válido
             if (chosenPrefab != null)
             {
                 GameObject projectile = Instantiate(chosenPrefab, transform.position, pelletRotation);
-
-                // Asignar velocidad
-                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-                if (rb != null)
+                if (projectile.TryGetComponent(out Rigidbody2D rb))
                 {
-                    // Usar velocity para movimiento constante inicial
                     rb.linearVelocity = projectile.transform.up * projectileSpeed;
                 }
-
-                // MUY IMPORTANTE => Asignar projectileColor en el script Projectile del perdigón
-                Projectile proj = projectile.GetComponent<Projectile>();
-                if (proj != null)
+                if (projectile.TryGetComponent(out Projectile proj))
                 {
-                    proj.projectileColor = currentColor; // <---- CLAVE para la lógica de daño/interacción
+                    proj.projectileColor = currentColor;
                 }
             }
-            else {
-                Debug.LogError("[ShotgunShooting] ¡chosenPrefab es null incluso después del fallback! Revisa las asignaciones en el Inspector.");
-            }
         }
 
-        // --- Efectos y Cooldowns ---
-        StartCoroutine(ScaleEffect());              // Efecto visual de escala
-        StartCoroutine(FireRateCooldown());         // Iniciar cooldown para el próximo disparo
-        StartCoroutine(PlayShotgunAttackAnimation());// Iniciar animación de ataque
-
-        // Retroceso de cámara si el componente existe
-        if (CameraShake.Instance != null)
-        {
-            Vector3 recoilDirection = -transform.up; // Dirección opuesta a la que apunta
-            CameraShake.Instance.RecoilCamera(recoilDirection);
-        }
-
-        // Si se quedó sin munición DESPUÉS de disparar, iniciar recarga
-        if (currentAmmo <= 0 && !isReloading)
-        {
-            // Debug.Log("[ShotgunShooting] Munición agotada tras disparo, iniciando recarga.");
-            StartCoroutine(Reload());
-        }
+        StartCoroutine(ScaleEffect());
+        StartCoroutine(FireRateCooldown());
+        StartCoroutine(PlayShotgunAttackAnimation());
+        if (CameraShake.Instance != null) CameraShake.Instance.RecoilCamera(-transform.up);
+        if (currentAmmo <= 0 && !isReloading) StartCoroutine(Reload());
     }
 
-    // Corutina para manejar el cooldown de la cadencia de tiro
-    IEnumerator FireRateCooldown()
-    {
-        canShoot = false; // Bloquear disparo
-        yield return new WaitForSeconds(fireRate); // Esperar tiempo de cooldown
-        canShoot = true;  // Permitir disparo de nuevo
-    }
-
-    // Corutina para manejar la recarga
     public IEnumerator Reload()
     {
-        // No recargar si ya se está recargando o si la munición está llena
         if (isReloading || currentAmmo == magazineSize) yield break;
 
-        isReloading = true; // Marcar como recargando
-        UpdateAmmoText();   // Actualizar UI para mostrar "RELOADING"
-        // Debug.Log("[ShotgunShooting] Iniciando recarga...");
+        isReloading = true;
+        UpdateAmmoText();
+        if (reloadIndicator != null) reloadIndicator.ResetIndicator();
 
-        // Reiniciar indicador de recarga (si existe)
-        if (reloadIndicator != null)
-            reloadIndicator.ResetIndicator();
-
-        float reloadTimer = 0f; // Temporizador
-        // Bucle durante el tiempo de recarga
+        float reloadTimer = 0f;
         while (reloadTimer < reloadTime)
         {
-            reloadTimer += Time.deltaTime; // Incrementar temporizador
-            // Actualizar indicador de progreso (si existe)
-            if (reloadIndicator != null)
-                reloadIndicator.UpdateIndicator(reloadTimer / reloadTime); // Valor de 0 a 1
-            yield return null; // Esperar al siguiente frame
+            reloadTimer += Time.deltaTime;
+            if (reloadIndicator != null) reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
+            yield return null;
         }
 
-        // Finalizar recarga
-        currentAmmo = magazineSize; // Rellenar munición
-        isReloading = false;        // Marcar como no recargando
-        UpdateAmmoText();           // Actualizar UI
+        currentAmmo = magazineSize;
+        isReloading = false;
+        UpdateAmmoText();
+        if (reloadIndicator != null) reloadIndicator.ResetIndicator();
+    }
+    
+    // --- MÉTODOS AUXILIARES RESTAURADOS ---
 
-        // Resetear indicador (si existe)
-        if (reloadIndicator != null)
-            reloadIndicator.ResetIndicator();
-
-        // Debug.Log("[ShotgunShooting] Recarga completada.");
+    IEnumerator FireRateCooldown()
+    {
+        canShoot = false;
+        yield return new WaitForSeconds(fireRate);
+        canShoot = true;
     }
 
-    // Actualiza el texto de la munición en la UI
     void UpdateAmmoText()
     {
-        if (ammoText == null) return; // Salir si no hay referencia
-
-        // Mostrar "RELOADING" o la cuenta actual
+        if (ammoText == null) return;
         if (isReloading)
             ammoText.text = "Escopeta: RELOADING";
         else
-            ammoText.text = $"Escopeta: {currentAmmo}/{magazineSize}"; // Formato: Escopeta: 5/8
+            ammoText.text = $"Escopeta: {currentAmmo}/{magazineSize}";
     }
 
-    // Corutina para el efecto visual de escala al disparar
     IEnumerator ScaleEffect()
     {
         Vector3 originalScale = transform.localScale;
@@ -241,110 +170,39 @@ public class ShotgunShooting : MonoBehaviour
         float elapsedTime = 0f;
         float halfDuration = scaleDuration / 2f;
 
-        // Escalar hacia arriba
         while (elapsedTime < halfDuration)
         {
-            float t = elapsedTime / halfDuration;
-            transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
-            // Usar deltaTime para que el efecto respete la pausa del juego
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / halfDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        transform.localScale = targetScale; // Asegurar escala máxima
-
-        // Escalar hacia abajo
+        transform.localScale = targetScale;
+        
         elapsedTime = 0f;
         while (elapsedTime < halfDuration)
         {
-            float t = elapsedTime / halfDuration;
-            transform.localScale = Vector3.Lerp(targetScale, originalScale, t);
+            transform.localScale = Vector3.Lerp(targetScale, originalScale, elapsedTime / halfDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        transform.localScale = originalScale; // Asegurar escala original
+        transform.localScale = originalScale;
     }
 
-    // ------------------------------------------------------------------
-    // Actualizar color (solo teclado, lógica idéntica a PlayerShooting)
-    // ------------------------------------------------------------------
     public void UpdateCurrentColor()
     {
-        // --- Lógica del Teclado ---
-        // Detecta si se PRESIONA una tecla WASD en este frame
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            SetCurrentColor(Color.yellow);
-            lastPressedKey = KeyCode.W;
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            SetCurrentColor(Color.blue);
-            lastPressedKey = KeyCode.A;
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            SetCurrentColor(Color.green);
-            lastPressedKey = KeyCode.S;
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            SetCurrentColor(Color.red);
-            lastPressedKey = KeyCode.D;
-        }
+        if (Input.GetKeyDown(KeyCode.W)) { SetCurrentColor(Color.yellow); lastPressedKey = KeyCode.W; }
+        else if (Input.GetKeyDown(KeyCode.A)) { SetCurrentColor(Color.blue); lastPressedKey = KeyCode.A; }
+        else if (Input.GetKeyDown(KeyCode.S)) { SetCurrentColor(Color.green); lastPressedKey = KeyCode.S; }
+        else if (Input.GetKeyDown(KeyCode.D)) { SetCurrentColor(Color.red); lastPressedKey = KeyCode.D; }
 
-        // Detecta si se SUELTA la última tecla que se había presionado
         if (lastPressedKey != KeyCode.None && Input.GetKeyUp(lastPressedKey))
         {
-            // Verifica si alguna OTRA tecla WASD sigue presionada
-            KeyCode currentlyPressedKey = GetLastKeyPressed(); // Usa el nombre original de tu método
-            SetCurrentColorByKey(currentlyPressedKey); // Establece el color correspondiente (o blanco si ninguna)
-
-            // CORREGIDO: Actualiza lastPressedKey a la tecla que quedó presionada, o None si ninguna
+            KeyCode currentlyPressedKey = GetLastKeyPressed();
+            SetCurrentColorByKey(currentlyPressedKey);
             lastPressedKey = currentlyPressedKey;
         }
-        // --- Fin Lógica del Teclado ---
-
-
-        // --- Sección de Gamepad Eliminada ---
-        /*
-        Gamepad gp = Gamepad.current;
-        if (gp != null)
-        {
-            Vector2 leftStick = gp.leftStick.ReadValue();
-            float threshold = 0.5f;
-
-            if (Mathf.Abs(leftStick.x) < threshold && Mathf.Abs(leftStick.y) < threshold)
-            {
-                if (!AnyWASDPressed())
-                {
-                    SetCurrentColor(Color.white);
-                }
-            }
-            else
-            {
-                if (leftStick.y > threshold)      SetCurrentColor(Color.yellow);
-                else if (leftStick.y < -threshold)SetCurrentColor(Color.green);
-                else if (leftStick.x > threshold) SetCurrentColor(Color.red);
-                else if (leftStick.x < -threshold)SetCurrentColor(Color.blue);
-            }
-        }
-        */
-        // --- Fin Sección Eliminada ---
     }
 
-    // Se eliminó la función AnyWASDPressed() porque solo era usada por la lógica del gamepad.
-    /*
-    bool AnyWASDPressed()
-    {
-        return (Input.GetKey(KeyCode.W) ||
-                Input.GetKey(KeyCode.A) ||
-                Input.GetKey(KeyCode.S) ||
-                Input.GetKey(KeyCode.D));
-    }
-    */
-
-    // Devuelve la tecla WASD que está actualmente presionada (con prioridad D > S > A > W)
-    // o KeyCode.None si ninguna lo está. (Mantenido nombre original)
     KeyCode GetLastKeyPressed()
     {
         if (Input.GetKey(KeyCode.D)) return KeyCode.D;
@@ -354,49 +212,35 @@ public class ShotgunShooting : MonoBehaviour
         return KeyCode.None;
     }
 
-    // Establece el color actual basado en una KeyCode.
     void SetCurrentColorByKey(KeyCode key)
     {
         switch (key)
         {
             case KeyCode.W: SetCurrentColor(Color.yellow); break;
-            case KeyCode.A: SetCurrentColor(Color.blue);   break;
-            case KeyCode.S: SetCurrentColor(Color.green);  break;
-            case KeyCode.D: SetCurrentColor(Color.red);    break;
-            default:        SetCurrentColor(Color.white);  break; // Si key es KeyCode.None
+            case KeyCode.A: SetCurrentColor(Color.blue); break;
+            case KeyCode.S: SetCurrentColor(Color.green); break;
+            case KeyCode.D: SetCurrentColor(Color.red); break;
+            default: SetCurrentColor(Color.white); break;
         }
     }
 
-    // Establece el color actual y actualiza el color del SpriteRenderer.
     void SetCurrentColor(Color color)
     {
         currentColor = color;
-        // Intenta obtener SpriteRenderer, puede que no esté en este mismo objeto
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null) sr.color = currentColor;
-        // Considera si el color debe aplicarse a un objeto hijo o diferente
+        if (GetComponent<SpriteRenderer>() is SpriteRenderer sr) sr.color = currentColor;
     }
 
-    // Corutina para manejar la animación de ataque de la escopeta
     IEnumerator PlayShotgunAttackAnimation()
     {
-        if (isPlayingShotgunAttackAnim) yield break; // Evitar solapamiento
-
+        if (isPlayingShotgunAttackAnim) yield break;
         isPlayingShotgunAttackAnim = true;
-        // Debug.Log("[ShotgunShooting] Attack anim => Activada.");
-
-        // Desactivar idle, activar ataque
         if (shotgunIdleScript != null) shotgunIdleScript.enabled = false;
         if (shotgunAttackScript != null) shotgunAttackScript.enabled = true;
-
-        // Esperar duración
+        
         yield return new WaitForSeconds(shotgunAttackAnimationDuration);
 
-        // Desactivar ataque, reactivar idle
         if (shotgunAttackScript != null) shotgunAttackScript.enabled = false;
         if (shotgunIdleScript != null) shotgunIdleScript.enabled = true;
-
         isPlayingShotgunAttackAnim = false;
-        // Debug.Log("[ShotgunShooting] Attack anim => Finalizada.");
     }
 }
