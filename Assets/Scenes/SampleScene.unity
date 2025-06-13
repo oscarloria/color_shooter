@@ -868,8 +868,11 @@ MonoBehaviour:
   projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
   projectileSpeed: 20
   fireRate: 0.5
-  normalSpreadAngle: 80
+  defaultPelletsPerShot: 5
+  defaultSpreadAngle: 80
   zoomedSpreadAngle: 50
+  defaultMagazineSize: 8
+  defaultReloadTime: 10
   pelletsPerShot: 5
   magazineSize: 8
   reloadTime: 1
@@ -2079,7 +2082,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &770552601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2296,7 +2299,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &890569308
 MonoBehaviour:
   m_ObjectHideFlags: 0
