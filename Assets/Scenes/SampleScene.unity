@@ -2082,7 +2082,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &770552601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2147,7 +2147,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1, y: -17.034}
+  m_AnchoredPosition: {x: 1, y: -17.034058}
   m_SizeDelta: {x: -152.9694, y: -120.65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &798585224
@@ -2316,7 +2316,7 @@ MonoBehaviour:
   priority: 1
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: db8b502101ae6ac44914ff5773a68a7c, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 08df31e7da9110347967a3b5d0f217c2, type: 2}
 --- !u!4 &890569309
 Transform:
   m_ObjectHideFlags: 0
@@ -4587,7 +4587,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1545105409}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acce17b6135b2a94bbb5e8b2ece826e0, type: 3}
+  m_Script: {fileID: 11500000, guid: d82d86af53202cb4ebfaa7355d64b914, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pelletsInfoText: {fileID: 1089246406}
