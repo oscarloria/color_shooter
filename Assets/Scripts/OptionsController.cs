@@ -15,8 +15,15 @@ public class OptionsController : MonoBehaviour
     private const string SHOTGUN_RELOAD_KEY = "Shotgun_ReloadTime";
     private const string SHOTGUN_LEVEL_KEY = "Shotgun_CombinedLevel";
 
-    // --- Métodos Generales y de High Score ---
+    // --- Claves de PlayerPrefs para el Rifle ---
+    private const string RIFLE_FIRERATE_KEY = "Rifle_FireRate";
+    private const string RIFLE_MAG_KEY = "Rifle_Magazine";
+    private const string RIFLE_RELOAD_KEY = "Rifle_ReloadTime";
+    private const string RIFLE_LEVEL_KEY = "Rifle_CombinedLevel";
 
+
+    // --- Métodos Generales y de Reseteo (Pistola, Escopeta, etc.) ---
+    
     public void OnResetHighScoreClicked()
     {
         PlayerPrefs.DeleteKey(HIGH_SCORE_KEY);
@@ -35,30 +42,18 @@ public class OptionsController : MonoBehaviour
         Debug.Log("Lumi-Coins borradas.");
     }
     
-    // --- MÉTODOS DE PISTOLA RESTAURADOS ---
-
     public void OnResetPistolClicked()
     {
         PlayerPrefs.DeleteKey(PISTOL_MAGAZINE_KEY);
         PlayerPrefs.Save();
-        Debug.Log("PistolMagazineSize borrada. El valor se reseteará al por defecto.");
-
-        // Este código es opcional si quieres ver el cambio en una escena de pruebas,
-        // pero la lógica principal es que el valor se resetee la próxima vez que se inicie el juego.
-        PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
-        if (playerShooting != null)
-        {
-            // Aquí deberíamos obtener el valor por defecto del script PlayerShooting
-            // En lugar de hardcodearlo, lo ideal es que PlayerShooting se encargue al iniciar.
-            Debug.Log("La pistola usará su valor de cargador por defecto la próxima vez.");
-        }
+        Debug.Log("PistolMagazineSize borrada.");
     }
 
     public void OnResetPistolReloadClicked()
     {
         PlayerPrefs.DeleteKey(PISTOL_RELOAD_KEY);
         PlayerPrefs.Save();
-        Debug.Log("PistolReloadTime borrada. El valor se reseteará al por defecto.");
+        Debug.Log("PistolReloadTime borrada.");
     }
 
     public void OnResetPistolBothClicked()
@@ -70,8 +65,6 @@ public class OptionsController : MonoBehaviour
         Debug.Log("Todas las mejoras de Pistola reseteadas.");
     }
     
-    // --- MÉTODOS NUEVOS PARA LA ESCOPETA ---
-
     public void OnResetShotgunPelletsClicked()
     {
         PlayerPrefs.DeleteKey(SHOTGUN_PELLETS_KEY);
@@ -101,5 +94,38 @@ public class OptionsController : MonoBehaviour
         PlayerPrefs.DeleteKey(SHOTGUN_LEVEL_KEY);
         PlayerPrefs.Save();
         Debug.Log("TODAS las mejoras de la Escopeta han sido reseteadas.");
+    }
+
+    // --- NUEVOS MÉTODOS PARA EL RIFLE ---
+
+    public void OnResetRifleFireRateClicked()
+    {
+        PlayerPrefs.DeleteKey(RIFLE_FIRERATE_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Cadencia de Tiro del Rifle reseteada.");
+    }
+    
+    public void OnResetRifleMagazineClicked()
+    {
+        PlayerPrefs.DeleteKey(RIFLE_MAG_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Cargador del Rifle reseteada.");
+    }
+
+    public void OnResetRifleReloadClicked()
+    {
+        PlayerPrefs.DeleteKey(RIFLE_RELOAD_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Recarga del Rifle reseteada.");
+    }
+    
+    public void OnResetRifleAllClicked()
+    {
+        PlayerPrefs.DeleteKey(RIFLE_FIRERATE_KEY);
+        PlayerPrefs.DeleteKey(RIFLE_MAG_KEY);
+        PlayerPrefs.DeleteKey(RIFLE_RELOAD_KEY);
+        PlayerPrefs.DeleteKey(RIFLE_LEVEL_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("TODAS las mejoras del Rifle han sido reseteadas.");
     }
 }
