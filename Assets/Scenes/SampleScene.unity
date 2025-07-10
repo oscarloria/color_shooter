@@ -718,11 +718,11 @@ GameObject:
   - component: {fileID: 190124700}
   - component: {fileID: 190124704}
   - component: {fileID: 190124703}
-  - component: {fileID: 190124702}
-  - component: {fileID: 190124705}
   - component: {fileID: 190124706}
   - component: {fileID: 190124707}
   - component: {fileID: 190124708}
+  - component: {fileID: 190124702}
+  - component: {fileID: 190124705}
   - component: {fileID: 190124709}
   m_Layer: 8
   m_Name: Ship
@@ -934,12 +934,12 @@ MonoBehaviour:
   projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
   projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
   projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
-  projectileSpeed: 30
+  projectileSpeed: 36
   fireRate: 0.1
   normalDispersionAngle: 5
   zoomedDispersionAngle: 0
   defaultMagazineSize: 4
-  defaultReloadTime: 6
+  defaultReloadTime: 2
   magazineSize: 0
   isReloading: 0
   reloadTime: 0
@@ -997,21 +997,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f77e891e711f11e46955115882ad2203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+  projectilePrefab: {fileID: 3733679966772330407, guid: 9cae4a0775143f843bf7ecc23eead0f7, type: 3}
   projectileRedPrefab: {fileID: 2203355048753982760, guid: 6d8847c78c329d740afe21d9fc4c9fa6, type: 3}
   projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
   projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
   projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
-  projectileSpeed: 20
+  projectileSpeed: 34
   fireRate: 0.5
-  defaultPelletsPerShot: 5
-  defaultSpreadAngle: 80
-  zoomedSpreadAngle: 50
-  defaultMagazineSize: 8
-  defaultReloadTime: 10
-  pelletsPerShot: 5
-  magazineSize: 8
-  reloadTime: 1
+  defaultPelletsPerShot: 4
+  defaultSpreadAngle: 50
+  zoomedSpreadAngle: 30
+  defaultMagazineSize: 4
+  defaultReloadTime: 3
+  pelletsPerShot: 0
+  magazineSize: 0
+  reloadTime: 0
   isReloading: 0
   currentAmmo: 0
   scaleMultiplier: 1.2
@@ -1021,7 +1021,7 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   shotgunIdleScript: {fileID: 1990132653}
   shotgunAttackScript: {fileID: 1990132650}
-  shotgunAttackAnimationDuration: 0.2
+  shotgunAttackAnimationDuration: 0.3
 --- !u!114 &190124707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1034,20 +1034,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bb242f65975a3c438c655ec4fc4a651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 3733679966772330407, guid: 3fdadec1250ffa3458894dadf6ef6999, type: 3}
+  projectilePrefab: {fileID: 3733679966772330407, guid: 9cae4a0775143f843bf7ecc23eead0f7, type: 3}
   projectileRedPrefab: {fileID: 2203355048753982760, guid: 6d8847c78c329d740afe21d9fc4c9fa6, type: 3}
   projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
   projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
   projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
-  projectileSpeed: 30
+  projectileSpeed: 38
   normalDispersionAngle: 5
   zoomedDispersionAngle: 2
-  defaultFireRate: 0.1
-  defaultMagazineSize: 30
+  defaultFireRate: 0.08
+  defaultMagazineSize: 8
   defaultReloadTime: 2
-  fireRate: 0.1
-  reloadTime: 2
-  magazineSize: 30
+  fireRate: 0
+  reloadTime: 0
+  magazineSize: 0
   currentAmmo: 0
   isReloading: 0
   scaleMultiplier: 1.05
@@ -5269,7 +5269,7 @@ MonoBehaviour:
   pistolReloadInfoText: {fileID: 1583655854}
   upgradeBothButton: {fileID: 2088148593}
   maxPistolMagazine: 28
-  minReloadTime: 0.6
+  minReloadTime: 0.5
 --- !u!114 &1545105412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5287,8 +5287,8 @@ MonoBehaviour:
   reloadInfoText: {fileID: 1389707594}
   upgradeShotgunButton: {fileID: 798585225}
   pelletsPerUpgrade: 1
-  magazinePerUpgrade: 2
-  reloadReductionPerUpgrade: 0.5
+  magazinePerUpgrade: 1
+  reloadReductionPerUpgrade: 0.2
 --- !u!114 &1545105413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5305,8 +5305,8 @@ MonoBehaviour:
   magazineInfoText: {fileID: 1194618854}
   reloadInfoText: {fileID: 2056914263}
   upgradeRifleButton: {fileID: 1109102734}
-  fireRateReductionPerUpgrade: 0.005
-  magazinePerUpgrade: 5
+  fireRateReductionPerUpgrade: 0.004
+  magazinePerUpgrade: 3
   reloadReductionPerUpgrade: 0.1
 --- !u!114 &1545105414
 MonoBehaviour:

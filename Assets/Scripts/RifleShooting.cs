@@ -16,10 +16,12 @@ public class RifleShooting : MonoBehaviour
     public float normalDispersionAngle = 5f;
     public float zoomedDispersionAngle = 2f;
 
+    // --- CAMBIOS DE BALANCEO ---
     [Header("Valores por Defecto (si no hay mejoras)")]
-    [SerializeField] private float defaultFireRate = 0.1f;
-    [SerializeField] private int defaultMagazineSize = 30;
+    [SerializeField] private float defaultFireRate = 0.08f;
+    [SerializeField] private int defaultMagazineSize = 8;
     [SerializeField] private float defaultReloadTime = 2f;
+    // --- FIN DE CAMBIOS ---
 
     // Variables que serán modificadas por las mejoras
     [HideInInspector] public float fireRate;

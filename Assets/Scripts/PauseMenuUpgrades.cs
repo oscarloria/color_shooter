@@ -14,13 +14,15 @@ public class PauseMenuUpgrades : MonoBehaviour
     public Button upgradeBothButton;
 
     [Header("Upgrade Limits")]
-    [Tooltip("Máximo de balas al completar las 12 mejoras (4 + 12*2 = 28).")]
+    [Tooltip("Máximo de balas al completar las 12 mejoras.")]
     public int maxPistolMagazine = 28;
-    [Tooltip("Mínimo de recarga al completar las 12 mejoras (6.0 - 12*0.45 = 0.6).")]
-    public float minReloadTime = 0.6f;
+    // --- CAMBIO: Nuevo valor mínimo de recarga ---
+    [Tooltip("Mínimo de recarga al completar las 12 mejoras.")]
+    public float minReloadTime = 0.5f;
 
-    private const int MAG_INCREMENT = 2;
-    private const float RELOAD_DECREMENT = 0.45f;
+    // --- CAMBIO: Nuevos incrementos para la progresión ---
+    private const int MAG_INCREMENT = 2; // Se mantiene igual
+    private const float RELOAD_DECREMENT = 0.125f; // Ajustado para la nueva progresión
     private const int MAX_IMPROVEMENTS = 12;
 
     private int[] fibCosts = new int[] { 
@@ -39,7 +41,6 @@ public class PauseMenuUpgrades : MonoBehaviour
         UpdatePistolUI();
     }
     
-    // --- AÑADIDO: Para refrescar la UI cada vez que se abre el menú ---
     void OnEnable()
     {
         UpdatePistolUI();
@@ -64,8 +65,9 @@ public class PauseMenuUpgrades : MonoBehaviour
         
         CoinManager.AddCoins(-cost);
         
+        // --- CAMBIO: Valor por defecto de recarga actualizado a 2f ---
         int currentMag = PlayerPrefs.GetInt(PISTOL_MAG_KEY, 4);
-        float currentReload = PlayerPrefs.GetFloat(PISTOL_RELOAD_KEY, 6f);
+        float currentReload = PlayerPrefs.GetFloat(PISTOL_RELOAD_KEY, 2f);
         
         currentMag += MAG_INCREMENT;
         if (currentMag > maxPistolMagazine) currentMag = maxPistolMagazine;
@@ -89,7 +91,6 @@ public class PauseMenuUpgrades : MonoBehaviour
             playerShooting.currentAmmo = currentMag;
             playerShooting.reloadTime = currentReload;
             playerShooting.UpdateAmmoText();
-            Debug.Log($"PlayerShooting => magSize={currentMag}, reloadTime={currentReload}s, total improvements={currentImprovementIndex}.");
         }
         
         UpdatePistolUI();
@@ -97,7 +98,6 @@ public class PauseMenuUpgrades : MonoBehaviour
 
     private void UpdatePistolUI()
     {
-        // Actualizar textos de estadísticas (lógica existente)
         if (pistolMagazineInfoText != null)
         {
             int currentMag = PlayerPrefs.GetInt(PISTOL_MAG_KEY, 4);
@@ -106,24 +106,22 @@ public class PauseMenuUpgrades : MonoBehaviour
 
         if (pistolReloadInfoText != null)
         {
-            float currentReload = PlayerPrefs.GetFloat(PISTOL_RELOAD_KEY, 6f);
+            // --- CAMBIO: Valor por defecto de recarga actualizado a 2f ---
+            float currentReload = PlayerPrefs.GetFloat(PISTOL_RELOAD_KEY, 2f);
             pistolReloadInfoText.text = $"Reload Time: {currentReload:0.00}s";
         }
         
-        // --- LÓGICA AÑADIDA: Actualizar el botón de mejora ---
-        if (upgradeBothButton == null) return; // Salir si el botón no está asignado
+        if (upgradeBothButton == null) return;
 
         int currentLevel = PlayerPrefs.GetInt(PISTOL_BOTH_LEVEL_KEY, 0);
 
         if (currentLevel >= MAX_IMPROVEMENTS)
         {
-            // Si se alcanzó el nivel máximo
             upgradeBothButton.GetComponentInChildren<TextMeshProUGUI>().text = "MAX LEVEL";
             upgradeBothButton.interactable = false;
         }
         else
         {
-            // Si todavía se puede mejorar
             int cost = fibCosts[currentLevel];
             upgradeBothButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Upgrade ({cost} coins)";
             upgradeBothButton.interactable = true;

@@ -10,20 +10,21 @@ public class PauseMenuUpgrades_Rifle : MonoBehaviour
     public TextMeshProUGUI reloadInfoText;
     public Button upgradeRifleButton;
 
+    // --- CAMBIOS DE BALANCEO ---
     [Header("Parámetros de Mejora")]
-    [SerializeField] private float fireRateReductionPerUpgrade = 0.005f;
-    [SerializeField] private int magazinePerUpgrade = 5;
+    [SerializeField] private float fireRateReductionPerUpgrade = 0.004f;
+    [SerializeField] private int magazinePerUpgrade = 3;
     [SerializeField] private float reloadReductionPerUpgrade = 0.1f;
 
-    // Valores Base (de RifleShooting.cs)
-    private const float BASE_FIRERATE = 0.1f;
-    private const int BASE_MAGAZINE = 30;
+    // Nuevos Valores Base
+    private const float BASE_FIRERATE = 0.08f;
+    private const int BASE_MAGAZINE = 8;
     private const float BASE_RELOAD_TIME = 2f;
     
     // Límites
     private const int MAX_LEVEL = 10;
+    // --- FIN DE CAMBIOS ---
     
-    // --- CAMBIO: Declarar las variables sin inicializarlas aquí ---
     private float MIN_FIRERATE;
     private int MAX_MAGAZINE;
     private float MIN_RELOAD_TIME;
@@ -40,7 +41,6 @@ public class PauseMenuUpgrades_Rifle : MonoBehaviour
 
     void Awake()
     {
-        // --- CAMBIO: Calcular los límites aquí ---
         MIN_FIRERATE = BASE_FIRERATE - (MAX_LEVEL * fireRateReductionPerUpgrade);
         MAX_MAGAZINE = BASE_MAGAZINE + (MAX_LEVEL * magazinePerUpgrade);
         MIN_RELOAD_TIME = BASE_RELOAD_TIME - (MAX_LEVEL * reloadReductionPerUpgrade);
@@ -63,28 +63,36 @@ public class PauseMenuUpgrades_Rifle : MonoBehaviour
 
         CoinManager.AddCoins(-cost);
         
-        float currentFireRate = PlayerPrefs.GetFloat(RIFLE_FIRERATE_KEY, BASE_FIRERATE);
-        int currentMagazine = PlayerPrefs.GetInt(RIFLE_MAG_KEY, BASE_MAGAZINE);
-        float currentReload = PlayerPrefs.GetFloat(RIFLE_RELOAD_KEY, BASE_RELOAD_TIME);
+        // Calcular nuevos valores
+        float newFireRate = PlayerPrefs.GetFloat(RIFLE_FIRERATE_KEY, BASE_FIRERATE) - fireRateReductionPerUpgrade;
+        int newMagazine = PlayerPrefs.GetInt(RIFLE_MAG_KEY, BASE_MAGAZINE) + magazinePerUpgrade;
+        float newReload = PlayerPrefs.GetFloat(RIFLE_RELOAD_KEY, BASE_RELOAD_TIME) - reloadReductionPerUpgrade;
 
-        PlayerPrefs.SetFloat(RIFLE_FIRERATE_KEY, currentFireRate - fireRateReductionPerUpgrade);
-        PlayerPrefs.SetInt(RIFLE_MAG_KEY, currentMagazine + magazinePerUpgrade);
-        PlayerPrefs.SetFloat(RIFLE_RELOAD_KEY, currentReload - reloadReductionPerUpgrade);
+        // --- LÓGICA DE LÍMITES AÑADIDA ---
+        if (newFireRate < MIN_FIRERATE) newFireRate = MIN_FIRERATE;
+        if (newMagazine > MAX_MAGAZINE) newMagazine = MAX_MAGAZINE;
+        if (newReload < MIN_RELOAD_TIME) newReload = MIN_RELOAD_TIME;
+
+        // Guardar valores ya limitados
+        PlayerPrefs.SetFloat(RIFLE_FIRERATE_KEY, newFireRate);
+        PlayerPrefs.SetInt(RIFLE_MAG_KEY, newMagazine);
+        PlayerPrefs.SetFloat(RIFLE_RELOAD_KEY, newReload);
         
         PlayerPrefs.SetInt(RIFLE_LEVEL_KEY, currentLevel + 1);
         PlayerPrefs.Save();
 
-        ApplyChangesToWeapon();
+        ApplyChangesToWeapon(newFireRate, newMagazine, newReload);
         UpdateUI();
     }
     
-    private void ApplyChangesToWeapon()
+    // --- MÉTODO REFACTORIZADO ---
+    private void ApplyChangesToWeapon(float fireRate, int mag, float reload)
     {
         if (rifleShooting == null) return;
         
-        rifleShooting.fireRate = PlayerPrefs.GetFloat(RIFLE_FIRERATE_KEY, BASE_FIRERATE);
-        rifleShooting.magazineSize = PlayerPrefs.GetInt(RIFLE_MAG_KEY, BASE_MAGAZINE);
-        rifleShooting.reloadTime = PlayerPrefs.GetFloat(RIFLE_RELOAD_KEY, BASE_RELOAD_TIME);
+        rifleShooting.fireRate = fireRate;
+        rifleShooting.magazineSize = mag;
+        rifleShooting.reloadTime = reload;
         
         rifleShooting.currentAmmo = rifleShooting.magazineSize;
     }

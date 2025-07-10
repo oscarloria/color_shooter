@@ -15,14 +15,16 @@ public class ShotgunShooting : MonoBehaviour
     public float projectileSpeed = 20f;
     public float fireRate = 0.5f;
 
+    // --- CAMBIOS AQUÍ ---
     [Header("Spread Shot - Valores por Defecto")]
-    [SerializeField] private int defaultPelletsPerShot = 5;
+    [SerializeField] private int defaultPelletsPerShot = 4;
     [SerializeField] private float defaultSpreadAngle = 80f;
     public float zoomedSpreadAngle = 50f;
 
     [Header("Munición y Recarga - Valores por Defecto")]
-    [SerializeField] private int defaultMagazineSize = 8;
-    [SerializeField] private float defaultReloadTime = 10f;
+    [SerializeField] private int defaultMagazineSize = 4;
+    [SerializeField] private float defaultReloadTime = 3f;
+    // --- FIN DE LOS CAMBIOS ---
 
     // Variables que serán modificadas por las mejoras
     [HideInInspector] public int pelletsPerShot;
@@ -60,7 +62,6 @@ public class ShotgunShooting : MonoBehaviour
 
     void Start()
     {
-        // Cargar mejoras desde PlayerPrefs o usar valores por defecto
         pelletsPerShot = PlayerPrefs.GetInt(SHOTGUN_PELLETS_KEY, defaultPelletsPerShot);
         magazineSize = PlayerPrefs.GetInt(SHOTGUN_MAG_KEY, defaultMagazineSize);
         reloadTime = PlayerPrefs.GetFloat(SHOTGUN_RELOAD_KEY, defaultReloadTime);
@@ -145,8 +146,6 @@ public class ShotgunShooting : MonoBehaviour
         if (reloadIndicator != null) reloadIndicator.ResetIndicator();
     }
     
-    // --- MÉTODOS AUXILIARES RESTAURADOS ---
-
     IEnumerator FireRateCooldown()
     {
         canShoot = false;
@@ -157,10 +156,7 @@ public class ShotgunShooting : MonoBehaviour
     void UpdateAmmoText()
     {
         if (ammoText == null) return;
-        if (isReloading)
-            ammoText.text = "Escopeta: RELOADING";
-        else
-            ammoText.text = $"Escopeta: {currentAmmo}/{magazineSize}";
+        ammoText.text = isReloading ? "Escopeta: RELOADING" : $"Escopeta: {currentAmmo}/{magazineSize}";
     }
 
     IEnumerator ScaleEffect()
