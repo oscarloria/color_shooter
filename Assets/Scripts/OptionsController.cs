@@ -21,15 +21,13 @@ public class OptionsController : MonoBehaviour
     private const string RIFLE_RELOAD_KEY = "Rifle_ReloadTime";
     private const string RIFLE_LEVEL_KEY = "Rifle_CombinedLevel";
 
-    // --- Claves de PlayerPrefs para el Orbes ---
+    // --- Claves de PlayerPrefs para los Orbes ---
     private const string ORBS_DURABILITY_KEY = "Orbs_Durability";
     private const string ORBS_MAG_KEY = "Orbs_Magazine";
     private const string ORBS_RELOAD_KEY = "Orbs_ReloadTime";
     private const string ORBS_LEVEL_KEY = "Orbs_CombinedLevel";
-
-
-
-    // --- Métodos Generales y de Reseteo (Pistola, Escopeta, etc.) ---
+    
+    // --- Métodos Generales y de Reseteo ---
 
     public void OnResetHighScoreClicked()
     {
@@ -49,6 +47,7 @@ public class OptionsController : MonoBehaviour
         Debug.Log("Lumi-Coins borradas.");
     }
 
+    // --- Reseteo Pistola ---
     public void OnResetPistolClicked()
     {
         PlayerPrefs.DeleteKey(PISTOL_MAGAZINE_KEY);
@@ -72,13 +71,14 @@ public class OptionsController : MonoBehaviour
         Debug.Log("Todas las mejoras de Pistola reseteadas.");
     }
 
+    // --- Reseteo Escopeta ---
     public void OnResetShotgunPelletsClicked()
     {
         PlayerPrefs.DeleteKey(SHOTGUN_PELLETS_KEY);
         PlayerPrefs.Save();
         Debug.Log("Mejora de Perdigones de Escopeta reseteada.");
     }
-
+    
     public void OnResetShotgunMagazineClicked()
     {
         PlayerPrefs.DeleteKey(SHOTGUN_MAG_KEY);
@@ -103,15 +103,14 @@ public class OptionsController : MonoBehaviour
         Debug.Log("TODAS las mejoras de la Escopeta han sido reseteadas.");
     }
 
-    // --- NUEVOS MÉTODOS PARA EL RIFLE ---
-
+    // --- Reseteo Rifle ---
     public void OnResetRifleFireRateClicked()
     {
         PlayerPrefs.DeleteKey(RIFLE_FIRERATE_KEY);
         PlayerPrefs.Save();
         Debug.Log("Mejora de Cadencia de Tiro del Rifle reseteada.");
     }
-
+    
     public void OnResetRifleMagazineClicked()
     {
         PlayerPrefs.DeleteKey(RIFLE_MAG_KEY);
@@ -125,7 +124,7 @@ public class OptionsController : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Mejora de Recarga del Rifle reseteada.");
     }
-
+    
     public void OnResetRifleAllClicked()
     {
         PlayerPrefs.DeleteKey(RIFLE_FIRERATE_KEY);
@@ -136,14 +135,36 @@ public class OptionsController : MonoBehaviour
         Debug.Log("TODAS las mejoras del Rifle han sido reseteadas.");
     }
     
-    public void OnResetOrbsAllClicked()
-{
-    PlayerPrefs.DeleteKey(ORBS_DURABILITY_KEY);
-    PlayerPrefs.DeleteKey(ORBS_MAG_KEY);
-    PlayerPrefs.DeleteKey(ORBS_RELOAD_KEY);
-    PlayerPrefs.DeleteKey(ORBS_LEVEL_KEY);
-    PlayerPrefs.Save();
-    Debug.Log("TODAS las mejoras de los Orbes han sido reseteadas.");
-}
+    // --- MÉTODOS DE RESET PARA ORBES ---
 
+    public void OnResetOrbsDurabilityClicked()
+    {
+        PlayerPrefs.DeleteKey(ORBS_DURABILITY_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Durabilidad de Orbes reseteada.");
+    }
+
+    public void OnResetOrbsMagazineClicked()
+    {
+        PlayerPrefs.DeleteKey(ORBS_MAG_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Cargador de Orbes reseteada.");
+    }
+
+    public void OnResetOrbsReloadClicked()
+    {
+        PlayerPrefs.DeleteKey(ORBS_RELOAD_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("Mejora de Recarga de Orbes reseteada.");
+    }
+
+    public void OnResetOrbsAllClicked()
+    {
+        PlayerPrefs.DeleteKey(ORBS_DURABILITY_KEY);
+        PlayerPrefs.DeleteKey(ORBS_MAG_KEY);
+        PlayerPrefs.DeleteKey(ORBS_RELOAD_KEY);
+        PlayerPrefs.DeleteKey(ORBS_LEVEL_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("TODAS las mejoras de los Orbes han sido reseteadas.");
+    }
 }
