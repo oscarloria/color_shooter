@@ -1074,10 +1074,10 @@ MonoBehaviour:
   orbBluePrefab: {fileID: 891356574096535295, guid: a8861ed611061c44c8662a5aaff2f98b, type: 3}
   orbGreenPrefab: {fileID: 2853280976770763188, guid: fb836b98543cdaa4e9eee39b3afa0106, type: 3}
   orbYellowPrefab: {fileID: 762703272396682664, guid: 56efabb868058bc469b74d6f7959c10f, type: 3}
-  defaultMagazineSize: 4
+  defaultMagazineSize: 2
   defaultReloadTime: 2
-  defaultOrbDurability: 3
-  orbitRadius: 3
+  defaultOrbDurability: 1
+  orbitRadius: 2
   orbitSpeed: 90
   fireRate: 0.2
   ammoText: {fileID: 1922289426}
@@ -1085,8 +1085,8 @@ MonoBehaviour:
   orbsIdleScript: {fileID: 1990132656}
   orbsAttackScript: {fileID: 1990132657}
   orbsAttackAnimationDuration: 0.5
-  magazineSize: 100
-  reloadTime: 2
+  magazineSize: 0
+  reloadTime: 0
   currentAmmo: 0
   isReloading: 0
   currentColor: {r: 1, g: 1, b: 1, a: 1}
@@ -2359,7 +2359,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &770552601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2844,7 +2844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &957692469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2861,10 +2861,10 @@ MonoBehaviour:
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
-  normalCount: 1
-  tankCount: 4
-  shooterCount: 5
-  zzCount: 7
+  normalCount: 0
+  tankCount: 6
+  shooterCount: 0
+  zzCount: 0
   spawnDistance: 30
   spawnInterval: 0.5
   enemySpeed: 2
@@ -7801,7 +7801,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1941573990
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,95 +5,69 @@ using System.Collections.Generic;
 public class TankEnemy : MonoBehaviour
 {
     [Header("Configuración del Enemigo")]
-    public float speed = 1f;        
-    public int maxHealth = 3;       
-    public GameObject explosionPrefab; 
+    public float speed = 1f;
+    public int maxHealth = 3;
+    public GameObject explosionPrefab;
 
     [HideInInspector]
-    public int currentHealth;       
+    public int currentHealth;
 
     [HideInInspector]
     public Color enemyColor = Color.white;
 
     private Transform player;
     private SpriteRenderer bodySpriteRenderer;
-
-    // NUEVO: Para evitar múltiples llamadas a Die()
     private bool isDead = false;
 
     void Start()
     {
         currentHealth = maxHealth;
-
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject != null)
-        {
-            player = playerObject.transform;
-        }
-
+        player = GameObject.FindGameObjectWithTag("Player")?.transform;
         bodySpriteRenderer = GetComponent<SpriteRenderer>();
-        if (bodySpriteRenderer == null)
-        {
-            Debug.LogWarning("TankEnemy: No se encontró SpriteRenderer en el cuerpo principal del tanque.");
-        }
-
         ApplyColor();
     }
 
     void Update()
     {
+        if (player == null) return;
         RotateTowardsPlayer();
         MoveTowardsPlayer();
     }
 
     void OnEnable()
     {
-        if (EnemyManager.Instance != null)
-        {
-            EnemyManager.Instance.RegisterTankEnemy(this);
-        }
+        EnemyManager.Instance?.RegisterTankEnemy(this);
     }
 
     void OnDisable()
     {
-        if (EnemyManager.Instance != null)
-        {
-            EnemyManager.Instance.UnregisterTankEnemy(this);
-        }
+        EnemyManager.Instance?.UnregisterTankEnemy(this);
     }
 
     void MoveTowardsPlayer()
     {
-        if (player != null)
-        {
-            Vector3 direction = (player.position - transform.position).normalized;
-            transform.position += direction * speed * Time.deltaTime;
-        }
+        Vector3 direction = (player.position - transform.position).normalized;
+        transform.position += direction * speed * Time.deltaTime;
     }
 
     void RotateTowardsPlayer()
     {
-        if (player != null)
-        {
-            Vector3 direction = player.position - transform.position;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
-
-            float rotationSpeed = 200f;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
+        Vector3 direction = player.position - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+        float rotationSpeed = 200f;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
     public void TakeDamage()
     {
-        if (isDead) return; // Si ya está muerto, no seguir procesando
+        if (isDead) return;
 
         currentHealth--;
         StartCoroutine(DamageFeedback());
 
         if (currentHealth <= 0)
         {
-            // Marcar isDead antes de llamar a Die() para prevenir repetición
             isDead = true;
             Die();
         }
@@ -101,26 +75,15 @@ public class TankEnemy : MonoBehaviour
 
     void Die()
     {
-        if (ScoreManager.Instance != null)
-        {
-            ScoreManager.Instance.AddScore(100);
-        }
-
-        // Intentar soltar coins
-        EnemyCoinDrop coinDrop = GetComponent<EnemyCoinDrop>();
-        if (coinDrop != null)
-        {
-            coinDrop.TryDropCoins();
-        }
+        ScoreManager.Instance?.AddScore(100);
+        GetComponent<EnemyCoinDrop>()?.TryDropCoins();
 
         if (explosionPrefab != null)
         {
             GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            SpriteRenderer weakPointSprite = transform.Find("WeakPoint").GetComponent<SpriteRenderer>();
-            if (weakPointSprite != null)
+            if (transform.Find("WeakPoint")?.GetComponent<SpriteRenderer>() is SpriteRenderer weakPointSprite)
             {
-                ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
-                if (ps != null)
+                if (explosion.TryGetComponent(out ParticleSystem ps))
                 {
                     var main = ps.main;
                     main.startColor = weakPointSprite.color;
@@ -128,49 +91,34 @@ public class TankEnemy : MonoBehaviour
             }
         }
 
-        if (player != null)
-        {
-            SlowMotion slowMotion = player.GetComponent<SlowMotion>();
-            if (slowMotion != null)
-            {
-                slowMotion.AddSlowMotionCharge();
-            }
-        }
-
-        Destroy(gameObject);
+        player?.GetComponent<SlowMotion>()?.AddSlowMotionCharge();
+        
+        Destroy(gameObject, 0.1f);
     }
 
     IEnumerator DamageFeedback()
     {
         SpriteRenderer bodySR = GetComponent<SpriteRenderer>();
-        SpriteRenderer weakPointSR = transform.Find("WeakPoint").GetComponent<SpriteRenderer>();
-
+        if (bodySR == null) yield break;
+        SpriteRenderer weakPointSR = transform.Find("WeakPoint")?.GetComponent<SpriteRenderer>();
         Color originalBodyColor = bodySR.color;
-        Color originalWeakPointColor = weakPointSR.color;
-
-        Color flashColor = weakPointSR.color;
-
-        bodySR.color = flashColor;
-        weakPointSR.color = flashColor;
-
-        Vector3 originalPosition = transform.position;
-        float shakeDuration = 0.2f;
-        float elapsedTime = 0f;
-        float magnitude = 0.5f;
-
-        while (elapsedTime < shakeDuration)
+        
+        if(weakPointSR != null)
         {
-            float x = Random.Range(-1f, 1f) * magnitude;
-            float y = Random.Range(-1f, 1f) * magnitude;
-            transform.position = originalPosition + new Vector3(x, y, 0f);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            Color originalWeakPointColor = weakPointSR.color;
+            Color flashColor = Color.white;
+            bodySR.color = flashColor;
+            weakPointSR.color = flashColor;
+            yield return new WaitForSeconds(0.05f);
+            bodySR.color = originalBodyColor;
+            weakPointSR.color = originalWeakPointColor;
+        } 
+        else
+        {
+            bodySR.color = Color.white;
+            yield return new WaitForSeconds(0.05f);
+            bodySR.color = originalBodyColor;
         }
-
-        transform.position = originalPosition;
-        bodySR.color = originalBodyColor;
-        weakPointSR.color = originalWeakPointColor;
     }
 
     public void ApplyColor()
@@ -185,13 +133,12 @@ public class TankEnemy : MonoBehaviour
     {
         if (collision.collider.CompareTag("Player"))
         {
-            Debug.Log("El TankEnemy ha tocado al jugador.");
+            // Llama al daño en el jugador
+            collision.collider.GetComponent<PlayerHealth>()?.TakeDamage();
 
-            PlayerHealth playerHealth = collision.collider.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage();
-            }
+            // --- LÍNEA FALTANTE AÑADIDA ---
+            // Llama explícitamente al efecto de vibración de la cámara
+            CameraShake.Instance?.ShakeCamera();
 
             if (!isDead)
             {

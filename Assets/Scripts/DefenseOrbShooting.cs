@@ -12,9 +12,9 @@ public class DefenseOrbShooting : MonoBehaviour
     public GameObject orbYellowPrefab;
 
     [Header("Valores por Defecto")]
-    [SerializeField] private int defaultMagazineSize = 4;
+    [SerializeField] private int defaultMagazineSize = 2;
     [SerializeField] private float defaultReloadTime = 2f;
-    [SerializeField] private int defaultOrbDurability = 3;
+    [SerializeField] private int defaultOrbDurability = 1;
     
     [Header("Configuración General")]
     public float orbitRadius = 2f;
@@ -24,7 +24,7 @@ public class DefenseOrbShooting : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI ammoText;
     public WeaponReloadIndicator reloadIndicator;
-    
+
     [Header("Animaciones")]
     public ShipBodyOrbsIdle8Directions orbsIdleScript;
     public ShipBodyOrbsAttack8Directions orbsAttackScript;
@@ -46,7 +46,7 @@ public class DefenseOrbShooting : MonoBehaviour
 
     void Start()
     {
-        // Cargar mejoras desde PlayerPrefs o usar valores por defecto
+        // Cargar mejoras desde PlayerPrefs o usar los valores por defecto
         magazineSize = PlayerPrefs.GetInt(ORBS_MAG_KEY, defaultMagazineSize);
         reloadTime = PlayerPrefs.GetFloat(ORBS_RELOAD_KEY, defaultReloadTime);
         
@@ -82,6 +82,8 @@ public class DefenseOrbShooting : MonoBehaviour
             newOrb.orbitRadius = orbitRadius;
             newOrb.orbitSpeed = -orbitSpeed;
             newOrb.orbColor = currentColor;
+            
+            // Asigna la durabilidad mejorada (o la por defecto) al orbe recién creado
             newOrb.durability = PlayerPrefs.GetInt(ORBS_DURABILITY_KEY, defaultOrbDurability);
         }
         
