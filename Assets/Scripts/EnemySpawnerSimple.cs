@@ -41,11 +41,16 @@ public class EnemySpawnerSimple : MonoBehaviour
     private IEnumerator SpawnAllEnemies()
     {
         // 1) Spawnear Normal
+        // Si asignaste tu prefab de prueba en el slot 'enemyPrefab',
+        // esta línea ahora instanciará tu prueba.
         for (int i = 0; i < normalCount; i++)
         {
             SpawnEnemyOfType(enemyPrefab);
             yield return new WaitForSeconds(spawnInterval);
         }
+        
+        // ... (el resto del spawn de tank, shooter, zz no cambia) ...
+        
         // 2) Spawnear Tank
         for (int i = 0; i < tankCount; i++)
         {
@@ -78,11 +83,14 @@ public class EnemySpawnerSimple : MonoBehaviour
 
         (Vector2 spawnPos, Color quadrantColor) = GetSpawnData();
         GameObject enemyObj = Instantiate(prefab, spawnPos, Quaternion.identity);
+        
+        // Esta función ahora asignará el color a nuestro nuevo script
         ApplyColorToEnemy(enemyObj, quadrantColor, 1f);
     }
 
     private (Vector2, Color) GetSpawnData()
     {
+        // ... (Este método no cambia en absoluto) ...
         int quadrant = Random.Range(0, 4);
         float angleMin=0f, angleMax=0f;
         Color chosenColor = Color.white;
@@ -114,11 +122,14 @@ public class EnemySpawnerSimple : MonoBehaviour
         return (spawnPos, chosenColor);
     }
 
+
+    // --- MÉTODO MODIFICADO ---
     private void ApplyColorToEnemy(GameObject enemyObject, Color color, float speedModifier)
     {
         if (enemyObject == null) return;
         float finalSpeed = enemySpeed * speedModifier;
 
+        // ... (Lógica para Tank, Shooter, ZZ no cambia) ...
         TankEnemy tank = enemyObject.GetComponent<TankEnemy>();
         if (tank != null)
         {
@@ -144,11 +155,23 @@ public class EnemySpawnerSimple : MonoBehaviour
             return;
         }
 
+        // Lógica para el 'Enemy' original
         Enemy enemyScript = enemyObject.GetComponent<Enemy>();
         if (enemyScript != null)
         {
             enemyScript.enemyColor = color;
             enemyScript.speed = finalSpeed;
         }
+
+        // --- INICIO DE LA MODIFICACIÓN ---
+        // Añadimos la lógica para nuestro nuevo script de prueba
+        NewIsometricEnemy newEnemyScript = enemyObject.GetComponent<NewIsometricEnemy>();
+        if (newEnemyScript != null)
+        {
+            newEnemyScript.enemyColor = color;
+            newEnemyScript.speed = finalSpeed;
+            // (El Start() de NewIsometricEnemy ya aplica el color al SpriteRenderer)
+        }
+        // --- FIN DE LA MODIFICACIÓN ---
     }
 }

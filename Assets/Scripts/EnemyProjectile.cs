@@ -1,134 +1,172 @@
 using UnityEngine;
+using System.Collections;
 
+/// <summary>
+/// Proyectil enemigo con regla de color:
+/// - MATCH (color igual al del proyectil del jugador): se destruyen ambos.
+/// - MISMATCH (color distinto): el proyectil del jugador rebota (ricochet), el enemigo sigue.
+///
+/// Notas:
+/// - Usa OnTriggerEnter2D: asegúrate de que el Collider2D del proyectil enemigo sea IsTrigger.
+/// - El proyectil del jugador debe tener Rigidbody2D y Collider2D con tag "Projectile".
+/// </summary>
+[RequireComponent(typeof(Collider2D))]
 public class EnemyProjectile : MonoBehaviour
 {
     [Header("Configuración de Proyectil Enemigo")]
-    public Color bulletColor = Color.white; // Asignado por ShooterEnemy
-    public float lifeTime = 3f;             // Se destruye tras X segundos
-    [Tooltip("Si quieres un prefab de explosión o efecto de impacto, asignarlo aquí.")]
-    public GameObject impactEffect;        
+    public Color bulletColor = Color.white;   // Asignado por el spawner (p. ej., ShooterEnemy)
+    public float lifeTime = 3f;               // Autodestrucción tras X segundos
+    [Tooltip("Prefab opcional de FX al impactar (se tiñe al color de la bala enemiga).")]
+    public GameObject impactEffect;
 
+    [Header("Ricochet Tuning")]
+    [Tooltip("Velocidad mínima que imponemos al proyectil del jugador después del rebote.")]
+    public float minRicochetSpeed = 6f;
+    [Tooltip("Separación extra tras el rebote para salir del solape.")]
+    public float postRicochetSeparation = 0.10f;
+    [Tooltip("Tiempo que ignoramos la colisión entre esta pareja para evitar rebotes en bucle.")]
+    public float postRicochetIgnoreTime = 0.08f;
+
+    // Internos
     private float timer;
     private SpriteRenderer sr;
-    private Rigidbody2D rb;
+    private Collider2D col; // mi collider (trigger)
+
+    void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        col = GetComponent<Collider2D>();
+    }
 
     void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            sr.color = bulletColor; // Visual
-        }
-
-        rb = GetComponent<Rigidbody2D>();
-
-        timer = lifeTime; // Contador para autodestrucción
+        if (sr != null) sr.color = bulletColor; // tintado visual
+        timer = lifeTime;
     }
 
     void Update()
     {
         timer -= Time.deltaTime;
         if (timer <= 0f)
+            DestroySelf();
+    }
+
+    /// <summary>
+    /// Colisiones (Trigger) con Player o con proyectiles del jugador (tag "Projectile").
+    /// </summary>
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // 1) Impacto con el jugador: daño + FX + destruir este proyectil
+        if (other.CompareTag("Player"))
         {
-            DestroyEnemyProjectile();
+            other.GetComponent<PlayerHealth>()?.TakeDamage();
+            CameraShake.Instance?.ShakeCamera();
+            SpawnImpactFX();
+            DestroySelf();
+            return;
+        }
+
+        // 2) Impacto con proyectil del jugador: regla de color
+        if (other.CompareTag("Projectile"))
+        {
+            Projectile playerBullet = other.GetComponent<Projectile>();
+            if (playerBullet == null) return;
+
+            // Intentamos obtener la normal de contacto estable vía Distance()
+            Vector2 contactNormal = Vector2.zero;
+            if (col != null)
+            {
+                ColliderDistance2D d = Physics2D.Distance(other, col);
+                if (d.isOverlapped) contactNormal = d.normal; // normal desde 'other' hacia 'col'
+            }
+            if (contactNormal.sqrMagnitude < 1e-6f)
+                contactNormal = ((Vector2)other.transform.position - (Vector2)transform.position).normalized;
+
+            HandlePlayerProjectileHit(playerBullet, other.attachedRigidbody, contactNormal);
         }
     }
 
     /// <summary>
-    /// Manejo de colisiones mediante trigger (EnemyProjectile vs Player o vs PlayerProjectile).
-    /// Asegúrate de que el Collider2D de este prefab esté marcado como Is Trigger.
+    /// Aplica la lógica MATCH/MISMATCH con soluciones anti-atasco en mismatch.
     /// </summary>
-    void OnTriggerEnter2D(Collider2D other)
+    private void HandlePlayerProjectileHit(Projectile playerBullet, Rigidbody2D rbPlayer, Vector2 contactNormal)
     {
-        // 1) Si colisiona con el jugador => dañarlo
-        if (other.CompareTag("Player"))
+        if (playerBullet == null) return;
+
+        // —— MATCH: destruir ambos —— //
+        if (playerBullet.projectileColor == bulletColor)
         {
-            // Dañar al jugador
-            PlayerHealth pHealth = other.GetComponent<PlayerHealth>();
-            if (pHealth != null)
-            {
-                pHealth.TakeDamage();
-            }
-
-            // Llamar al shake de la cámara para generar el efecto de sacudida
-            if (CameraShake.Instance != null)
-            {
-                CameraShake.Instance.ShakeCamera();
-            }
-
-            // Crear efecto de impacto con el color del proyectil
-            if (impactEffect != null)
-            {
-                GameObject explosion = Instantiate(impactEffect, transform.position, Quaternion.identity);
-                ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
-                if (ps != null)
-                {
-                    var main = ps.main;
-                    main.startColor = bulletColor;
-                }
-            }
-
-            // Destruir el proyectil enemigo
-            DestroyEnemyProjectile();
+            SpawnImpactFX();
+            Destroy(playerBullet.gameObject);
+            DestroySelf();
+            return;
         }
-        // 2) Si colisiona con un proyectil del jugador
-        else if (other.CompareTag("Projectile"))
+
+        // —— MISMATCH: ricochet del proyectil del jugador; este proyectil enemigo sigue vivo —— //
+        if (rbPlayer != null)
         {
-            // Obtenemos el script del proyectil del jugador (suponiendo que se llama "Projectile")
-            Projectile playerBullet = other.GetComponent<Projectile>();
-            if (playerBullet != null)
+            Collider2D playerCol = playerBullet.GetComponent<Collider2D>();
+            Vector2 n = contactNormal;
+
+            // 1) Resolver solape si lo hay (sacarlo antes de reflejar)
+            if (playerCol != null && col != null)
             {
-                // Si los colores coinciden, destruir ambos proyectiles y ejecutar el efecto de impacto.
-                if (playerBullet.projectileColor == bulletColor)
+                ColliderDistance2D d = Physics2D.Distance(playerCol, col);
+                if (d.isOverlapped)
                 {
-                    if (impactEffect != null)
-                    {
-                        GameObject explosion = Instantiate(impactEffect, transform.position, Quaternion.identity);
-                        ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
-                        if (ps != null)
-                        {
-                            var main = ps.main;
-                            main.startColor = bulletColor;
-                        }
-                    }
-                    Destroy(other.gameObject);
-                    DestroyEnemyProjectile();
-                }
-                else
-                {
-                    // Si los colores no coinciden, en lugar de destruir el proyectil del jugador,
-                    // se le aplica un ricochet (reflejo de velocidad) para que rebote.
-                    Rigidbody2D rbPlayer = other.GetComponent<Rigidbody2D>();
-                    if (rbPlayer != null)
-                    {
-                        Vector2 collisionNormal = (other.transform.position - transform.position).normalized;
-                        Vector2 reflectedVelocity = Vector2.Reflect(rbPlayer.linearVelocity, collisionNormal);
-                        rbPlayer.linearVelocity = reflectedVelocity;
-                    }
-                    
-                    // (Opcional) instanciar efecto de impacto con el color del proyectil
-                    if (impactEffect != null)
-                    {
-                       /* GameObject explosion = Instantiate(impactEffect, transform.position, Quaternion.identity);
-                        ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
-                        if (ps != null)
-                        {
-                            var main = ps.main;
-                            main.startColor = bulletColor;
-                        }*/
-                    }
-                    // En este caso, no se destruye el proyectil enemigo; éste sigue su curso.
+                    n = d.normal; // normal desde playerCol hacia col
+                    float pushOut = (-d.distance) + 0.01f; // salir del solape + epsilon
+                    rbPlayer.position += n * pushOut;
                 }
             }
+
+            if (n.sqrMagnitude < 1e-6f)
+                n = (rbPlayer.position - (Vector2)transform.position).normalized;
+
+            // 2) Reflejo + clamp de velocidad mínima
+            Vector2 inVel  = rbPlayer.linearVelocity;
+            Vector2 outVel = Vector2.Reflect(inVel, n);
+
+            float wantedMin = Mathf.Max(minRicochetSpeed, playerBullet.minSpeed * 1.25f);
+            if (outVel.sqrMagnitude < wantedMin * wantedMin)
+            {
+                outVel = (outVel.sqrMagnitude < 1e-6f) ? n * wantedMin : outVel.normalized * wantedMin;
+            }
+
+            rbPlayer.linearVelocity = outVel;
+
+            // 3) Separación extra para evitar re-contacto en el mismo frame
+            rbPlayer.position += n * postRicochetSeparation;
+
+            // 4) Ignorar esta pareja por unos ms para romper el bucle de rebotes
+            if (playerCol != null && col != null)
+                StartCoroutine(TemporaryIgnoreCollision(playerCol, col, postRicochetIgnoreTime));
         }
-        else
+
+        // (Opcional) puedes instanciar un FX suave aquí si quieres feedback en mismatch
+        // pero el proyectil enemigo NO se destruye.
+    }
+
+    private IEnumerator TemporaryIgnoreCollision(Collider2D a, Collider2D b, float time)
+    {
+        if (a == null || b == null) yield break;
+        Physics2D.IgnoreCollision(a, b, true);
+        yield return new WaitForSeconds(time);
+        if (a != null && b != null)
+            Physics2D.IgnoreCollision(a, b, false);
+    }
+
+    private void SpawnImpactFX()
+    {
+        if (impactEffect == null) return;
+
+        GameObject fx = Instantiate(impactEffect, transform.position, Quaternion.identity);
+        if (fx.TryGetComponent(out ParticleSystem ps))
         {
-            // (Opcional) Aquí puedes agregar comportamiento para otras colisiones (paredes, etc.)
+            var main = ps.main;
+            main.startColor = bulletColor;
         }
     }
 
-    private void DestroyEnemyProjectile()
-    {
-        Destroy(gameObject);
-    }
+    private void DestroySelf() => Destroy(gameObject);
 }

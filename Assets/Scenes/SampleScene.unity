@@ -2504,7 +2504,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &770552601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2647,7 +2647,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1545105412}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseMenuUpgrades_Shotgun, Assembly-CSharp
         m_MethodName: OnUpgradeShotgunClicked
         m_Mode: 1
@@ -3011,8 +3011,8 @@ MonoBehaviour:
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
   normalCount: 0
-  tankCount: 6
-  shooterCount: 0
+  tankCount: 0
+  shooterCount: 3
   zzCount: 0
   spawnDistance: 30
   spawnInterval: 0.5
@@ -3674,7 +3674,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1545105413}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseMenuUpgrades_Rifle, Assembly-CSharp
         m_MethodName: OnUpgradeRifleClicked
         m_Mode: 1
@@ -5524,9 +5524,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1545105410}
   - component: {fileID: 1545105411}
-  - component: {fileID: 1545105412}
-  - component: {fileID: 1545105413}
-  - component: {fileID: 1545105414}
   m_Layer: 5
   m_Name: PauseMenuUpgradesGO
   m_TagString: Untagged
@@ -5570,63 +5567,6 @@ MonoBehaviour:
   upgradeBothButton: {fileID: 2088148593}
   maxPistolMagazine: 28
   minReloadTime: 0.5
---- !u!114 &1545105412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1545105409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d82d86af53202cb4ebfaa7355d64b914, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pelletsInfoText: {fileID: 1089246406}
-  magazineInfoText: {fileID: 1239410623}
-  reloadInfoText: {fileID: 1389707594}
-  upgradeShotgunButton: {fileID: 798585225}
-  pelletsPerUpgrade: 1
-  magazinePerUpgrade: 1
-  reloadReductionPerUpgrade: 0.2
---- !u!114 &1545105413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1545105409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 059b47215faf531458ba1218800ca449, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fireRateInfoText: {fileID: 861872710}
-  magazineInfoText: {fileID: 1194618854}
-  reloadInfoText: {fileID: 2056914263}
-  upgradeRifleButton: {fileID: 1109102734}
-  fireRateReductionPerUpgrade: 0.004
-  magazinePerUpgrade: 3
-  reloadReductionPerUpgrade: 0.1
---- !u!114 &1545105414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1545105409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd53559eb1a81aa4bacad2a3cf4b266f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  durabilityInfoText: {fileID: 1948733406}
-  magazineInfoText: {fileID: 352933746}
-  reloadInfoText: {fileID: 1908469847}
-  upgradeOrbsButton: {fileID: 2023669378}
-  durabilityPerUpgrade: 1
-  magazinePerUpgrade: 1
-  reloadReductionPerUpgrade: 0.2
 --- !u!1 &1545973624
 GameObject:
   m_ObjectHideFlags: 0
@@ -9350,7 +9290,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1545105414}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseMenuUpgrades_Orbs, Assembly-CSharp
         m_MethodName: OnUpgradeOrbsClicked
         m_Mode: 1
