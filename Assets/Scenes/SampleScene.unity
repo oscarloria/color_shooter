@@ -944,21 +944,21 @@ MonoBehaviour:
   projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
   projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
   projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
-  projectileSpeed: 36
   fireRate: 0.1
+  magazineSize: 0
+  currentAmmo: 0
+  reloadTime: 0
+  isReloading: 0
+  scaleMultiplier: 1.1
+  scaleDuration: 0.1
+  ammoText: {fileID: 721255408}
+  reloadIndicator: {fileID: 1111079481}
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
+  projectileSpeed: 36
   normalDispersionAngle: 5
   zoomedDispersionAngle: 0
   defaultMagazineSize: 4
   defaultReloadTime: 2
-  magazineSize: 0
-  isReloading: 0
-  reloadTime: 0
-  currentAmmo: 0
-  scaleMultiplier: 1.1
-  scaleDuration: 0.1
-  currentColor: {r: 1, g: 1, b: 1, a: 1}
-  ammoText: {fileID: 721255408}
-  reloadIndicator: {fileID: 1111079481}
   idleScript: {fileID: 1990132652}
   attackScript: {fileID: 1990132649}
   attackAnimationDuration: 0.4
@@ -1012,26 +1012,26 @@ MonoBehaviour:
   projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
   projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
   projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
-  projectileSpeed: 34
   fireRate: 0.5
-  defaultPelletsPerShot: 4
-  defaultSpreadAngle: 50
-  zoomedSpreadAngle: 30
-  defaultMagazineSize: 4
-  defaultReloadTime: 3
-  pelletsPerShot: 0
   magazineSize: 0
+  currentAmmo: 0
   reloadTime: 0
   isReloading: 0
-  currentAmmo: 0
   scaleMultiplier: 1.2
   scaleDuration: 0.15
   ammoText: {fileID: 1044942143}
   reloadIndicator: {fileID: 1702291359}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
+  projectileSpeed: 34
+  defaultPelletsPerShot: 4
+  defaultSpreadAngle: 50
+  zoomedSpreadAngle: 30
+  defaultMagazineSize: 4
+  defaultReloadTime: 3
   shotgunIdleScript: {fileID: 1990132653}
   shotgunAttackScript: {fileID: 1990132650}
   shotgunAttackAnimationDuration: 0.3
+  pelletsPerShot: 0
 --- !u!114 &190124707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1049,22 +1049,22 @@ MonoBehaviour:
   projectileBluePrefab: {fileID: 5349724598701198967, guid: 76c3c0b1ab3fbac4282b18f14d915e13, type: 3}
   projectileGreenPrefab: {fileID: 4562615889595863770, guid: e2556aa4f689466498d9f4b01fe2f23e, type: 3}
   projectileYellowPrefab: {fileID: 7328332816361167352, guid: 7a0bd19e3a582eb4283d0e4c48daecd9, type: 3}
-  projectileSpeed: 38
-  normalDispersionAngle: 5
-  zoomedDispersionAngle: 2
-  defaultFireRate: 0.08
-  defaultMagazineSize: 8
-  defaultReloadTime: 2
   fireRate: 0
-  reloadTime: 0
   magazineSize: 0
   currentAmmo: 0
+  reloadTime: 0
   isReloading: 0
   scaleMultiplier: 1.05
   scaleDuration: 0.05
   ammoText: {fileID: 29512016}
   reloadIndicator: {fileID: 1756493388}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
+  projectileSpeed: 38
+  normalDispersionAngle: 5
+  zoomedDispersionAngle: 2
+  defaultFireRate: 0.08
+  defaultMagazineSize: 8
+  defaultReloadTime: 2
   rifleIdleScript: {fileID: 1990132654}
   rifleAttackScript: {fileID: 1990132655}
 --- !u!114 &190124708
@@ -1079,27 +1079,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3a0a01ba65a2614fb20bca6a04d296f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defenseOrbPrefab: {fileID: 3733679966772330407, guid: ba8c3209fc5bc444397466ff6b651dc5, type: 3}
-  orbRedPrefab: {fileID: 8761027228820180195, guid: 541a02deaf49c7f43b94699cf596f028, type: 3}
-  orbBluePrefab: {fileID: 891356574096535295, guid: a8861ed611061c44c8662a5aaff2f98b, type: 3}
-  orbGreenPrefab: {fileID: 2853280976770763188, guid: fb836b98543cdaa4e9eee39b3afa0106, type: 3}
-  orbYellowPrefab: {fileID: 762703272396682664, guid: 56efabb868058bc469b74d6f7959c10f, type: 3}
+  projectilePrefab: {fileID: 0}
+  projectileRedPrefab: {fileID: 0}
+  projectileBluePrefab: {fileID: 0}
+  projectileGreenPrefab: {fileID: 0}
+  projectileYellowPrefab: {fileID: 0}
+  fireRate: 0.2
+  magazineSize: 0
+  currentAmmo: 0
+  reloadTime: 0
+  isReloading: 0
+  scaleMultiplier: 1.1
+  scaleDuration: 0.1
+  ammoText: {fileID: 1922289426}
+  reloadIndicator: {fileID: 487839296}
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
+  orbitRadius: 2
+  orbitSpeed: 90
   defaultMagazineSize: 2
   defaultReloadTime: 2
   defaultOrbDurability: 1
-  orbitRadius: 2
-  orbitSpeed: 90
-  fireRate: 0.2
-  ammoText: {fileID: 1922289426}
-  reloadIndicator: {fileID: 487839296}
   orbsIdleScript: {fileID: 1990132656}
   orbsAttackScript: {fileID: 1990132657}
   orbsAttackAnimationDuration: 0.5
-  magazineSize: 0
-  reloadTime: 0
-  currentAmmo: 0
-  isReloading: 0
-  currentColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &190124709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3688,7 +3690,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1545105413}
         m_TargetAssemblyTypeName: PauseMenuUpgrades_Rifle, Assembly-CSharp
         m_MethodName: OnUpgradeRifleClicked
         m_Mode: 1
@@ -9389,7 +9391,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1545105412}
         m_TargetAssemblyTypeName: PauseMenuUpgrades_Orbs, Assembly-CSharp
         m_MethodName: OnUpgradeOrbsClicked
         m_Mode: 1

@@ -1,81 +1,71 @@
 using UnityEngine;
 using System.Collections;
-using TMPro;
 
-public class RifleShooting : MonoBehaviour
+/// <summary>
+/// Rifle: fuego continuo mientras se mantiene presionado el botón del mouse.
+/// </summary>
+public class RifleShooting : WeaponBase
 {
-    [Header("Prefabs y Parámetros de Disparo")]
-    public GameObject projectilePrefab;
-    public GameObject projectileRedPrefab;
-    public GameObject projectileBluePrefab;
-    public GameObject projectileGreenPrefab;
-    public GameObject projectileYellowPrefab;
+    [Header("Rifle — Disparo")]
     public float projectileSpeed = 20f;
-
-    [Header("Dispersión")]
     public float normalDispersionAngle = 5f;
     public float zoomedDispersionAngle = 2f;
 
-    // --- CAMBIOS DE BALANCEO ---
-    [Header("Valores por Defecto (si no hay mejoras)")]
+    [Header("Rifle — Valores por Defecto")]
     [SerializeField] private float defaultFireRate = 0.08f;
     [SerializeField] private int defaultMagazineSize = 8;
     [SerializeField] private float defaultReloadTime = 2f;
-    // --- FIN DE CAMBIOS ---
 
-    // Variables que serán modificadas por las mejoras
-    [HideInInspector] public float fireRate;
-    [HideInInspector] public float reloadTime;
-    [HideInInspector] public int magazineSize;
-    [HideInInspector] public int currentAmmo;
-    [HideInInspector] public bool isReloading = false;
+    [Header("Rifle — Animaciones 8 Direcciones")]
+    public ShipBodyRifleIdle8Directions rifleIdleScript;
+    public ShipBodyRifleAttack8Directions rifleAttackScript;
 
-    // Claves de PlayerPrefs
+    /*───────────────────  CLAVES PLAYERPREFS  ───────────────────*/
+
     private const string RIFLE_FIRERATE_KEY = "Rifle_FireRate";
     private const string RIFLE_MAG_KEY = "Rifle_Magazine";
     private const string RIFLE_RELOAD_KEY = "Rifle_ReloadTime";
 
-    [Header("Efectos y UI")]
-    public float scaleMultiplier = 1.05f;
-    public float scaleDuration = 0.05f;
-    public TextMeshProUGUI ammoText;
-    public WeaponReloadIndicator reloadIndicator;
+    /*───────────────────  ESTADO  ───────────────────*/
 
-    // Variables internas
-    private CameraZoom cameraZoom;
     private bool isFiring = false;
-    private float nextFireTime = 0f;
-    private Coroutine scaleEffectCoroutine;
-    public Color currentColor = Color.white;
-    private KeyCode lastPressedKey = KeyCode.None;
-
-    [Header("Animaciones")]
-    public ShipBodyRifleIdle8Directions rifleIdleScript;
-    public ShipBodyRifleAttack8Directions rifleAttackScript;
     private bool rifleAttackActive = false;
+    private Coroutine scaleEffectCoroutine;
 
-    void Start()
+    protected override string WeaponName => "Rifle";
+
+    /*───────────────────  CICLO DE VIDA  ───────────────────*/
+
+    protected override void LoadUpgrades()
     {
-        // Cargar mejoras desde PlayerPrefs o usar los valores por defecto
         fireRate = PlayerPrefs.GetFloat(RIFLE_FIRERATE_KEY, defaultFireRate);
         magazineSize = PlayerPrefs.GetInt(RIFLE_MAG_KEY, defaultMagazineSize);
         reloadTime = PlayerPrefs.GetFloat(RIFLE_RELOAD_KEY, defaultReloadTime);
-
-        currentAmmo = magazineSize;
-        UpdateAmmoText();
-        cameraZoom = FindObjectOfType<CameraZoom>();
     }
 
     void Update()
     {
         UpdateCurrentColor();
-        if (isFiring)
-        {
-            TryContinuousShoot();
-        }
+        if (isFiring) TryContinuousShoot();
     }
 
-    private void TryContinuousShoot()
+    /*───────────────────  FUEGO CONTINUO  ───────────────────*/
+
+    public void StartFiring()
+    {
+        if (isReloading || currentColor == Color.white || isFiring) return;
+        isFiring = true;
+        SetAttackAnimation(true);
+    }
+
+    public void StopFiring()
+    {
+        if (!isFiring) return;
+        isFiring = false;
+        SetAttackAnimation(false);
+    }
+
+    void TryContinuousShoot()
     {
         if (Time.time >= nextFireTime && !isReloading)
         {
@@ -84,156 +74,90 @@ public class RifleShooting : MonoBehaviour
         }
     }
 
-    private void ShootOneBullet()
+    void ShootOneBullet()
     {
-        if (currentColor == Color.white || currentAmmo <= 0)
+        if (!CanShoot())
         {
             if (currentAmmo <= 0 && !isReloading) StartCoroutine(Reload());
             return;
         }
 
-        currentAmmo--;
-        UpdateAmmoText();
+        float dispersion = (cameraZoom != null && cameraZoom.IsZoomedIn)
+            ? zoomedDispersionAngle : normalDispersionAngle;
+        Quaternion rotation = transform.rotation *
+            Quaternion.Euler(0, 0, Random.Range(-dispersion / 2f, dispersion / 2f));
 
-        float dispersionAngle = (cameraZoom != null && cameraZoom.IsZoomedIn) ? zoomedDispersionAngle : normalDispersionAngle;
-        Quaternion projectileRotation = transform.rotation * Quaternion.Euler(0, 0, Random.Range(-dispersionAngle / 2f, dispersionAngle / 2f));
-
-        GameObject chosenPrefab = null;
-        if (currentColor == Color.red) chosenPrefab = projectileRedPrefab;
-        else if (currentColor == Color.blue) chosenPrefab = projectileBluePrefab;
-        else if (currentColor == Color.green) chosenPrefab = projectileGreenPrefab;
-        else if (currentColor == Color.yellow) chosenPrefab = projectileYellowPrefab;
-        if (chosenPrefab == null) chosenPrefab = projectilePrefab;
-
-        if (chosenPrefab != null)
+        GameObject proj = SpawnProjectile(rotation, projectileSpeed);
+        if (proj != null)
         {
-            GameObject projectile = Instantiate(chosenPrefab, transform.position, projectileRotation);
-            if (projectile.TryGetComponent(out Rigidbody2D rb)) rb.linearVelocity = projectile.transform.up * projectileSpeed;
-            if (projectile.TryGetComponent(out Projectile proj)) proj.projectileColor = currentColor;
+            ConsumeAmmo();
 
+            // Reiniciar scale effect si ya estaba corriendo
             if (scaleEffectCoroutine != null)
             {
                 StopCoroutine(scaleEffectCoroutine);
                 transform.localScale = Vector3.one;
             }
-            scaleEffectCoroutine = StartCoroutine(ScaleEffect());
+            scaleEffectCoroutine = StartCoroutine(ScaleEffectTracked());
 
-            if (CameraShake.Instance != null) CameraShake.Instance.RecoilCamera(-transform.up);
+            CameraShake.Instance?.RecoilCamera(-transform.up);
         }
-
-        if (currentAmmo <= 0 && !isReloading) StartCoroutine(Reload());
     }
 
-    public IEnumerator Reload()
+    /*───────────────────  RECARGA (OVERRIDE)  ───────────────────*/
+
+    /// <summary>El rifle detiene el fuego antes de recargar.</summary>
+    public override IEnumerator Reload()
     {
-        if (isReloading || currentAmmo == magazineSize) yield break;
         StopFiring();
-        isReloading = true;
-        UpdateAmmoText();
-        if (reloadIndicator != null) reloadIndicator.ResetIndicator();
-
-        float reloadTimer = 0f;
-        while (reloadTimer < reloadTime)
-        {
-            reloadTimer += Time.deltaTime;
-            if (reloadIndicator != null) reloadIndicator.UpdateIndicator(reloadTimer / reloadTime);
-            yield return null;
-        }
-
-        currentAmmo = magazineSize;
-        isReloading = false;
-        UpdateAmmoText();
-        if (reloadIndicator != null) reloadIndicator.ResetIndicator();
+        yield return base.Reload();
     }
 
-    public void UpdateAmmoText()
-    {
-        if (ammoText == null) return;
-        ammoText.text = isReloading ? "Rifle: RELOADING" : $"Rifle: {currentAmmo}/{magazineSize}";
-    }
+    /*───────────────────  SCALE EFFECT (TRACKED)  ───────────────────*/
 
-    IEnumerator ScaleEffect()
+    /// <summary>
+    /// Versión del ScaleEffect que limpia la referencia al terminar.
+    /// Necesario porque el rifle dispara tan rápido que puede
+    /// superponerse múltiples scale effects.
+    /// </summary>
+    IEnumerator ScaleEffectTracked()
     {
-        Vector3 originalScale = Vector3.one;
-        Vector3 targetScale = originalScale * scaleMultiplier;
-        float elapsedTime = 0f, halfDuration = scaleDuration / 2f;
-        while (elapsedTime < halfDuration)
+        Vector3 original = Vector3.one;
+        Vector3 target = original * scaleMultiplier;
+        float elapsed = 0f;
+        float half = scaleDuration / 2f;
+
+        while (elapsed < half)
         {
-            transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / halfDuration);
-            elapsedTime += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(original, target, elapsed / half);
+            elapsed += Time.deltaTime;
             yield return null;
         }
-        elapsedTime = 0f;
-        while (elapsedTime < halfDuration)
+        elapsed = 0f;
+        while (elapsed < half)
         {
-            transform.localScale = Vector3.Lerp(targetScale, originalScale, elapsedTime / halfDuration);
-            elapsedTime += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(target, original, elapsed / half);
+            elapsed += Time.deltaTime;
             yield return null;
         }
-        transform.localScale = originalScale;
+        transform.localScale = original;
         scaleEffectCoroutine = null;
     }
 
-    public void UpdateCurrentColor()
-    {
-        if (Input.GetKeyDown(KeyCode.W)) { SetCurrentColor(Color.yellow); lastPressedKey = KeyCode.W; }
-        else if (Input.GetKeyDown(KeyCode.A)) { SetCurrentColor(Color.blue); lastPressedKey = KeyCode.A; }
-        else if (Input.GetKeyDown(KeyCode.S)) { SetCurrentColor(Color.green); lastPressedKey = KeyCode.S; }
-        else if (Input.GetKeyDown(KeyCode.D)) { SetCurrentColor(Color.red); lastPressedKey = KeyCode.D; }
+    /*───────────────────  ANIMACIÓN  ───────────────────*/
 
-        if (lastPressedKey != KeyCode.None && Input.GetKeyUp(lastPressedKey))
-        {
-            SetCurrentColorByKey(GetLastKeyPressed());
-        }
-    }
-    
-    KeyCode GetLastKeyPressed()
+    void SetAttackAnimation(bool active)
     {
-        if (Input.GetKey(KeyCode.D)) return KeyCode.D;
-        if (Input.GetKey(KeyCode.S)) return KeyCode.S;
-        if (Input.GetKey(KeyCode.A)) return KeyCode.A;
-        if (Input.GetKey(KeyCode.W)) return KeyCode.W;
-        return KeyCode.None;
-    }
+        if (active == rifleAttackActive) return;
+        rifleAttackActive = active;
 
-    void SetCurrentColorByKey(KeyCode key)
-    {
-        lastPressedKey = key;
-        switch (key)
+        if (active)
         {
-            case KeyCode.W: SetCurrentColor(Color.yellow); break;
-            case KeyCode.A: SetCurrentColor(Color.blue); break;
-            case KeyCode.S: SetCurrentColor(Color.green); break;
-            case KeyCode.D: SetCurrentColor(Color.red); break;
-            default: SetCurrentColor(Color.white); break;
-        }
-    }
-
-    void SetCurrentColor(Color color)
-    {
-        currentColor = color;
-        if (GetComponent<SpriteRenderer>() is SpriteRenderer sr) sr.color = currentColor;
-    }
-    
-    public void StartFiring()
-    {
-        if (isReloading || currentColor == Color.white || isFiring) return;
-        isFiring = true;
-        if (!rifleAttackActive)
-        {
-            rifleAttackActive = true;
             if (rifleIdleScript != null) rifleIdleScript.enabled = false;
             if (rifleAttackScript != null) rifleAttackScript.enabled = true;
         }
-    }
-    
-    public void StopFiring()
-    {
-        if (!isFiring) return;
-        isFiring = false;
-        if (rifleAttackActive)
+        else
         {
-            rifleAttackActive = false;
             if (rifleAttackScript != null) rifleAttackScript.enabled = false;
             if (rifleIdleScript != null) rifleIdleScript.enabled = true;
         }
