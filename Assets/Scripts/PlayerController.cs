@@ -52,8 +52,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // --- Movimiento y Cambio de Arma (Siempre se ejecutan) ---
-        if (playerMovement != null) playerMovement.RotatePlayer();
+        // --- Cambio de Arma (Siempre se ejecuta) ---
+        // NOTA: RotatePlayer() se removió aquí porque ya se llama en PlayerMovement.Update().
+        // Tenerlo en ambos lugares causaba doble rotación por frame.
         HandleMouseScrollWeaponCycle();
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) { currentWeapon = 1; UpdateWeaponUI(); }

@@ -1,30 +1,21 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
-public class TankEnemy : MonoBehaviour
+/// <summary>
+/// Enemigo tanque: cuerpo blanco resistente (3 HP), solo recibe daño
+/// a través de su punto débil (WeakPoint). Rota suavemente hacia el jugador.
+/// </summary>
+public class TankEnemy : EnemyBase
 {
-    [Header("Configuración del Enemigo")]
-    public float speed = 1f;
-    public int maxHealth = 3;
-    public GameObject explosionPrefab;
+    [Header("Tank — Rotación")]
+    public float rotationSpeed = 200f;
 
-    [HideInInspector]
-    public int currentHealth;
+    /*───────────────────  CICLO DE VIDA  ───────────────────*/
 
-    [HideInInspector]
-    public Color enemyColor = Color.white;
-
-    private Transform player;
-    private SpriteRenderer bodySpriteRenderer;
-    private bool isDead = false;
-
-    void Start()
+    protected override void Start()
     {
-        currentHealth = maxHealth;
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        bodySpriteRenderer = GetComponent<SpriteRenderer>();
-        ApplyColor();
+        // maxHealth ya se puede configurar en el inspector (default 3 en prefab)
+        base.Start();
     }
 
     void Update()
@@ -34,117 +25,87 @@ public class TankEnemy : MonoBehaviour
         MoveTowardsPlayer();
     }
 
-    void OnEnable()
+    /*───────────────────  APARIENCIA  ───────────────────*/
+
+    /// <summary>
+    /// El cuerpo del tanque siempre es blanco.
+    /// El color real se aplica al WeakPoint hijo en WeakPoint.Start().
+    /// </summary>
+    public override void ApplyVisualColor()
     {
-        EnemyManager.Instance?.RegisterTankEnemy(this);
+        if (sr != null) sr.color = Color.white;
     }
 
-    void OnDisable()
+    /*───────────────────  DAÑO  ───────────────────*/
+
+    /// <summary>
+    /// El tanque NO muere por impacto directo de proyectiles en su cuerpo.
+    /// Solo recibe daño a través de WeakPoint.OnTriggerEnter2D → TakeDamage().
+    /// </summary>
+    protected override void HandleProjectileHit(Collision2D collision)
     {
-        EnemyManager.Instance?.UnregisterTankEnemy(this);
+        // No hacer nada: la física del rebote se encarga.
+        // El daño solo entra por el WeakPoint (trigger).
     }
 
-    void MoveTowardsPlayer()
+    protected override void OnDamageTaken()
     {
-        Vector3 direction = (player.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+        StartCoroutine(DamageFeedback());
     }
+
+    /// <summary>
+    /// La explosión del tanque usa el color del WeakPoint, no el del body.
+    /// </summary>
+    protected override void Die()
+    {
+        ScoreManager.Instance?.AddScore(scoreValue);
+        GetComponent<EnemyCoinDrop>()?.TryDropCoins();
+
+        // Usar el color del WeakPoint para la explosión
+        Color explosionColor = enemyColor;
+        SpriteRenderer weakPointSR = transform.Find("WeakPoint")?.GetComponent<SpriteRenderer>();
+        if (weakPointSR != null) explosionColor = weakPointSR.color;
+
+        SpawnExplosion(explosionColor);
+        GiveSlowMotionCharge();
+        Destroy(gameObject, 0.1f);
+    }
+
+    /*───────────────────  MOVIMIENTO  ───────────────────*/
 
     void RotateTowardsPlayer()
     {
         Vector3 direction = player.position - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
-        float rotationSpeed = 200f;
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(
+            transform.rotation, targetRotation, rotationSpeed * Time.deltaTime
+        );
     }
 
-    public void TakeDamage()
-    {
-        if (isDead) return;
-
-        currentHealth--;
-        StartCoroutine(DamageFeedback());
-
-        if (currentHealth <= 0)
-        {
-            isDead = true;
-            Die();
-        }
-    }
-
-    void Die()
-    {
-        ScoreManager.Instance?.AddScore(100);
-        GetComponent<EnemyCoinDrop>()?.TryDropCoins();
-
-        if (explosionPrefab != null)
-        {
-            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            if (transform.Find("WeakPoint")?.GetComponent<SpriteRenderer>() is SpriteRenderer weakPointSprite)
-            {
-                if (explosion.TryGetComponent(out ParticleSystem ps))
-                {
-                    var main = ps.main;
-                    main.startColor = weakPointSprite.color;
-                }
-            }
-        }
-
-        player?.GetComponent<SlowMotion>()?.AddSlowMotionCharge();
-        
-        Destroy(gameObject, 0.1f);
-    }
+    /*───────────────────  FEEDBACK VISUAL  ───────────────────*/
 
     IEnumerator DamageFeedback()
     {
-        SpriteRenderer bodySR = GetComponent<SpriteRenderer>();
-        if (bodySR == null) yield break;
+        if (sr == null) yield break;
+
         SpriteRenderer weakPointSR = transform.Find("WeakPoint")?.GetComponent<SpriteRenderer>();
-        Color originalBodyColor = bodySR.color;
-        
-        if(weakPointSR != null)
+        Color originalBody = sr.color;
+
+        if (weakPointSR != null)
         {
-            Color originalWeakPointColor = weakPointSR.color;
-            Color flashColor = Color.white;
-            bodySR.color = flashColor;
-            weakPointSR.color = flashColor;
+            Color originalWeak = weakPointSR.color;
+            sr.color = Color.white;
+            weakPointSR.color = Color.white;
             yield return new WaitForSeconds(0.05f);
-            bodySR.color = originalBodyColor;
-            weakPointSR.color = originalWeakPointColor;
-        } 
+            sr.color = originalBody;
+            weakPointSR.color = originalWeak;
+        }
         else
         {
-            bodySR.color = Color.white;
+            sr.color = Color.white;
             yield return new WaitForSeconds(0.05f);
-            bodySR.color = originalBodyColor;
-        }
-    }
-
-    public void ApplyColor()
-    {
-        if (bodySpriteRenderer != null)
-        {
-            bodySpriteRenderer.color = Color.white;
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-        {
-            // Llama al daño en el jugador
-            collision.collider.GetComponent<PlayerHealth>()?.TakeDamage();
-
-            // --- LÍNEA FALTANTE AÑADIDA ---
-            // Llama explícitamente al efecto de vibración de la cámara
-            CameraShake.Instance?.ShakeCamera();
-
-            if (!isDead)
-            {
-                isDead = true;
-                Die();
-            }
+            sr.color = originalBody;
         }
     }
 }

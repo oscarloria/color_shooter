@@ -135,7 +135,7 @@ public class EnemySpawnerSimple : MonoBehaviour
         {
             tank.enemyColor = color;
             tank.speed = finalSpeed;
-            tank.ApplyColor();
+            tank.ApplyVisualColor();
             return;
         }
 

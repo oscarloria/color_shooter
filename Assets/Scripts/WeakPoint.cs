@@ -1,34 +1,38 @@
 using UnityEngine;
 
+/// <summary>
+/// Punto débil de un enemigo (hijo con trigger collider).
+/// Recibe proyectiles del jugador y aplica daño al EnemyBase padre
+/// si el color del proyectil coincide con el del punto débil.
+/// Actualmente usado por TankEnemy.
+/// </summary>
 public class WeakPoint : MonoBehaviour
 {
-    private TankEnemy tankEnemy;
-    private SpriteRenderer spriteRenderer;
+    EnemyBase parentEnemy;
+    SpriteRenderer spriteRenderer;
 
     void Start()
     {
-        tankEnemy = GetComponentInParent<TankEnemy>();
+        parentEnemy = GetComponentInParent<EnemyBase>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Asignar color
-        spriteRenderer.color = tankEnemy.enemyColor;
-        
-        // --- LÍNEA AÑADIDA ---
-        // Asegura que el punto débil se dibuje encima del cuerpo del tanque.
-        // Asume que el cuerpo está en el order 0.
-        spriteRenderer.sortingOrder = 1;
+        if (parentEnemy != null && spriteRenderer != null)
+        {
+            spriteRenderer.color = parentEnemy.enemyColor;
+            spriteRenderer.sortingOrder = 1;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Projectile"))
+        if (!other.CompareTag("Projectile")) return;
+
+        Projectile projectile = other.GetComponent<Projectile>();
+        if (projectile != null && spriteRenderer != null &&
+            projectile.projectileColor == spriteRenderer.color)
         {
-            Projectile projectile = other.GetComponent<Projectile>();
-            if (projectile != null && projectile.projectileColor == spriteRenderer.color)
-            {
-                tankEnemy.TakeDamage();
-                Destroy(other.gameObject);
-            }
+            parentEnemy?.TakeDamage(1);
+            Destroy(other.gameObject);
         }
     }
 }

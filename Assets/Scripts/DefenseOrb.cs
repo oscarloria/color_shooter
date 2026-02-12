@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// Orbe que gira alrededor del jugador y destruye
@@ -10,51 +9,41 @@ public class DefenseOrb : MonoBehaviour
 {
     /*──────────── Ajustes públicos ────────────*/
     [Header("Lógica de color y durabilidad")]
-    public Color orbColor   = Color.white;   // color “lógico”
-    public int   durability = 3;             // golpes que soporta
+    public Color orbColor = Color.white;
+    public int durability = 3;
 
     [Header("Movimiento orbital (set desde DefenseOrbShooting)")]
-    [HideInInspector] public float currentAngle = 0f;   // grados
-    [HideInInspector] public float orbitRadius  = 2f;
-    [HideInInspector] public float orbitSpeed   = 90f;  // °/seg
+    [HideInInspector] public float currentAngle = 0f;
+    [HideInInspector] public float orbitRadius = 2f;
+    [HideInInspector] public float orbitSpeed = 90f;
 
     [Header("Visual")]
-    [Tooltip("Actívalo solo si tu sprite base es blanco y quieres teñirlo por código.")]
+    [Tooltip("Actívalo si tu sprite base es blanco y quieres teñirlo por código.")]
     public bool tintSprite = false;
 
     /*──────────── Propiedad pública ────────────*/
-    /// <summary>Referencia al jugador (para otros scripts).</summary>
     public Transform Player => player;
 
-    /*──────────── privados ────────────*/
-    Transform      player;
+    /*──────────── Privados ────────────*/
+    Transform player;
     SpriteRenderer sr;
 
-    /*──────────── Métodos Unity ────────────*/
+    /*──────────── Unity ────────────*/
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
+        if (tintSprite && sr != null) sr.color = orbColor;
 
-        // Tintar solo si el arte es blanco y lo deseas
-        if (tintSprite && sr != null)
-            sr.color = orbColor;
-
-        // cachear jugador
         GameObject obj = GameObject.FindGameObjectWithTag("Player");
-        if (obj != null)
-            player = obj.transform;
+        if (obj != null) player = obj.transform;
     }
 
     void Update()
     {
-        // Avanzar ángulo y orbitar
         currentAngle += orbitSpeed * Time.deltaTime;
-
         float rad = currentAngle * Mathf.Deg2Rad;
         Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f) * orbitRadius;
-
-        if (player != null)
-            transform.position = player.position + offset;
+        if (player != null) transform.position = player.position + offset;
     }
 
     /*──────────── Colisiones ────────────*/
@@ -69,32 +58,15 @@ public class DefenseOrb : MonoBehaviour
             didDamage = true;
         }
 
-        // 2) TankEnemy
-        if (!didDamage && other.GetComponentInParent<TankEnemy>() is TankEnemy tank && tank.enemyColor == orbColor)
+        // 2) Cualquier tipo de enemigo → usa EnemyBase
+        if (!didDamage)
         {
-            tank.SendMessage("TakeDamage", 1, SendMessageOptions.DontRequireReceiver);
-            didDamage = true;
-        }
-
-        // 3) ShooterEnemy
-        if (!didDamage && other.GetComponentInParent<ShooterEnemy>() is ShooterEnemy shooter && shooter.enemyColor == orbColor)
-        {
-            shooter.SendMessage("DestroyShooterEnemy", SendMessageOptions.DontRequireReceiver);
-            didDamage = true;
-        }
-
-        // 4) EnemyZZ
-        if (!didDamage && other.GetComponentInParent<EnemyZZ>() is EnemyZZ zz && zz.enemyColor == orbColor)
-        {
-            zz.SendMessage("DestroyEnemy", SendMessageOptions.DontRequireReceiver);
-            didDamage = true;
-        }
-
-        // 5) Enemy base
-        if (!didDamage && other.GetComponentInParent<Enemy>() is Enemy baseEnemy && baseEnemy.enemyColor == orbColor)
-        {
-            baseEnemy.SendMessage("DestroyEnemy", SendMessageOptions.DontRequireReceiver);
-            didDamage = true;
+            EnemyBase enemy = other.GetComponentInParent<EnemyBase>();
+            if (enemy != null && enemy.enemyColor == orbColor)
+            {
+                enemy.TakeDamage(1);
+                didDamage = true;
+            }
         }
 
         if (didDamage)
@@ -105,7 +77,6 @@ public class DefenseOrb : MonoBehaviour
     void DecreaseDurability()
     {
         durability--;
-        if (durability <= 0)
-            Destroy(gameObject);
+        if (durability <= 0) Destroy(gameObject);
     }
 }
