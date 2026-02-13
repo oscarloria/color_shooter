@@ -2516,7 +2516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &770552601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3023,10 +3023,12 @@ MonoBehaviour:
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
+  cometEnemyPrefab: {fileID: 0}
   normalCount: 0
   tankCount: 0
   shooterCount: 3
   zzCount: 0
+  cometCount: 2
   spawnDistance: 30
   spawnInterval: 0.5
   enemySpeed: 2
@@ -8441,9 +8443,11 @@ MonoBehaviour:
   tankEnemyPrefab: {fileID: 6032822784827993704, guid: 5ddd03b93cc60854f8e35a6cc92070f5, type: 3}
   shooterEnemyPrefab: {fileID: 8251635640791360112, guid: 9c31f2b64c52b17418681d178a4813a9, type: 3}
   enemyZZPrefab: {fileID: 8251635640791360112, guid: a9d81efb26bd1cf43b0689c1354825c6, type: 3}
-  tankEnemySpawnChance: 1
-  shooterSpawnChance: 1
-  enemyZZSpawnChance: 1
+  cometEnemyPrefab: {fileID: 7365232514903220046, guid: 772aeb47de9ca7940a7a47c3c27e65b0, type: 3}
+  tankEnemySpawnChance: 0
+  shooterSpawnChance: 0
+  enemyZZSpawnChance: 0
+  cometSpawnChance: 1
   spawnDistance: 20
   enemyColors: []
   initialEnemiesPerWave: 1

@@ -16,6 +16,8 @@ public class EnemySpawner : MonoBehaviour
     public GameObject shooterEnemyPrefab;
     [Tooltip("Prefab del EnemyZZ.")]
     public GameObject enemyZZPrefab;
+    [Tooltip("Prefab del CometEnemy.")]
+    public GameObject cometEnemyPrefab;
 
     [Header("Probabilidades de spawn")]
     public float tankEnemySpawnChance = 0.2f;
@@ -23,6 +25,8 @@ public class EnemySpawner : MonoBehaviour
     public float shooterSpawnChance = 0.1f;
     [Tooltip("Probabilidad de generar un EnemyZZ (0..1).")]
     public float enemyZZSpawnChance = 0.1f;
+    [Tooltip("Probabilidad de generar un CometEnemy (0..1).")]
+    public float cometSpawnChance = 0.08f;
 
     [Header("Spawn")]
     public float spawnDistance = 10f;
@@ -232,7 +236,7 @@ public class EnemySpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Spawn de tipo específico: 0=normal, 1=tank, 2=shooter, 3=zigzag.
+    /// Spawn de tipo específico: 0=normal, 1=tank, 2=shooter, 3=zigzag, 4=comet.
     /// </summary>
     public void SpawnSpecificEnemy(int enemyType, float speedModifier)
     {
@@ -244,6 +248,7 @@ public class EnemySpawner : MonoBehaviour
             1 => tankEnemyPrefab,
             2 => shooterEnemyPrefab ?? enemyPrefab,
             3 => enemyZZPrefab ?? enemyPrefab,
+            4 => cometEnemyPrefab ?? enemyPrefab,
             _ => enemyPrefab,
         };
 
@@ -284,6 +289,10 @@ public class EnemySpawner : MonoBehaviour
 
     /*═══════════════════  SELECCIÓN DE PREFAB  ═══════════════════*/
 
+    /// <summary>
+    /// Selecciona prefab por probabilidad acumulativa.
+    /// Orden: Tank → Shooter → ZigZag → Comet → Normal (fallback).
+    /// </summary>
     GameObject SelectEnemyPrefabByProbability(float randomValue)
     {
         float cumulative = tankEnemySpawnChance;
@@ -294,6 +303,9 @@ public class EnemySpawner : MonoBehaviour
 
         cumulative += enemyZZSpawnChance;
         if (randomValue <= cumulative) return enemyZZPrefab ?? enemyPrefab;
+
+        cumulative += cometSpawnChance;
+        if (randomValue <= cumulative) return cometEnemyPrefab ?? enemyPrefab;
 
         return enemyPrefab;
     }
