@@ -1256,6 +1256,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 243345829}
   m_CullTransparentMesh: 1
+--- !u!1 &304427358
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 304427360}
+  - component: {fileID: 304427359}
+  m_Layer: 0
+  m_Name: ZumaBossController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &304427359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304427358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a1e16078d7677c46802f216600d9661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ZumaBossController
+  maxRadius: 12
+  minRadius: 0.8
+  spiralTurns: 4
+  orbSpacing: 2
+  retrocessionAmount: 1
+  entrySpeed: 8
+  phase1OrbCount: 40
+  phase1BaseSpeed: 1
+  phase1SpeedAccel: 0.1
+  phase2OrbCount: 50
+  phase2BaseSpeed: 1.5
+  phase2SpeedAccel: 0.2
+  phase3OrbCount: 70
+  phase3BaseSpeed: 2
+  phase3SpeedAccel: 0.1
+  headHP: 20
+  headColorChangeInterval: 3
+  headStaggerDuration: 0.3
+  orbPrefab: {fileID: 5445812476789584157, guid: 28e7129a64a5674458996c4e48567b7c, type: 3}
+  headPrefab: {fileID: 6834993332520762302, guid: fe4ce98032d2bb34f9458213ebb90bf2, type: 3}
+  explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}
+  pauseBetweenPhases: 3
+  bossScoreValue: 5000
+--- !u!4 &304427360
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304427358}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.01, y: -1.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &352933745
 GameObject:
   m_ObjectHideFlags: 0
@@ -8426,7 +8493,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1941573990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10149,3 +10216,4 @@ SceneRoots:
   - {fileID: 505094177}
   - {fileID: 1327054224}
   - {fileID: 890569309}
+  - {fileID: 304427360}
