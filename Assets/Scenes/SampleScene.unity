@@ -1291,18 +1291,18 @@ MonoBehaviour:
   orbSpacing: 2
   retrocessionAmount: 1
   entrySpeed: 8
-  phase1OrbCount: 40
+  phase1OrbCount: 50
   phase1BaseSpeed: 1
   phase1SpeedAccel: 0.1
-  phase2OrbCount: 50
+  phase2OrbCount: 60
   phase2BaseSpeed: 1.5
   phase2SpeedAccel: 0.2
   phase3OrbCount: 70
-  phase3BaseSpeed: 2
+  phase3BaseSpeed: 1
   phase3SpeedAccel: 0.1
   headHP: 20
   headColorChangeInterval: 3
-  headStaggerDuration: 0.3
+  headStaggerDuration: 0.5
   orbPrefab: {fileID: 5445812476789584157, guid: 28e7129a64a5674458996c4e48567b7c, type: 3}
   headPrefab: {fileID: 6834993332520762302, guid: fe4ce98032d2bb34f9458213ebb90bf2, type: 3}
   explosionPrefab: {fileID: 8209851172944996634, guid: e6b914f612e18894c8fa28d34522519e, type: 3}

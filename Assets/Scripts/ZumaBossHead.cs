@@ -7,11 +7,10 @@ using UnityEngine.SceneManagement;
 ///
 /// Estados:
 /// - INVULNERABLE: mientras haya orbes en el cuerpo. Color gris/blanco.
-///   Proyectiles del jugador la atraviesan sin efecto.
+///   Proyectiles del jugador rebotan (ricochet).
 /// - VULNERABLE: cuando todos los orbes son destruidos.
 ///   Alterna color cada N segundos (con feedback shake/flash).
-///   Solo recibe daño del color que muestra actualmente.
-///   Stagger breve al recibir daño (pausa la cadena).
+///   Color match = daño. Mismatch = ricochet.
 ///
 /// Si toca al jugador → Game Over inmediato.
 ///
@@ -26,23 +25,26 @@ public class ZumaBossHead : MonoBehaviour
 {
     [Header("Visual")]
     [Tooltip("Color de la cabeza cuando es invulnerable.")]
-    public Color invulnerableColor = new Color(0.7f, 0.7f, 0.7f, 1f); // gris claro
+    public Color invulnerableColor = new Color(0.7f, 0.7f, 0.7f, 1f);
     [Tooltip("Prefab de explosión al morir.")]
     public GameObject explosionPrefab;
 
     [Header("Feedback de Cambio de Color")]
-    [Tooltip("Duración del shake al cambiar de color.")]
     public float colorChangeShakeDuration = 0.2f;
-    [Tooltip("Magnitud del shake al cambiar de color.")]
     public float colorChangeShakeMagnitude = 0.15f;
 
     [Header("Feedback de Daño")]
-    [Tooltip("Duración del flash blanco al recibir daño.")]
     public float damageFlashDuration = 0.1f;
+
+    [Header("Ricochet (mismatch e invulnerable)")]
+    public float minRicochetSpeed = 6f;
+    public float postRicochetSeparation = 0.10f;
+    public float postRicochetIgnoreTime = 0.08f;
 
     // --- Estado interno ---
     private ZumaBossController controller;
     private SpriteRenderer sr;
+    private Collider2D col;
     private int currentHP;
     private int maxHP;
     private bool isVulnerable = false;
@@ -63,13 +65,11 @@ public class ZumaBossHead : MonoBehaviour
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        col = GetComponent<Collider2D>();
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb) rb.bodyType = RigidbodyType2D.Kinematic;
     }
 
-    /// <summary>
-    /// Llamado por ZumaBossController al instanciar la cabeza.
-    /// </summary>
     public void Initialize(ZumaBossController bossController, int hp, Color[] headColors, float colorInterval)
     {
         controller = bossController;
@@ -78,24 +78,18 @@ public class ZumaBossHead : MonoBehaviour
         availableColors = headColors;
         colorChangeInterval = colorInterval;
 
-        // Empezar invulnerable (gris)
         isVulnerable = false;
         if (sr != null) sr.color = invulnerableColor;
     }
 
     /*═══════════════════  VULNERABILIDAD  ═══════════════════*/
 
-    /// <summary>
-    /// Activa o desactiva el estado vulnerable de la cabeza.
-    /// Cuando vulnerable: empieza a alternar colores.
-    /// </summary>
     public void SetVulnerable(bool vulnerable)
     {
         isVulnerable = vulnerable;
 
         if (vulnerable)
         {
-            // Empezar ciclo de colores
             currentColorIndex = 0;
             currentColor = availableColors[0];
             if (sr != null) sr.color = currentColor;
@@ -107,7 +101,6 @@ public class ZumaBossHead : MonoBehaviour
         }
         else
         {
-            // Volver a invulnerable
             if (colorCycleCoroutine != null) StopCoroutine(colorCycleCoroutine);
             if (sr != null) sr.color = invulnerableColor;
         }
@@ -115,9 +108,6 @@ public class ZumaBossHead : MonoBehaviour
 
     /*═══════════════════  CICLO DE COLORES  ═══════════════════*/
 
-    /// <summary>
-    /// Alterna el color de la cabeza cada N segundos con feedback visual.
-    /// </summary>
     IEnumerator ColorCycleLoop()
     {
         while (isVulnerable && !isDead)
@@ -126,11 +116,9 @@ public class ZumaBossHead : MonoBehaviour
 
             if (isDead || !isVulnerable) yield break;
 
-            // Siguiente color
             currentColorIndex = (currentColorIndex + 1) % availableColors.Length;
             currentColor = availableColors[currentColorIndex];
 
-            // Feedback: shake + aplicar nuevo color
             StartCoroutine(ColorChangeShake());
 
             if (sr != null) sr.color = currentColor;
@@ -139,9 +127,6 @@ public class ZumaBossHead : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Shake breve al cambiar de color para alertar al jugador.
-    /// </summary>
     IEnumerator ColorChangeShake()
     {
         float elapsed = 0f;
@@ -158,8 +143,6 @@ public class ZumaBossHead : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
-
-        // El Controller reposicionará en el siguiente frame
     }
 
     /*═══════════════════  COLISIONES  ═══════════════════*/
@@ -181,20 +164,91 @@ public class ZumaBossHead : MonoBehaviour
         // === PROYECTIL DEL JUGADOR ===
         if (other.CompareTag("Projectile"))
         {
-            // Si es invulnerable, el proyectil la atraviesa
-            if (!isVulnerable) return;
-
             Projectile playerBullet = other.GetComponent<Projectile>();
             if (playerBullet == null) return;
 
-            // ¿Color match con el color actual de la cabeza?
+            // Invulnerable: siempre ricochet
+            if (!isVulnerable)
+            {
+                DoRicochet(playerBullet, other);
+                return;
+            }
+
+            // Vulnerable + color match: daño
             if (playerBullet.projectileColor == currentColor)
             {
                 Destroy(other.gameObject);
                 TakeDamage(1);
+                return;
             }
-            // Mismatch: el proyectil la atraviesa
+
+            // Vulnerable + mismatch: ricochet
+            DoRicochet(playerBullet, other);
         }
+    }
+
+    /*═══════════════════  RICOCHET  ═══════════════════*/
+
+    /// <summary>
+    /// Rebota el proyectil del jugador. Misma lógica que EnemyProjectile.
+    /// </summary>
+    void DoRicochet(Projectile playerBullet, Collider2D other)
+    {
+        Rigidbody2D rbPlayer = other.attachedRigidbody;
+        if (rbPlayer == null) return;
+
+        // Calcular normal de contacto
+        Vector2 contactNormal = Vector2.zero;
+        if (col != null)
+        {
+            ColliderDistance2D d = Physics2D.Distance(other, col);
+            if (d.isOverlapped) contactNormal = d.normal;
+        }
+        if (contactNormal.sqrMagnitude < 1e-6f)
+            contactNormal = ((Vector2)other.transform.position - (Vector2)transform.position).normalized;
+
+        Collider2D playerCol = playerBullet.GetComponent<Collider2D>();
+        Vector2 n = contactNormal;
+
+        // Resolver solape
+        if (playerCol != null && col != null)
+        {
+            ColliderDistance2D d = Physics2D.Distance(playerCol, col);
+            if (d.isOverlapped)
+            {
+                n = d.normal;
+                float pushOut = (-d.distance) + 0.01f;
+                rbPlayer.position += n * pushOut;
+            }
+        }
+
+        if (n.sqrMagnitude < 1e-6f)
+            n = (rbPlayer.position - (Vector2)transform.position).normalized;
+
+        // Reflejo + velocidad mínima
+        Vector2 inVel = rbPlayer.linearVelocity;
+        Vector2 outVel = Vector2.Reflect(inVel, n);
+
+        float wantedMin = Mathf.Max(minRicochetSpeed, playerBullet.minSpeed * 1.25f);
+        if (outVel.sqrMagnitude < wantedMin * wantedMin)
+        {
+            outVel = (outVel.sqrMagnitude < 1e-6f) ? n * wantedMin : outVel.normalized * wantedMin;
+        }
+
+        rbPlayer.linearVelocity = outVel;
+        rbPlayer.position += n * postRicochetSeparation;
+
+        if (playerCol != null && col != null)
+            StartCoroutine(TemporaryIgnoreCollision(playerCol, col, postRicochetIgnoreTime));
+    }
+
+    private IEnumerator TemporaryIgnoreCollision(Collider2D a, Collider2D b, float time)
+    {
+        if (a == null || b == null) yield break;
+        Physics2D.IgnoreCollision(a, b, true);
+        yield return new WaitForSeconds(time);
+        if (a != null && b != null)
+            Physics2D.IgnoreCollision(a, b, false);
     }
 
     /*═══════════════════  DAÑO  ═══════════════════*/
@@ -206,28 +260,22 @@ public class ZumaBossHead : MonoBehaviour
         currentHP -= damage;
         Debug.Log($"ZumaBossHead: Daño recibido. HP: {currentHP}/{maxHP}");
 
-        // Feedback visual: flash blanco
         if (!isFeedbackActive)
         {
             StartCoroutine(DamageFlash());
         }
 
-        // Notificar al Controller para stagger
         if (controller != null)
         {
             controller.OnHeadDamaged();
         }
 
-        // ¿Muerta?
         if (currentHP <= 0)
         {
             Die();
         }
     }
 
-    /// <summary>
-    /// Flash blanco breve al recibir daño.
-    /// </summary>
     IEnumerator DamageFlash()
     {
         if (sr == null) yield break;
@@ -255,13 +303,10 @@ public class ZumaBossHead : MonoBehaviour
 
         Debug.Log("ZumaBossHead: ¡Cabeza destruida!");
 
-        // Parar ciclo de colores
         if (colorCycleCoroutine != null) StopCoroutine(colorCycleCoroutine);
 
-        // Explosión
         SpawnExplosion();
 
-        // Notificar al Controller
         if (controller != null)
         {
             controller.OnHeadDefeated();
