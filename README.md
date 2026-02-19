@@ -1,71 +1,148 @@
-# Luminity (Shooter 2D de Colores)
+# Luminity 🎮
+### Shooter 2D de Colores
 
-*Última actualización basada en código del Lunes 14 de Abril, 2025.*
+> Última actualización: Febrero 2026
+
+---
 
 ## Descripción General
 
 Luminity es un juego de disparos 2D con vista cenital (top-down) para PC desarrollado en Unity (usando URP 2D). El juego fusiona la acción intensa de un shooter con mecánicas de puzzle basadas en la correspondencia de colores y elementos de bullet hell/shmup. El jugador pilota una nave capaz de cambiar de color y debe utilizar el color correcto para destruir a los enemigos energéticos que le acechan.
 
-* **Género:** Shooter 2D Top-Down / Puzzle / Shmup
-* **Motor:** Unity (versión no especificada, usando Universal Render Pipeline 2D)
-* **Plataforma:** PC (con potencial para expandirse a otras)
-* **Estado Actual:** Funcionalidad principal implementada, incluyendo ciclo de juego, múltiples armas, enemigos, sistema de puntuación, mejoras persistentes y sistema de animación avanzado para el jugador.
+| | |
+|---|---|
+| **Género** | Shooter 2D Top-Down / Puzzle / Shmup |
+| **Motor** | Unity (Universal Render Pipeline 2D) |
+| **Plataforma** | PC (con potencial para expandirse) |
+| **Estado** | Funcionalidad principal implementada: ciclo de juego, múltiples armas, enemigos variados, sistema de jefes, puntuación, mejoras persistentes y animación avanzada |
 
-## Mecánicas Principales
+---
 
-* **Combate por Colores:** La nave y los enemigos tienen uno de cuatro colores (Amarillo, Azul, Verde, Rojo). Solo los proyectiles del mismo color que un enemigo pueden dañarlo.
-* **Cambio de Color:** El jugador cambia el color activo de la nave (y sus proyectiles/habilidades) usando las teclas `WASD`. El estado neutral (sin tecla presionada) es blanco y no permite disparar armas principales.
-* **Armas:** Incluye Pistola (inicio), Escopeta (spread), Rifle Automático (continuo) y Orbes Defensivos. Cada arma tiene su propio sistema de munición, recarga y script de manejo (`PlayerShooting`, `ShotgunShooting`, etc.).
-* **Sistema de Proyectiles:** Utiliza prefabs específicos para cada color de proyectil (`ProjectileRedPrefab`, `ProjectileBluePrefab`, etc.), instanciados por los scripts de disparo correspondientes. Los proyectiles tienen un script `Projectile.cs` que almacena su color lógico para las colisiones.
-* **Apuntado:** Soporta apuntado manual (la nave rota hacia el cursor del mouse) y apuntado automático (`autoAim` configurable) que rota la nave hacia el enemigo más cercano en pantalla.
-* **Movimiento:** La nave actualmente rota sobre su eje en el centro (o cerca del centro) de la pantalla. El script `PlayerMovement.cs` controla esta rotación.
-* **Animación del Jugador:** Sistema avanzado de sprites en 8 direcciones basado en estados. Utiliza scripts separados (`ShipBody[Weapon][State]8Directions.cs`) para mostrar diferentes animaciones según el arma equipada (Pistola, Escopeta, Rifle, Orbes) y el estado (Idle o Attack). Estos scripts leen la rotación del objeto padre (controlado por `PlayerMovement`) y muestran el sprite direccional correcto sin rotar el objeto hijo que contiene el `SpriteRenderer`. `PlayerController` gestiona la activación de los scripts Idle, y los scripts de disparo activan/desactivan los scripts de Attack correspondientes.
-* **Lumi-Coins y Mejoras:** Los enemigos pueden soltar "Lumi-Coins" (gestionadas por `CoinManager` y guardadas en `PlayerPrefs`). Estas monedas se usan en el menú de pausa (`PauseMenuUpgrades`) para comprar mejoras persistentes para las armas (ej: tamaño del cargador y tiempo de recarga de la pistola, usando `PlayerPrefs`).
-* **Puntuación:** Sistema de puntuación (`ScoreManager`) que registra el puntaje actual y mantiene un High Score persistente usando `PlayerPrefs`.
-* **Salud y Daño:** El jugador tiene vidas (`PlayerHealth`, `LifeUI`). Recibir daño activa un periodo de invulnerabilidad y una explosión que destruye enemigos cercanos. Morir lleva a la pantalla de Game Over.
-* **Enemigos:** Varios tipos (`Enemy`, `EnemyZZ`, `TankEnemy`, `ShooterEnemy`) con diferentes comportamientos (seguir, zigzag, tanque con punto débil, disparo + esquive + kamikaze). Son generados por `EnemySpawner` (complejo, con oleadas, eventos y dificultad incremental) o `EnemySpawnerSimple` (simple, cantidades fijas). Los enemigos también tienen colores y solo son vulnerables al color correspondiente.
-* **Efectos Especiales:** Cámara Lenta (`SlowMotion`), Zoom de Cámara (`CameraZoom`), Vibración/Retroceso de Cámara (`CameraShake`), Indicadores de enemigos fuera de pantalla (`EnemyOffScreenIndicator`), línea de mira (`AimLineController`).
-* **UI:** HUD principal (Score, Ammo, Vidas, Barra SlowMo, Indicadores Recarga), Menú de Pausa (con mejoras), Pantalla Game Over, Menú Principal, Opciones (resetear progreso), Selección de Slot.
+## 🎯 Principios de Diseño
 
-## Estructura del Proyecto (Carpetas Clave en `Assets/`)
+**Posicionamiento = Fairness** — El jugador siempre está centrado con tiempo de reacción equitativo desde todos los bordes. Si el juego mueve al jugador (ej: boss fights), el spawning se adapta para mantener la equidad.
 
-* **`Scripts/`:** Contiene todo el código C# que define la lógica del juego.
-* **`Prefabs/`:** Contiene GameObjects preconfigurados (Enemigos, Proyectiles por color, Orbes, Efectos, Items, Indicadores UI).
-    * **`projectile/`:** Subcarpeta con los prefabs de proyectiles específicos por color. (Nota: contiene subcarpetas y duplicados que podrían requerir organización).
-* **`Scenes/`:** Todas las escenas del juego (MainMenu, SlotSelection, SampleScene (Juego Principal), GameOver, Options, Scoreboard, Credits).
-* **`Material/`:** Materiales usados para renderizar objetos (fondo, partículas, etc.) y materiales de física 2D.
-* **`Sprites/`:** Archivos de imagen usados en el juego (organizados en subcarpetas).
-* **`Settings/`:** Archivos de configuración de Unity, especialmente para URP 2D.
-* **`TextMesh Pro/`:** Recursos estándar del paquete TextMesh Pro para UI avanzada.
+**Color = Ofensivo Solamente** — El color del jugador nunca lo protege. Cualquier proyectil o enemigo que toque al jugador causa daño, sin importar el color seleccionado. La única defensa es disparar y destruir amenazas activamente.
 
-## Cómo Jugar (Controles Básicos)
+**Ricochet como Identidad** — El rebote de proyectiles en mismatch de color es una mecánica central que se mantiene consistente en todos los enemigos y jefes del juego.
 
-* **Apuntar:** Mover el mouse (modo manual) / Automático (si `autoAim` está activo).
-* **Seleccionar Color:** Teclas `W` (Amarillo), `A` (Azul), `S` (Verde), `D` (Rojo). Mantener presionada la tecla del color deseado.
-* **Disparar:** Clic izquierdo del mouse.
-* **Cambiar Arma:** Rueda del mouse o teclas `1` (Pistola), `2` (Escopeta), `3` (Rifle), `4` (Orbes).
-* **Recargar:** Tecla `R`.
-* **Zoom:** Clic derecho del mouse (toggle).
-* **Cámara Lenta:** Barra espaciadora (consume carga).
-* **Pausa:** Tecla `ESC`.
+---
 
-## Setup
+## 🕹️ Mecánicas Principales
 
-1.  Clonar o descargar el repositorio.
-2.  Abrir el proyecto usando Unity Hub (se recomienda una versión de Unity compatible con URP 2D, ej: 2021.3 LTS o posterior - verificar `ProjectVersion.txt`).
-3.  Abrir la escena `MainMenuScene` desde `Assets/Scenes/`.
-4.  Presionar Play.
+**Combate por Colores** — La nave y los enemigos tienen uno de cuatro colores (Amarillo, Azul, Verde, Rojo). Solo los proyectiles del mismo color pueden dañar a un enemigo.
 
-## Posibles Mejoras Futuras / Puntos a Revisar
+**Cambio de Color** — El jugador cambia el color activo usando WASD. El estado neutral (sin tecla presionada) es blanco y no permite disparar armas principales.
 
-* Implementar sistema completo de Slots de Guardado.
-* Añadir más tipos de mejoras y armas.
-* Refinar/Expandir tipos de enemigos y jefes.
-* Considerar un modo Campaña/Historia.
-* Revisar la precisión de `AimLineController` (basado en `transform.up` vs. dirección de apuntado real).
-* Reorganizar la carpeta `Assets/Prefabs/projectile/`.
-* Revisar `OptionsController` si la escena de Opciones es independiente (posible error al buscar `PlayerShooting`).
+**Ricochet** — Los proyectiles que impactan un enemigo o proyectil enemigo de color diferente rebotan manteniendo su energía cinética. Solo el color correcto destruye; todo lo demás rebota.
 
-## Créditos
+**Armas** — Pistola (inicio), Escopeta (spread), Rifle Automático (continuo) y Orbes Defensivos. Cada arma tiene munición, recarga y comportamiento propio.
 
-* **Desarrollador:** Oscar Loria
+**Apuntado** — Manual (mouse) o automático (autoAim hacia el enemigo más cercano).
+
+**Animación** — Sistema de sprites en 8 direcciones basado en estados, con animaciones diferentes según arma equipada (Pistola, Escopeta, Rifle, Orbes) y estado (Idle/Attack).
+
+---
+
+## 👾 Enemigos
+
+### Enemigos Normales
+
+| Tipo | Comportamiento | HP |
+|---|---|---|
+| **Enemy** (Normal) | Avanza directamente hacia el jugador | 1 |
+| **TankEnemy** | Resistente, punto débil trasero | Múltiple |
+| **ShooterEnemy** | Dispara proyectiles, esquiva, carga en modo kamikaze | Variable |
+| **EnemyZZ** | Patrón zigzag hacia el jugador | 1 |
+| **CometEnemy** | Fly-by rápido, orbita 360° al jugador dejando 3 proyectiles dormidos que hacen homing lento tras 1.5s | 1 |
+
+Todos los enemigos spawean desde su cuadrante de color (Superior=Amarillo, Derecho=Rojo, Inferior=Verde, Izquierdo=Azul) con indicador off-screen previo a su entrada.
+
+### Jefes (Boss)
+
+**RouletteEnemy** — Jefe orbital con 4 cañones de colores que cambian por fase. 3 fases con velocidad y agresividad creciente.
+
+**Zuma Boss** — Jefe inspirado en Zuma. Una serpiente de orbes de colores recorre un camino en espiral hacia el jugador. Si la cabeza toca al jugador, es Game Over inmediato. 3 fases:
+
+| Fase | Colores | Orbes | Velocidad |
+|---|---|---|---|
+| 1 | Rojo, Azul | 20 | Lenta |
+| 2 | Verde, Amarillo | 30 | Media |
+| 3 | Los 4 colores | 40 | Rápida |
+
+Destruir orbes retrocede la cadena. Al eliminar todos, la cabeza queda vulnerable y alterna colores cada 3 segundos. Ricochet completo en orbes y cabeza.
+
+### Arquitectura
+
+Todos los enemigos normales extienden `EnemyBase`, que centraliza: color, velocidad, vida, muerte, registro en `EnemyManager`, colisiones, explosión y carga de SlowMotion. Nuevos enemigos se agregan con código mínimo.
+
+---
+
+## ⚙️ Sistemas de Soporte
+
+**Lumi-Coins y Mejoras** — Los enemigos sueltan monedas usadas en el menú de pausa para comprar mejoras persistentes de armas.
+
+**Puntuación** — Sistema de score con High Score persistente vía `PlayerPrefs`.
+
+**Salud y Daño** — Vidas con invulnerabilidad temporal y explosión AoE al recibir daño.
+
+**EnemySpawner** — Oleadas con dificultad incremental y eventos especiales (RapidWave, EliteWave, SingleColorWave, FormationWave).
+
+**Efectos** — Cámara Lenta, Zoom, Vibración de Cámara, Indicadores off-screen, Línea de mira.
+
+**UI** — HUD, Menú de Pausa con mejoras, Game Over, Menú Principal, Opciones, Selección de Slot.
+
+---
+
+## 📁 Estructura del Proyecto
+```
+Assets/
+├── Scripts/          # Código C# — toda la lógica del juego
+├── Prefabs/          # Enemigos, Proyectiles, Orbes, Efectos, Boss
+├── Scenes/           # MainMenu, SlotSelection, SampleScene, GameOver, Options, Scoreboard, Credits
+├── Material/         # Materiales de renderizado y física 2D
+├── Sprites/          # Imágenes organizadas en subcarpetas
+├── Settings/         # Configuración URP 2D
+└── TextMesh Pro/     # Recursos TMP
+```
+
+---
+
+## 🎮 Controles
+
+| Acción | Control |
+|---|---|
+| Apuntar | Mouse (manual) / Automático |
+| Seleccionar Color | `W` Amarillo · `A` Azul · `S` Verde · `D` Rojo |
+| Disparar | Clic izquierdo |
+| Cambiar Arma | Rueda del mouse o `1` `2` `3` `4` |
+| Recargar | `R` |
+| Zoom | Clic derecho (toggle) |
+| Cámara Lenta | `Espacio` (consume carga) |
+| Pausa | `ESC` |
+
+---
+
+## 🚀 Setup
+
+1. Clonar o descargar el repositorio
+2. Abrir el proyecto con Unity Hub (versión compatible con URP 2D)
+3. Abrir la escena `MainMenuScene` desde `Assets/Scenes/`
+4. Presionar Play
+
+---
+
+## 🔮 Mejoras Futuras
+
+- Sistema completo de Slots de Guardado
+- Más tipos de mejoras y armas
+- Bosses adicionales (Hydra, Eclipse, Nexus en consideración)
+- Modo Campaña/Historia
+- Pixel art final para sprites
+- Mecánica de mover al jugador fuera del centro en boss fights especiales
+
+---
+
+## 👤 Créditos
+
+**Desarrollador:** Oscar Loria
