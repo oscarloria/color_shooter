@@ -2,31 +2,12 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Cabeza del Zuma Boss (sprite triangular).
-///
-/// Estados:
-/// - INVULNERABLE: mientras haya orbes en el cuerpo. Color gris/blanco.
-///   Proyectiles del jugador rebotan (ricochet).
-/// - VULNERABLE: cuando todos los orbes son destruidos.
-///   Alterna color cada N segundos (con feedback shake/flash).
-///   Color match = daño. Mismatch = ricochet.
-///
-/// Si toca al jugador → Game Over inmediato.
-///
-/// Requiere:
-/// - Collider2D (IsTrigger = true)
-/// - Rigidbody2D (Kinematic)
-/// - SpriteRenderer
-/// - Tag: "Enemy", Layer: "Enemy"
-/// </summary>
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class ZumaBossHead : MonoBehaviour
 {
     [Header("Visual")]
-    [Tooltip("Color de la cabeza cuando es invulnerable.")]
+    public Color introColor = Color.white;
     public Color invulnerableColor = new Color(0.7f, 0.7f, 0.7f, 1f);
-    [Tooltip("Prefab de explosión al morir.")]
     public GameObject explosionPrefab;
 
     [Header("Feedback de Cambio de Color")]
@@ -36,7 +17,7 @@ public class ZumaBossHead : MonoBehaviour
     [Header("Feedback de Daño")]
     public float damageFlashDuration = 0.1f;
 
-    [Header("Ricochet (mismatch e invulnerable)")]
+    [Header("Ricochet")]
     public float minRicochetSpeed = 6f;
     public float postRicochetSeparation = 0.10f;
     public float postRicochetIgnoreTime = 0.08f;
@@ -49,6 +30,7 @@ public class ZumaBossHead : MonoBehaviour
     private int maxHP;
     private bool isVulnerable = false;
     private bool isDead = false;
+    private bool isInIntro = true;
 
     // Color alternation
     private Color[] availableColors;
@@ -78,7 +60,19 @@ public class ZumaBossHead : MonoBehaviour
         availableColors = headColors;
         colorChangeInterval = colorInterval;
 
+        // Empieza blanco durante la intro
+        isInIntro = true;
         isVulnerable = false;
+        if (sr != null) sr.color = introColor;
+    }
+
+    /// <summary>
+    /// Llamado por el Controller al final de la onda de color.
+    /// Transiciona de blanco (intro) a gris (invulnerable normal).
+    /// </summary>
+    public void OnIntroComplete()
+    {
+        isInIntro = false;
         if (sr != null) sr.color = invulnerableColor;
     }
 
@@ -167,8 +161,8 @@ public class ZumaBossHead : MonoBehaviour
             Projectile playerBullet = other.GetComponent<Projectile>();
             if (playerBullet == null) return;
 
-            // Invulnerable: siempre ricochet
-            if (!isVulnerable)
+            // Intro o invulnerable: siempre ricochet
+            if (isInIntro || !isVulnerable)
             {
                 DoRicochet(playerBullet, other);
                 return;
@@ -189,15 +183,11 @@ public class ZumaBossHead : MonoBehaviour
 
     /*═══════════════════  RICOCHET  ═══════════════════*/
 
-    /// <summary>
-    /// Rebota el proyectil del jugador. Misma lógica que EnemyProjectile.
-    /// </summary>
     void DoRicochet(Projectile playerBullet, Collider2D other)
     {
         Rigidbody2D rbPlayer = other.attachedRigidbody;
         if (rbPlayer == null) return;
 
-        // Calcular normal de contacto
         Vector2 contactNormal = Vector2.zero;
         if (col != null)
         {
@@ -210,7 +200,6 @@ public class ZumaBossHead : MonoBehaviour
         Collider2D playerCol = playerBullet.GetComponent<Collider2D>();
         Vector2 n = contactNormal;
 
-        // Resolver solape
         if (playerCol != null && col != null)
         {
             ColliderDistance2D d = Physics2D.Distance(playerCol, col);
@@ -225,7 +214,6 @@ public class ZumaBossHead : MonoBehaviour
         if (n.sqrMagnitude < 1e-6f)
             n = (rbPlayer.position - (Vector2)transform.position).normalized;
 
-        // Reflejo + velocidad mínima
         Vector2 inVel = rbPlayer.linearVelocity;
         Vector2 outVel = Vector2.Reflect(inVel, n);
 
@@ -281,7 +269,6 @@ public class ZumaBossHead : MonoBehaviour
         if (sr == null) yield break;
         isFeedbackActive = true;
 
-        Color previousColor = sr.color;
         sr.color = Color.white;
 
         yield return new WaitForSeconds(damageFlashDuration);

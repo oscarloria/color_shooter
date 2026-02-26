@@ -1,88 +1,76 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Escudo del Sentinel Boss. Pieza separada con su propio collider.
+/// Todo proyectil que lo toque rebota (ricochet), sin importar color.
+///
+/// Setup:
+/// - Hijo del SentinelBoss
+/// - SpriteRenderer (blanco)
+/// - Collider2D (IsTrigger = true)
+/// - Rigidbody2D (Kinematic)
+/// - Tag: "Enemy", Layer: "Enemy"
+/// </summary>
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
-public class ZumaBossOrb : MonoBehaviour
+public class SentinelShield : MonoBehaviour
 {
-    [Header("Configuración")]
-    public GameObject explosionPrefab;
-
     [Header("Ricochet")]
     public float minRicochetSpeed = 6f;
     public float postRicochetSeparation = 0.10f;
     public float postRicochetIgnoreTime = 0.08f;
 
-    // --- Estado interno ---
-    private Color realColor;
-    private bool isInIntro = true;
-    private ZumaBossController controller;
-    private SpriteRenderer sr;
-    private Collider2D col;
-    private bool isDestroyed = false;
+    [Header("Activation Flash")]
+    public float flashDuration = 0.3f;
 
-    /*═══════════════════  INICIALIZACIÓN  ═══════════════════*/
+    private Collider2D col;
+    private SpriteRenderer sr;
 
     void Awake()
     {
-        sr = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
+        sr = GetComponent<SpriteRenderer>();
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb) rb.bodyType = RigidbodyType2D.Kinematic;
     }
 
     /// <summary>
-    /// Almacena el color real pero muestra blanco (intro).
+    /// Llamado por el Controller durante la intro.
+    /// El escudo ya es blanco, así que hace un pulse cyan/brillante
+    /// para indicar que se "activó".
     /// </summary>
-    public void Initialize(ZumaBossController bossController, Color color)
+    public void FlashActivation()
     {
-        controller = bossController;
-        realColor = color;
-
-        // Empieza blanco durante la intro
-        if (sr != null) sr.color = Color.white;
+        StartCoroutine(DoActivationFlash());
     }
 
-    /// <summary>
-    /// Llamado por el Controller durante la onda de color.
-    /// Revela el color real y permite ser destruido por match.
-    /// </summary>
-    public void Colorize()
+    IEnumerator DoActivationFlash()
     {
-        isInIntro = false;
-        if (sr != null) sr.color = realColor;
-    }
+        if (sr == null) yield break;
 
-    /*═══════════════════  COLISIONES  ═══════════════════*/
+        Color originalColor = sr.color;
+        float elapsed = 0f;
+
+        while (elapsed < flashDuration)
+        {
+            float pulse = Mathf.PingPong(elapsed * 10f, 1f);
+            sr.color = Color.Lerp(originalColor, Color.cyan, pulse * 0.8f);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        sr.color = originalColor;
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (isDestroyed) return;
-
         if (!other.CompareTag("Projectile")) return;
 
         Projectile playerBullet = other.GetComponent<Projectile>();
         if (playerBullet == null) return;
 
-        // Durante intro: siempre ricochet (invulnerable, blanco)
-        if (isInIntro)
-        {
-            DoRicochet(playerBullet, other);
-            return;
-        }
-
-        // Match: destruir
-        if (playerBullet.projectileColor == realColor)
-        {
-            Destroy(other.gameObject);
-            DestroySelf();
-            return;
-        }
-
-        // Mismatch: ricochet
         DoRicochet(playerBullet, other);
     }
-
-    /*═══════════════════  RICOCHET  ═══════════════════*/
 
     void DoRicochet(Projectile playerBullet, Collider2D other)
     {
@@ -138,33 +126,5 @@ public class ZumaBossOrb : MonoBehaviour
         yield return new WaitForSeconds(time);
         if (a != null && b != null)
             Physics2D.IgnoreCollision(a, b, false);
-    }
-
-    /*═══════════════════  DESTRUCCIÓN  ═══════════════════*/
-
-    void DestroySelf()
-    {
-        if (isDestroyed) return;
-        isDestroyed = true;
-
-        if (controller != null)
-        {
-            controller.OnOrbDestroyed(this);
-        }
-
-        SpawnExplosion();
-        Destroy(gameObject);
-    }
-
-    void SpawnExplosion()
-    {
-        if (explosionPrefab == null) return;
-
-        GameObject boom = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-        if (boom.TryGetComponent(out ParticleSystem ps))
-        {
-            var main = ps.main;
-            main.startColor = realColor;
-        }
     }
 }

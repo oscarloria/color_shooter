@@ -2,42 +2,38 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-/// <summary>
-/// Controlador principal del Zuma Boss.
-/// Genera un camino en espiral, spawn la cadena (cabeza + orbes),
-/// avanza la cadena hacia el jugador, maneja retrocesión y fases.
-///
-/// Arquitectura:
-/// - El Controller posiciona todo: cabeza y orbes cada frame
-/// - Los orbes y la cabeza manejan sus propias colisiones y notifican al Controller
-/// - 3 fases de dificultad creciente
-///
-/// Colocar este script en un GameObject vacío en la escena.
-/// </summary>
 public class ZumaBossController : MonoBehaviour
 {
     [Header("═══ Camino Espiral ═══")]
-    [Tooltip("Radio máximo de la espiral (borde exterior).")]
     public float maxRadius = 7f;
-    [Tooltip("Radio mínimo de la espiral (punto más cercano al jugador).")]
     public float minRadius = 0.8f;
-    [Tooltip("Cantidad de vueltas de la espiral.")]
     public int spiralTurns = 3;
 
     [Header("═══ Cadena ═══")]
-    [Tooltip("Distancia entre orbes a lo largo del camino.")]
     public float orbSpacing = 0.7f;
-    [Tooltip("Cuánto retrocede la cabeza al destruir un orbe (en unidades de camino).")]
     public float retrocessionAmount = 0.6f;
 
     [Header("═══ Entrada ═══")]
-    [Tooltip("Velocidad a la que la serpiente entra al escenario (desplegándose).")]
+    [Tooltip("Velocidad a la que la serpiente se desenrolla (blanca).")]
     public float entrySpeed = 8f;
+
+    [Header("═══ Intro (presentación) ═══")]
+    [Tooltip("Pausa después de desenrollarse (quieta, blanca).")]
+    public float introPauseDuration = 1.0f;
+    [Tooltip("Magnitud de la vibración durante la coloración.")]
+    public float introVibrateMagnitude = 0.08f;
+    [Tooltip("Segundos entre cada orbe al colorear (cola → cabeza).")]
+    public float introColorWaveDelay = 0.04f;
+    [Tooltip("Pausa dramática después de colorearse.")]
+    public float introDramaticPause = 0.3f;
+    [Tooltip("Distancia que retrocede en el recoil.")]
+    public float introRecoilDistance = 1.5f;
+    [Tooltip("Duración del recoil hacia atrás.")]
+    public float introRecoilDuration = 0.25f;
 
     [Header("═══ Fase 1 ═══")]
     public int phase1OrbCount = 20;
     public float phase1BaseSpeed = 1.5f;
-    [Tooltip("Multiplicador de velocidad cuando quedan 0 orbes (sobre baseSpeed).")]
     public float phase1SpeedAccel = 0.5f;
 
     [Header("═══ Fase 2 ═══")]
@@ -51,25 +47,17 @@ public class ZumaBossController : MonoBehaviour
     public float phase3SpeedAccel = 0.7f;
 
     [Header("═══ Cabeza ═══")]
-    [Tooltip("HP de la cabeza en cada fase.")]
     public int headHP = 20;
-    [Tooltip("Intervalo de cambio de color de la cabeza (segundos).")]
     public float headColorChangeInterval = 3f;
-    [Tooltip("Duración del stagger al recibir daño la cabeza (segundos).")]
     public float headStaggerDuration = 0.3f;
 
     [Header("═══ Prefabs ═══")]
-    [Tooltip("Prefab del orbe del cuerpo (círculo con ZumaBossOrb).")]
     public GameObject orbPrefab;
-    [Tooltip("Prefab de la cabeza (triángulo con ZumaBossHead).")]
     public GameObject headPrefab;
-    [Tooltip("Prefab de explosión (reutilizar el existente).")]
     public GameObject explosionPrefab;
 
     [Header("═══ Transiciones ═══")]
-    [Tooltip("Pausa en segundos entre fases.")]
     public float pauseBetweenPhases = 3f;
-    [Tooltip("Puntos de score al derrotar al boss completo.")]
     public int bossScoreValue = 5000;
 
     /*═══════════════════  DATOS DEL CAMINO  ═══════════════════*/
@@ -98,6 +86,8 @@ public class ZumaBossController : MonoBehaviour
     private bool chainPaused = false;
     private bool bossDefeated = false;
     private bool isEntering = false;
+    private bool isInIntro = false;
+    private bool isVibrating = false;
     private float fullEntryDistance;
 
     /*═══════════════════  INICIALIZACIÓN  ═══════════════════*/
@@ -125,6 +115,13 @@ public class ZumaBossController : MonoBehaviour
             return;
         }
 
+        // Durante la intro, solo posicionar (con vibración si aplica)
+        if (isInIntro)
+        {
+            PositionEntities();
+            return;
+        }
+
         if (chainPaused) return;
 
         AdvanceChain();
@@ -132,28 +129,100 @@ public class ZumaBossController : MonoBehaviour
         CheckGameOver();
     }
 
-    /*═══════════════════  ENTRADA DE LA SERPIENTE  ═══════════════════*/
+    /*═══════════════════  ENTRADA (desenrollado blanco)  ═══════════════════*/
 
-    /// <summary>
-    /// Durante la entrada, la cabeza avanza rápido y los orbes se despliegan
-    /// progresivamente detrás de ella. Los orbes que aún no caben en el camino
-    /// permanecen ocultos en el punto de entrada.
-    /// </summary>
     void UpdateEntering()
     {
         headDistance += entrySpeed * Time.deltaTime;
 
         PositionEntities();
 
-        // ¿Ya hay suficiente camino para toda la cadena?
         if (headDistance >= fullEntryDistance)
         {
             headDistance = fullEntryDistance;
             isEntering = false;
             PositionEntities();
 
-            Debug.Log("ZumaBoss: Entrada completa. ¡Comienza el combate!");
+            Debug.Log("ZumaBoss: Desenrollado completo. Iniciando presentación...");
         }
+    }
+
+    /*═══════════════════  SECUENCIA DE INTRO  ═══════════════════*/
+
+    /// <summary>
+    /// Secuencia completa de presentación del boss:
+    /// 1. Pausa estática (blanca, quieta)
+    /// 2. Vibración + onda de color (cola → cabeza)
+    /// 3. Micro-pausa dramática
+    /// 4. Recoil (retroceso + arranque)
+    /// </summary>
+    IEnumerator DoIntroSequence()
+    {
+        isInIntro = true;
+
+        // 1. Pausa estática — la serpiente blanca está quieta
+        Debug.Log("ZumaBoss: Intro — Pausa estática...");
+        yield return new WaitForSeconds(introPauseDuration);
+
+        // 2. Vibración + onda de color (cola → cabeza)
+        Debug.Log("ZumaBoss: Intro — Vibración + onda de color...");
+        isVibrating = true;
+
+        // Colorear orbes desde la cola (último) hasta la cabeza (primero)
+        for (int i = activeOrbs.Count - 1; i >= 0; i--)
+        {
+            if (activeOrbs[i] != null)
+            {
+                activeOrbs[i].Colorize();
+            }
+            yield return new WaitForSeconds(introColorWaveDelay);
+        }
+
+        // Colorear la cabeza al final (pasa de blanco a gris invulnerable)
+        if (activeHead != null)
+        {
+            activeHead.OnIntroComplete();
+        }
+
+        isVibrating = false;
+        PositionEntities(); // posición limpia sin vibración
+
+        // 3. Micro-pausa dramática — todo coloreado, quieto, tensión máxima
+        Debug.Log("ZumaBoss: Intro — Pausa dramática...");
+        yield return new WaitForSeconds(introDramaticPause);
+
+        // 4. Recoil — retrocede ligeramente como tomando impulso
+        Debug.Log("ZumaBoss: Intro — Recoil...");
+        yield return StartCoroutine(DoRecoil());
+
+        // 5. ¡Arranca el combate!
+        isInIntro = false;
+        Debug.Log("ZumaBoss: ¡Intro completa! Comienza el combate.");
+    }
+
+    /// <summary>
+    /// La serpiente retrocede ligeramente y luego arranca.
+    /// </summary>
+    IEnumerator DoRecoil()
+    {
+        float startDist = headDistance;
+        float targetDist = Mathf.Max(0f, headDistance - introRecoilDistance);
+
+        // Retroceder
+        float elapsed = 0f;
+        while (elapsed < introRecoilDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / introRecoilDuration;
+            // Ease out — desacelera al final del retroceso
+            t = 1f - (1f - t) * (1f - t);
+            headDistance = Mathf.Lerp(startDist, targetDist, t);
+            PositionEntities();
+            yield return null;
+        }
+
+        headDistance = targetDist;
+        PositionEntities();
     }
 
     /*═══════════════════  GENERACIÓN DEL CAMINO ESPIRAL  ═══════════════════*/
@@ -231,6 +300,13 @@ public class ZumaBossController : MonoBehaviour
 
             Debug.Log($"ZumaBoss: === FASE {phase} INICIADA === Orbes: {phaseOrbTotal}, Vel: {phaseBaseSpeed}");
 
+            // Esperar a que termine el desenrollado
+            yield return new WaitUntil(() => !isEntering);
+
+            // Ejecutar secuencia de intro (presentación)
+            yield return StartCoroutine(DoIntroSequence());
+
+            // Esperar a que la cabeza sea derrotada
             yield return new WaitUntil(() => activeHead == null);
 
             bossActive = false;
@@ -281,12 +357,13 @@ public class ZumaBossController : MonoBehaviour
 
         Vector2 playerPos = player.position;
 
-        // La cabeza empieza en el borde exterior del camino
         headDistance = 0f;
         fullEntryDistance = (phaseOrbTotal + 1) * orbSpacing;
         isEntering = true;
+        isInIntro = false;
+        isVibrating = false;
 
-        // --- Spawn Cabeza ---
+        // --- Spawn Cabeza (blanca durante intro) ---
         Vector2 headWorldPos = GetPositionAtDistance(0f) + playerPos;
         GameObject headObj = Instantiate(headPrefab, headWorldPos, Quaternion.identity, transform);
         activeHead = headObj.GetComponent<ZumaBossHead>();
@@ -296,7 +373,7 @@ public class ZumaBossController : MonoBehaviour
             activeHead.Initialize(this, headHP, phaseHeadColors, headColorChangeInterval);
         }
 
-        // --- Spawn Orbes (todos de una vez, pero se posicionan por PositionEntities) ---
+        // --- Spawn Orbes (blancos durante intro) ---
         for (int i = 0; i < phaseOrbTotal; i++)
         {
             Vector2 orbWorldPos = GetPositionAtDistance(0f) + playerPos;
@@ -314,7 +391,7 @@ public class ZumaBossController : MonoBehaviour
             activeOrbs.Add(orb);
         }
 
-        Debug.Log($"ZumaBoss: Cadena creada. {activeOrbs.Count} orbes. Desplegándose...");
+        Debug.Log($"ZumaBoss: Cadena creada. {activeOrbs.Count} orbes. Desenrollándose...");
     }
 
     void CleanupChain()
@@ -351,6 +428,16 @@ public class ZumaBossController : MonoBehaviour
         if (activeHead != null)
         {
             Vector2 headPos = GetPositionAtDistance(headDistance) + playerPos;
+
+            // Vibración durante intro
+            if (isVibrating)
+            {
+                headPos += new Vector2(
+                    Random.Range(-1f, 1f) * introVibrateMagnitude,
+                    Random.Range(-1f, 1f) * introVibrateMagnitude
+                );
+            }
+
             activeHead.transform.position = headPos;
 
             Vector2 headDir = GetDirectionAtDistance(headDistance);
@@ -367,16 +454,24 @@ public class ZumaBossController : MonoBehaviour
 
             if (orbDist < 0.01f)
             {
-                // Este orbe aún no ha "entrado" al camino — ocultar
                 activeOrbs[i].gameObject.SetActive(false);
             }
             else
             {
-                // Orbe visible y posicionado en el camino
                 if (!activeOrbs[i].gameObject.activeSelf)
                     activeOrbs[i].gameObject.SetActive(true);
 
                 Vector2 orbPos = GetPositionAtDistance(orbDist) + playerPos;
+
+                // Vibración durante intro
+                if (isVibrating)
+                {
+                    orbPos += new Vector2(
+                        Random.Range(-1f, 1f) * introVibrateMagnitude,
+                        Random.Range(-1f, 1f) * introVibrateMagnitude
+                    );
+                }
+
                 activeOrbs[i].transform.position = orbPos;
             }
         }
@@ -468,7 +563,6 @@ public class ZumaBossController : MonoBehaviour
         Debug.Log("ZumaBoss: ═══ ¡BOSS DERROTADO! ═══");
 
         ScoreManager.Instance?.AddScore(bossScoreValue);
-
         SpawnExplosion(transform.position, Color.white);
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -489,8 +583,6 @@ public class ZumaBossController : MonoBehaviour
             main.startColor = color;
         }
     }
-
-    /*═══════════════════  DEBUG: DIBUJAR CAMINO EN EDITOR  ═══════════════════*/
 
 #if UNITY_EDITOR
     void OnDrawGizmosSelected()
