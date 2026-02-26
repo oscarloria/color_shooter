@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Boss del Escenario 1: "Sentinel"
+/// Boss del Escenario 1/2: "Sentinel"
 ///
 /// Un enemigo grande que rota sobre su eje con dos escudos separados (arriba/abajo)
 /// que bloquean todo. Tiene dos caras expuestas:
@@ -12,6 +12,8 @@ using System.Collections;
 /// Intro: Entra blanco → pausa → vibración + coloración + giro 360° → pausa dramática → rotación ramp-up
 ///
 /// 3 fases por HP: rotación acelera, disparos se intensifican.
+///
+/// Puede usarse solo (Escenario 1) o en par via DualSentinelManager (Escenario 2).
 ///
 /// Prefab:
 /// - Body: Collider2D (IsTrigger), recibe daño
@@ -117,6 +119,9 @@ public class SentinelBoss : MonoBehaviour
     private Coroutine damageFlashCoroutine;
     private int burstsSinceCircular = 0;
 
+    // Callback para notificar al manager (DualSentinelManager)
+    private System.Action onDefeated;
+
     // Referencias a hijos para la intro
     private SentinelMouth mouthScript;
     private SentinelShield[] shields;
@@ -163,6 +168,17 @@ public class SentinelBoss : MonoBehaviour
 
         transform.Rotate(0f, 0f, currentRotationSpeed * Time.deltaTime);
         KeepPosition();
+    }
+
+    /*═══════════════════  CALLBACK PARA MANAGER  ═══════════════════*/
+
+    /// <summary>
+    /// Registra un callback que se invoca cuando este Sentinel es derrotado.
+    /// Usado por DualSentinelManager para coordinar el encuentro.
+    /// </summary>
+    public void SetOnDefeated(System.Action callback)
+    {
+        onDefeated = callback;
     }
 
     /*═══════════════════  POSICIONAMIENTO  ═══════════════════*/
@@ -216,10 +232,10 @@ public class SentinelBoss : MonoBehaviour
         // 3. Vibración + coloración + giro 360° (simultáneos)
         Debug.Log("SentinelBoss: Intro — Vibración + coloración + giro 360°...");
 
-        // Colorear body → blanco a rojo
+        // Colorear body → blanco a rojo/azul
         if (sr != null) sr.color = bossColor;
 
-        // Colorear mouth → blanco a rojo
+        // Colorear mouth
         if (mouthScript != null) mouthScript.Colorize();
 
         // Flash en los escudos
@@ -229,7 +245,8 @@ public class SentinelBoss : MonoBehaviour
         }
 
         // Loop simultáneo: vibración + rotación 360°
-        float spinSpeed = 360f / introVibrateDuration;
+        float spinDirection = (rotationSpeedPhase1 < 0f) ? -1f : 1f;
+        float spinSpeed = (360f / introVibrateDuration) * spinDirection;
         elapsed = 0f;
 
         while (elapsed < introVibrateDuration)
@@ -304,6 +321,17 @@ public class SentinelBoss : MonoBehaviour
                 break;
         }
         Debug.Log($"SentinelBoss: Fase {phase}. Rotación: {currentRotationSpeed}°/s");
+    }
+
+        /// <summary>
+    /// Fuerza al boss a entrar en una fase específica inmediatamente.
+    /// Usado por DualSentinelManager para enrage.
+    /// </summary>
+    public void ForcePhase(int phase)
+    {
+        ConfigurePhase(phase);
+        currentPhase = phase;
+        Debug.Log($"SentinelBoss: ¡Forzado a Fase {phase}!");
     }
 
     void CheckPhaseTransition()
@@ -544,6 +572,10 @@ public class SentinelBoss : MonoBehaviour
 
     /*═══════════════════  DAÑO  ═══════════════════*/
 
+    /// <summary>
+    /// Recibe daño. Llamado desde el body (OnTriggerEnter2D) y desde
+    /// SentinelMouth cuando un proyectil match impacta la boca.
+    /// </summary>
     public void TakeDamage(int damage)
     {
         if (isDead) return;
@@ -603,6 +635,8 @@ public class SentinelBoss : MonoBehaviour
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         playerObj?.GetComponent<SlowMotion>()?.AddSlowMotionCharge();
+
+        onDefeated?.Invoke();
 
         Destroy(gameObject, 0.2f);
     }
