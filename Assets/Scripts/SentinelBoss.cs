@@ -200,8 +200,7 @@ public class SentinelBoss : MonoBehaviour
     }
 
     /*═══════════════════  INTRO (presentación)  ═══════════════════*/
-
-    IEnumerator RunBoss()
+IEnumerator RunBoss()
     {
         isInIntro = true;
 
@@ -295,7 +294,6 @@ public class SentinelBoss : MonoBehaviour
         Debug.Log("SentinelBoss: ¡Intro completa! Comienza el combate.");
         StartCoroutine(ShootingLoop());
     }
-
     /*═══════════════════  FASES  ═══════════════════*/
 
     void ConfigurePhase(int phase)
